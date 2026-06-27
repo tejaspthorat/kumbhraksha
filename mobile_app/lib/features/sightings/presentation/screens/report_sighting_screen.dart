@@ -100,11 +100,13 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
   InputDecoration _inputDecoration({
     String? hintText,
   }) {
+    final scheme = Theme.of(context).colorScheme;
     return InputDecoration(
       hintText: hintText,
-      hintStyle: const TextStyle(color: Colors.black38),
+      hintStyle: TextStyle(color: scheme.onSurface.withOpacity(0.4)),
       filled: true,
-      fillColor: const Color(0xFFF2F2F2),
+      // Theme-aware fill keeps white-on-dark typed text legible in dark mode.
+      fillColor: scheme.surfaceDim,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),

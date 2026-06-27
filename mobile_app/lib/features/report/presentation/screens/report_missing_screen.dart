@@ -218,11 +218,15 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
     Color? fillColor,
     BorderSide? borderSide,
   }) {
+    final scheme = Theme.of(context).colorScheme;
     return InputDecoration(
       hintText: hintText,
+      hintStyle: TextStyle(color: scheme.onSurface.withOpacity(0.4)),
       prefixIcon: prefixIcon,
       filled: true,
-      fillColor: fillColor ?? const Color(0xFFF4F4F5),
+      // Theme-aware: light grey panel in light mode, elevated dark surface in
+      // dark mode so the white-on-dark typed text stays legible.
+      fillColor: fillColor ?? scheme.surfaceDim,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
@@ -318,7 +322,7 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
                                 : Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const Icon(Icons.camera_alt_outlined, color: Colors.black54, size: 28),
+                                      Icon(Icons.camera_alt_outlined, color: scheme.onSurface.withOpacity(0.6), size: 28),
                                       const SizedBox(height: Dimens.sm),
                                       Text(
                                         'Tap to Upload Photo *',
@@ -423,8 +427,8 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
                       validator: (v) => Validators.required(v, field: 'Clothing description'),
                       decoration: _inputDecoration(
                         hintText: 'CRITICAL: Describe exactly what they were wearing...',
-                        fillColor: const Color(0xFFFFF5F5), // Light red warning bg
-                        borderSide: const BorderSide(color: Color(0xFFFFD1D1), width: 1),
+                        fillColor: scheme.error.withOpacity(0.08), // Theme-aware warning bg
+                        borderSide: BorderSide(color: scheme.error.withOpacity(0.4), width: 1),
                       ),
                     ),
                     Divider(color: Colors.grey.shade200, height: 40),
@@ -477,7 +481,7 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
                       validator: (v) => Validators.required(v, field: 'Location'),
                       decoration: _inputDecoration(
                         hintText: 'Address, landmark, or intersection',
-                        prefixIcon: const Icon(Icons.location_on_outlined, color: Colors.black54),
+                        prefixIcon: Icon(Icons.location_on_outlined, color: scheme.onSurface.withOpacity(0.6)),
                       ),
                     ),
                     const SizedBox(height: Dimens.md),
