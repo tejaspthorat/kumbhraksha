@@ -135,13 +135,13 @@ export default function CreateTaskForm({ onCreated, onClose }: CreateTaskFormPro
         {onClose && (
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+            className="absolute top-4 right-4 p-1.5 rounded-lg bg-surface-soft hover:bg-surface-elevated transition-colors"
           >
-            <X size={16} className="text-white/40" />
+            <X size={16} className="text-muted" />
           </button>
         )}
 
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+        <h3 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
           <Plus size={18} className="text-accent" />
           Create New Task
         </h3>
@@ -149,7 +149,7 @@ export default function CreateTaskForm({ onCreated, onClose }: CreateTaskFormPro
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Title */}
           <div>
-            <label className="block text-xs font-medium text-white/50 mb-1.5">
+            <label className="block text-xs font-medium text-muted mb-1.5">
               Task Title *
             </label>
             <input
@@ -158,13 +158,13 @@ export default function CreateTaskForm({ onCreated, onClose }: CreateTaskFormPro
               placeholder="e.g. Set up crowd barrier at Gate A"
               required
               maxLength={200}
-              className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm placeholder-white/20 focus:outline-none focus:border-accent/50 transition-colors"
+              className="w-full px-3 py-2.5 rounded-xl bg-surface-soft border border-hairline text-ink text-sm placeholder-muted-soft focus:outline-none focus:border-accent/50 transition-colors"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-medium text-white/50 mb-1.5">
+            <label className="block text-xs font-medium text-muted mb-1.5">
               Description
             </label>
             <textarea
@@ -173,13 +173,13 @@ export default function CreateTaskForm({ onCreated, onClose }: CreateTaskFormPro
               placeholder="Optional details for the coordinator..."
               rows={3}
               maxLength={2000}
-              className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm placeholder-white/20 focus:outline-none focus:border-accent/50 transition-colors resize-none"
+              className="w-full px-3 py-2.5 rounded-xl bg-surface-soft border border-hairline text-ink text-sm placeholder-muted-soft focus:outline-none focus:border-accent/50 transition-colors resize-none"
             />
           </div>
 
           {/* Priority selector */}
           <div>
-            <label className="block text-xs font-medium text-white/50 mb-1.5">
+            <label className="block text-xs font-medium text-muted mb-1.5">
               Priority
             </label>
             <div className="flex gap-2">
@@ -191,7 +191,7 @@ export default function CreateTaskForm({ onCreated, onClose }: CreateTaskFormPro
                   className={`flex-1 py-2 rounded-xl text-xs font-semibold border transition-all ${
                     form.priority === p.value
                       ? `${p.bg} ${p.color} ${p.border} scale-[1.02]`
-                      : 'bg-white/[0.03] border-white/[0.06] text-white/30 hover:bg-white/[0.06]'
+                      : 'bg-surface-soft border-hairline text-muted hover:bg-surface-elevated'
                   }`}
                 >
                   {p.label}
@@ -203,14 +203,14 @@ export default function CreateTaskForm({ onCreated, onClose }: CreateTaskFormPro
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Event */}
             <div>
-              <label className="block text-xs font-medium text-white/50 mb-1.5">
+              <label className="block text-xs font-medium text-muted mb-1.5">
                 Event *
               </label>
               <select
                 value={form.eventId}
                 onChange={e => updateField('eventId', e.target.value)}
                 required
-                className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm focus:outline-none focus:border-accent/50 transition-colors"
+                className="w-full px-3 py-2.5 rounded-xl bg-surface-soft border border-hairline text-ink text-sm focus:outline-none focus:border-accent/50 transition-colors"
               >
                 <option value="">Select event…</option>
                 {events.map(ev => (
@@ -223,14 +223,14 @@ export default function CreateTaskForm({ onCreated, onClose }: CreateTaskFormPro
 
             {/* Coordinator */}
             <div>
-              <label className="block text-xs font-medium text-white/50 mb-1.5 flex items-center gap-1">
+              <label className="block text-xs font-medium text-muted mb-1.5 flex items-center gap-1">
                 <User size={12} /> Assign To *
               </label>
               <select
                 value={form.assignedToId}
                 onChange={e => updateField('assignedToId', e.target.value)}
                 required
-                className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm focus:outline-none focus:border-accent/50 transition-colors"
+                className="w-full px-3 py-2.5 rounded-xl bg-surface-soft border border-hairline text-ink text-sm focus:outline-none focus:border-accent/50 transition-colors"
               >
                 <option value="">Select coordinator…</option>
                 {coordinators.map(c => (
@@ -245,27 +245,27 @@ export default function CreateTaskForm({ onCreated, onClose }: CreateTaskFormPro
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Deadline */}
             <div>
-              <label className="block text-xs font-medium text-white/50 mb-1.5 flex items-center gap-1">
+              <label className="block text-xs font-medium text-muted mb-1.5 flex items-center gap-1">
                 <Calendar size={12} /> Deadline
               </label>
               <input
                 type="datetime-local"
                 value={form.deadline}
                 onChange={e => updateField('deadline', e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm focus:outline-none focus:border-accent/50 transition-colors"
+                className="w-full px-3 py-2.5 rounded-xl bg-surface-soft border border-hairline text-ink text-sm focus:outline-none focus:border-accent/50 transition-colors"
               />
             </div>
 
             {/* Location */}
             <div>
-              <label className="block text-xs font-medium text-white/50 mb-1.5 flex items-center gap-1">
+              <label className="block text-xs font-medium text-muted mb-1.5 flex items-center gap-1">
                 <MapPin size={12} /> Location
               </label>
               <input
                 value={form.locationLabel}
                 onChange={e => updateField('locationLabel', e.target.value)}
                 placeholder="e.g. Gate A, Section B"
-                className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm placeholder-white/20 focus:outline-none focus:border-accent/50 transition-colors"
+                className="w-full px-3 py-2.5 rounded-xl bg-surface-soft border border-hairline text-ink text-sm placeholder-muted-soft focus:outline-none focus:border-accent/50 transition-colors"
               />
             </div>
           </div>
@@ -298,7 +298,7 @@ export default function CreateTaskForm({ onCreated, onClose }: CreateTaskFormPro
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-accent/80 to-accent text-white font-semibold text-sm flex items-center justify-center gap-2 hover:from-accent hover:to-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-accent/80 to-accent text-on-primary font-semibold text-sm flex items-center justify-center gap-2 hover:from-accent hover:to-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>

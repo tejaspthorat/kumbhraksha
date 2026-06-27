@@ -173,7 +173,7 @@ export default function MessageList({
       {hasMore && !messagesLoading && messages.length > 0 && (
         <button
           onClick={onLoadMoreAction}
-          className="w-full text-center py-2 text-xs text-white/30 hover:text-white/50 transition-colors"
+          className="w-full text-center py-2 text-xs text-muted hover:text-body transition-colors"
         >
           Load older messages
         </button>
@@ -182,10 +182,10 @@ export default function MessageList({
       {/* Empty state */}
       {messages.length === 0 && !messagesLoading && (
         <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
-          <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full bg-surface-soft flex items-center justify-center">
             <span className="text-2xl">💬</span>
           </div>
-          <p className="text-white/30 text-sm">No messages yet. Say hello!</p>
+          <p className="text-muted text-sm">No messages yet. Say hello!</p>
         </div>
       )}
 
@@ -194,11 +194,11 @@ export default function MessageList({
         <div key={gi}>
           {/* Date separator */}
           <div className="flex items-center gap-3 my-4">
-            <div className="flex-1 h-px bg-white/6" />
-            <span className="text-[10px] text-white/25 font-medium uppercase tracking-wider">
+            <div className="flex-1 h-px bg-hairline" />
+            <span className="text-[10px] text-muted font-medium uppercase tracking-wider">
               {formatDateSeparator(group.date)}
             </span>
-            <div className="flex-1 h-px bg-white/6" />
+            <div className="flex-1 h-px bg-hairline" />
           </div>
 
           {/* Messages */}
@@ -227,7 +227,7 @@ export default function MessageList({
                           className="w-7 h-7 rounded-full object-cover"
                         />
                       ) : (
-                        <span className="text-[10px] font-bold text-white">
+                        <span className="text-[10px] font-bold text-on-primary">
                           {getInitials(senderName)}
                         </span>
                       )}
@@ -243,7 +243,7 @@ export default function MessageList({
                 >
                   {/* Sender name for group chats */}
                   {showAvatar && !isOwn && (
-                    <p className="text-[10px] text-white/30 font-medium mb-0.5 ml-1">
+                    <p className="text-[10px] text-muted font-medium mb-0.5 ml-1">
                       {senderName}
                     </p>
                   )}
@@ -251,8 +251,8 @@ export default function MessageList({
                   <div
                     className={`rounded-2xl px-3.5 py-2 ${
                       isOwn
-                        ? "bg-gradient-to-r from-primary-light/80 to-primary/80 text-white rounded-br-md"
-                        : "bg-white/5 text-white/85 border border-white/6 rounded-bl-md"
+                        ? "bg-gradient-to-r from-primary-light/80 to-primary/80 text-on-primary rounded-br-md"
+                        : "bg-surface-soft text-body border border-hairline rounded-bl-md"
                     }`}
                   >
                     {/* Attachments */}
@@ -278,7 +278,7 @@ export default function MessageList({
                                 href={att.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-2 px-2 py-1 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-xs"
+                                className="flex items-center gap-2 px-2 py-1 rounded-lg bg-surface-soft hover:bg-surface-elevated transition-colors text-xs"
                               >
                                 {att.type === "video" ? (
                                   <Film size={14} className="text-accent" />
@@ -306,11 +306,11 @@ export default function MessageList({
                         isOwn ? "justify-end" : "justify-start"
                       }`}
                     >
-                      <span className="text-[10px] text-white/20">
+                      <span className={`text-[10px] ${isOwn ? "text-on-primary/70" : "text-muted-soft"}`}>
                         {formatTime(msg.createdAt)}
                       </span>
                       {isOwn && (
-                        <span className="text-white/30">
+                        <span className="text-on-primary/80">
                           {msg.readBy && msg.readBy.length > 0 ? (
                             <CheckCheck size={12} className="text-accent" />
                           ) : msg.deliveredAt ? (

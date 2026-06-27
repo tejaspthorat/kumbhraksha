@@ -260,7 +260,7 @@ export default function PublicCoordinatorTaskPage() {
           <button
             type="submit"
             disabled={busy}
-            className="w-full rounded-md bg-emerald-600 py-2 text-sm font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
+            className="w-full rounded-md bg-coral py-2 text-sm font-medium text-on-primary hover:bg-coral-active disabled:opacity-50"
           >
             {busy ? "Saving…" : "Save changes"}
           </button>
@@ -466,7 +466,7 @@ export default function PublicCoordinatorTaskPage() {
             <button
               type="submit"
               disabled={busy || (!!siteKey && !turnToken)}
-              className="w-full rounded-md bg-emerald-600 py-2 text-sm font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
+              className="w-full rounded-md bg-coral py-2 text-sm font-medium text-on-primary hover:bg-coral-active disabled:opacity-50"
             >
               {busy ? "Submitting…" : "Submit request"}
             </button>

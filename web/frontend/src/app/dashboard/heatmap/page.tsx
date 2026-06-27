@@ -173,8 +173,8 @@ export default function HeatmapPage() {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-ink flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-red-500/20 to-amber-500/20 border border-red-500/20">
-              <Layers size={22} className="text-red-600" />
+            <div className="p-2 rounded-xl bg-gradient-to-br from-accent-red/20 to-accent-orange/20 border border-accent-red/20">
+              <Layers size={22} className="text-accent-red" />
             </div>
             Crowd Density Heatmap
           </h1>
@@ -218,8 +218,8 @@ export default function HeatmapPage() {
               </div>
               <p className="text-xs text-muted-soft mt-1">{highDensityCameras} with high density</p>
             </div>
-            <div className="p-2.5 rounded-xl bg-blue-500/15">
-              <Camera size={18} className="text-blue-600" />
+            <div className="p-2.5 rounded-xl bg-accent-blue/15">
+              <Camera size={18} className="text-accent-blue" />
             </div>
           </div>
         </GlassCard>
@@ -237,8 +237,8 @@ export default function HeatmapPage() {
                 {maxDensityCamera ? `${maxDensityCamera[1].count} people` : 'No data'}
               </p>
             </div>
-            <div className="p-2.5 rounded-xl bg-red-500/15">
-              <Crosshair size={18} className="text-red-600" />
+            <div className="p-2.5 rounded-xl bg-accent-red/15">
+              <Crosshair size={18} className="text-accent-red" />
             </div>
           </div>
         </GlassCard>
@@ -248,12 +248,12 @@ export default function HeatmapPage() {
             <div>
               <p className="text-xs text-muted font-medium uppercase tracking-wider">High Density Alerts</p>
               <div className="mt-2">
-                <AnimatedCounter value={highDensityCameras} className="text-3xl font-bold text-red-600" />
+                <AnimatedCounter value={highDensityCameras} className="text-3xl font-bold text-accent-red" />
               </div>
               <p className="text-xs text-muted-soft mt-1">cameras in critical state</p>
             </div>
-            <div className="p-2.5 rounded-xl bg-red-500/15">
-              <AlertTriangle size={18} className="text-red-600" />
+            <div className="p-2.5 rounded-xl bg-accent-red/15">
+              <AlertTriangle size={18} className="text-accent-red" />
             </div>
           </div>
         </GlassCard>
@@ -261,7 +261,7 @@ export default function HeatmapPage() {
 
       {/* View Controls */}
       <motion.div variants={item} className="flex items-center gap-4 flex-wrap">
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-white/4 border border-hairline">
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-surface-soft border border-hairline">
           {([
             { key: 'grid', icon: Grid3X3, label: 'Density Grid' },
             { key: 'overlay', icon: Layers, label: 'Camera Heatmaps' },
@@ -286,7 +286,7 @@ export default function HeatmapPage() {
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${
               showPositions
                 ? 'bg-accent/20 border-accent/30 text-coral'
-                : 'bg-white/4 border-hairline text-muted'
+                : 'bg-surface-soft border-hairline text-muted'
             }`}
           >
             <Eye size={12} />
@@ -299,7 +299,7 @@ export default function HeatmapPage() {
                 key={size}
                 onClick={() => setGridSize(size)}
                 className={`px-2 py-1 rounded text-[10px] font-medium transition-all ${
-                  gridSize === size ? 'bg-primary-light text-ink' : 'bg-white/4 text-muted-soft'
+                  gridSize === size ? 'bg-primary-light text-ink' : 'bg-surface-soft text-muted-soft'
                 }`}
               >
                 {size}×{size}
@@ -313,7 +313,7 @@ export default function HeatmapPage() {
       {cameras.length === 0 ? (
         <motion.div variants={item}>
           <GlassCard className="text-center py-20" hover={false}>
-            <Camera size={64} className="mx-auto text-white/15 mb-4" />
+            <Camera size={64} className="mx-auto text-muted-soft mb-4" />
             <p className="text-muted text-lg">No cameras connected</p>
             <p className="text-xs text-muted-soft mt-2">Add cameras from the Live Cameras page to see heatmap data</p>
           </GlassCard>
@@ -338,15 +338,15 @@ export default function HeatmapPage() {
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-1">
-                        <div className="w-2.5 h-2.5 rounded-sm bg-emerald-500" />
+                        <div className="w-2.5 h-2.5 rounded-sm bg-accent-green" />
                         <span className="text-[10px] text-muted-soft">Low</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <div className="w-2.5 h-2.5 rounded-sm bg-amber-500" />
+                        <div className="w-2.5 h-2.5 rounded-sm bg-accent-yellow" />
                         <span className="text-[10px] text-muted-soft">Medium</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <div className="w-2.5 h-2.5 rounded-sm bg-red-500" />
+                        <div className="w-2.5 h-2.5 rounded-sm bg-accent-red" />
                         <span className="text-[10px] text-muted-soft">High</span>
                       </div>
                       <Badge variant="success" pulse>
@@ -437,9 +437,9 @@ export default function HeatmapPage() {
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                               <div className={`w-2 h-2 rounded-full ${
-                                camData.density === 'High' ? 'bg-red-500 animate-pulse'
-                                : camData.density === 'Medium' ? 'bg-amber-500'
-                                : 'bg-emerald-500'
+                                camData.density === 'High' ? 'bg-accent-red animate-pulse'
+                                : camData.density === 'Medium' ? 'bg-accent-yellow'
+                                : 'bg-accent-green'
                               }`} />
                               <span className="text-sm font-medium text-body-strong">{camData.name}</span>
                             </div>
@@ -510,7 +510,7 @@ export default function HeatmapPage() {
 
                       {cameraEntries.length === 0 && (
                         <div className="text-center py-8">
-                          <Camera size={32} className="mx-auto text-white/15 mb-2" />
+                          <Camera size={32} className="mx-auto text-muted-soft mb-2" />
                           <p className="text-xs text-muted-soft">Waiting for detection data...</p>
                         </div>
                       )}
@@ -591,11 +591,11 @@ export default function HeatmapPage() {
                             {/* Bottom info */}
                             <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-3">
                               <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium text-ink">{cam.name}</span>
+                                <span className="text-sm font-medium text-on-dark">{cam.name}</span>
                                 <div className="flex items-center gap-2">
                                   {camData && (
                                     <>
-                                      <span className="text-xs text-body font-mono flex items-center gap-1">
+                                      <span className="text-xs text-on-dark-soft font-mono flex items-center gap-1">
                                         <Users size={10} />
                                         {camData.count}
                                       </span>

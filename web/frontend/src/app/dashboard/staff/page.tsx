@@ -60,7 +60,7 @@ function StaffSkeleton() {
           <Skeleton className="h-5 w-32 mb-4" />
           <div className="space-y-3">
              {[1, 2, 3, 4, 5].map(i => (
-              <GlassCard key={i} className="p-3 bg-white/2">
+              <GlassCard key={i} className="p-3 bg-surface-soft">
                 <Skeleton className="h-3 w-12 mb-2" />
                 <Skeleton className="h-4 w-full mb-1.5" />
                 <Skeleton className="h-3 w-16" />
@@ -284,7 +284,7 @@ export default function StaffPage() {
             </div>
             <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
               {tasks.map(t => (
-                <div key={t.id} className="p-3 rounded-xl bg-white/2 border border-hairline">
+                <div key={t.id} className="p-3 rounded-xl bg-surface-soft border border-hairline">
                   <div className="flex items-start justify-between mb-2">
                     <Badge variant={t.priority as any}>{t.priority}</Badge>
                     <div className="flex items-center gap-2">
@@ -294,7 +294,7 @@ export default function StaffPage() {
                         disabled={isDeletingTask === t.id}
                         className="p-1 rounded hover:bg-red-500/10 transition-colors group/task"
                       >
-                        <Trash2 size={10} className={clsx("text-white/10 group-hover/task:text-red-600", isDeletingTask === t.id && "animate-pulse")} />
+                        <Trash2 size={10} className={clsx("text-muted-soft group-hover/task:text-red-600", isDeletingTask === t.id && "animate-pulse")} />
                       </button>
                     </div>
                   </div>
@@ -310,15 +310,15 @@ export default function StaffPage() {
       {/* Staff table */}
       <motion.div variants={item}>
         <GlassCard hover={false}>
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
             <h3 className="text-sm font-semibold text-ink">Staff Directory</h3>
-            <div className="relative">
+            <div className="relative w-full sm:w-auto">
               <input
                 type="text"
                 placeholder="Search staff..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 pr-4 py-1.5 rounded-lg bg-surface-soft border border-hairline text-xs text-ink placeholder-white/20 focus:outline-none focus:border-accent w-64"
+                className="pl-9 pr-4 py-1.5 rounded-lg bg-surface-soft border border-hairline text-xs text-ink placeholder-muted-soft focus:outline-none focus:border-accent w-full sm:w-64"
               />
               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-soft" />
             </div>
@@ -338,7 +338,7 @@ export default function StaffPage() {
               </thead>
               <tbody>
                 {filteredStaff.map(s => (
-                  <tr key={s.id} className="border-b border-hairline hover:bg-white/2 transition-colors">
+                  <tr key={s.id} className="border-b border-hairline hover:bg-surface-soft transition-colors">
                     <td className="py-3 pr-4">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-linear-to-br from-primary-light to-coral flex items-center justify-center text-[10px] font-bold text-ink">

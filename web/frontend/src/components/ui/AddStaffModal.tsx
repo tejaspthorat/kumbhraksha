@@ -94,89 +94,89 @@ export default function AddStaffModal({ isOpen, onClose, editData }: AddStaffMod
           >
             <GlassCard className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-white">{editData ? 'Edit Staff' : 'Add Staff Member'}</h2>
-                <button onClick={onClose} className="p-1 rounded-lg hover:bg-white/10 transition-colors">
-                  <X size={20} className="text-white/60" />
+                <h2 className="text-xl font-bold text-ink">{editData ? 'Edit Staff' : 'Add Staff Member'}</h2>
+                <button onClick={onClose} className="p-1 rounded-lg hover:bg-surface-soft transition-colors">
+                  <X size={20} className="text-muted" />
                 </button>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">Full Name</label>
+                  <label className="block text-sm font-medium text-body mb-2">Full Name</label>
                   <div className="relative">
                     <input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g., John Doe"
-                      className="w-full pl-10 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors"
+                      className="w-full pl-10 pr-4 py-2 rounded-xl bg-surface-soft border border-hairline text-ink placeholder-muted-soft focus:outline-none focus:border-accent transition-colors"
                       required
                     />
-                    <UserPlus size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
+                    <UserPlus size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">Email Address</label>
+                  <label className="block text-sm font-medium text-body mb-2">Email Address</label>
                   <div className="relative">
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="john@example.com"
-                      className="w-full pl-10 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors"
+                      className="w-full pl-10 pr-4 py-2 rounded-xl bg-surface-soft border border-hairline text-ink placeholder-muted-soft focus:outline-none focus:border-accent transition-colors"
                       required
                       disabled={!!editData}
                     />
-                    <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
+                    <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-2">Internal Role</label>
+                    <label className="block text-sm font-medium text-body mb-2">Internal Role</label>
                     <div className="relative">
                       <select
                         value={role}
                         onChange={(e) => setRole(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-accent transition-colors appearance-none"
+                        className="w-full pl-10 pr-4 py-2 rounded-xl bg-surface-soft border border-hairline text-ink focus:outline-none focus:border-accent transition-colors appearance-none"
                       >
-                        {ROLES.map(r => <option key={r} value={r} className="bg-[#1a2b3c]">{r}</option>)}
+                        {ROLES.map(r => <option key={r} value={r} className="bg-surface-card text-ink">{r}</option>)}
                       </select>
-                      <Shield size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
+                      <Shield size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-2">Staff Category</label>
+                    <label className="block text-sm font-medium text-body mb-2">Staff Category</label>
                     <div className="relative">
                       <select
                         value={staffRole}
                         onChange={(e) => setStaffRole(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-accent transition-colors appearance-none"
+                        className="w-full pl-10 pr-4 py-2 rounded-xl bg-surface-soft border border-hairline text-ink focus:outline-none focus:border-accent transition-colors appearance-none"
                       >
-                        {STAFF_ROLES.map(r => <option key={r} value={r} className="bg-[#1a2b3c]">{r}</option>)}
+                        {STAFF_ROLES.map(r => <option key={r} value={r} className="bg-surface-card text-ink">{r}</option>)}
                       </select>
-                      <AlertCircle size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
+                      <AlertCircle size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">Assigned Zone</label>
+                  <label className="block text-sm font-medium text-body mb-2">Assigned Zone</label>
                   <div className="relative">
                     <select
                       value={zoneId}
                       onChange={(e) => setZoneId(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-accent transition-colors appearance-none"
+                      className="w-full pl-10 pr-4 py-2 rounded-xl bg-surface-soft border border-hairline text-ink focus:outline-none focus:border-accent transition-colors appearance-none"
                     >
-                      {zones.map(z => <option key={z.id} value={z.id} className="bg-[#1a2b3c]">{z.name}</option>)}
+                      {zones.map(z => <option key={z.id} value={z.id} className="bg-surface-card text-ink">{z.name}</option>)}
                     </select>
-                    <MapPin size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
+                    <MapPin size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">Select Avatar</label>
+                  <label className="block text-sm font-medium text-body mb-2">Select Avatar</label>
                   <div className="flex flex-wrap gap-2">
                     {AVATARS.map(a => (
                       <button
@@ -184,7 +184,7 @@ export default function AddStaffModal({ isOpen, onClose, editData }: AddStaffMod
                         type="button"
                         onClick={() => setAvatar(a)}
                         className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg transition-all ${
-                          avatar === a ? 'bg-accent border-accent' : 'bg-white/5 border-white/10 hover:bg-white/10'
+                          avatar === a ? 'bg-accent border-accent' : 'bg-surface-soft border-hairline hover:bg-surface-elevated'
                         } border`}
                       >
                         {a}
@@ -203,7 +203,7 @@ export default function AddStaffModal({ isOpen, onClose, editData }: AddStaffMod
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 rounded-xl bg-linear-to-r from-accent to-accent-light text-white font-medium hover:shadow-lg transition-all disabled:opacity-50"
+                  className="w-full py-3 rounded-xl bg-linear-to-r from-accent to-accent-light text-on-primary font-medium hover:shadow-lg transition-all disabled:opacity-50"
                 >
                   {loading ? 'Processing...' : editData ? 'Update Staff Member' : 'Create Staff Member'}
                 </button>

@@ -13,6 +13,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { Wordmark, SpikeMark } from '@/components/brand/SpikeMark';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { CASCADE_STAGES } from '@/lib/missing/cascade';
 import { formatDistance } from '@/lib/geo';
 
@@ -61,9 +62,12 @@ export default function LandingPage() {
             <a href="#cascade" className="hover:text-ink transition-colors">Alert cascade</a>
             <a href="#features" className="hover:text-ink transition-colors">Platform</a>
           </div>
-          <div className="flex items-center gap-3">
-            <Link href="/dashboard" className="btn-coral inline-flex items-center gap-1.5 h-10 px-5">
-              Open dashboard <ArrowRight className="size-4" />
+          <div className="flex items-center gap-2.5">
+            <ThemeToggle />
+            <Link href="/dashboard" className="btn-coral inline-flex items-center gap-1.5 h-10 px-4 sm:px-5">
+              <span className="hidden sm:inline">Open dashboard</span>
+              <span className="sm:hidden">Dashboard</span>
+              <ArrowRight className="size-4" />
             </Link>
           </div>
         </div>

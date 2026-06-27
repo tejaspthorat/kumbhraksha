@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { motion, type HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
@@ -50,7 +51,7 @@ export function Panel({
           className={cn('pointer-events-none absolute inset-x-0 -top-24 h-48 opacity-60', glowMap[accent as Accent])}
         />
       )}
-      <div className="relative">{children}</div>
+      <div className="relative">{children as ReactNode}</div>
     </motion.div>
   );
 }

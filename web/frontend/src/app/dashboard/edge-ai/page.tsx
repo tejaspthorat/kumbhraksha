@@ -28,7 +28,7 @@ export default function EdgeAIPage() {
       <motion.div variants={item} className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <GlassCard>
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-emerald-500/15"><Cpu size={20} className="text-emerald-600" /></div>
+            <div className="p-3 rounded-xl bg-accent-green/15"><Cpu size={20} className="text-accent-green" /></div>
             <div>
               <p className="text-xs text-muted">Nodes Online</p>
               <span className="text-2xl font-bold text-ink">{online}/{devices.length}</span>
@@ -46,16 +46,16 @@ export default function EdgeAIPage() {
         </GlassCard>
         <GlassCard>
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-blue-500/15"><Activity size={20} className="text-blue-600" /></div>
+            <div className="p-3 rounded-xl bg-accent-blue/15"><Activity size={20} className="text-accent-blue" /></div>
             <div>
               <p className="text-xs text-muted">Avg Latency</p>
-              <span className="text-2xl font-bold text-blue-600">42ms</span>
+              <span className="text-2xl font-bold text-accent-blue">42ms</span>
             </div>
           </div>
         </GlassCard>
         <GlassCard>
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-purple-500/15"><Zap size={20} className="text-purple-600" /></div>
+            <div className="p-3 rounded-xl bg-accent-orange/15"><Zap size={20} className="text-accent-orange" /></div>
             <div>
               <p className="text-xs text-muted">AI Model</p>
               <span className="text-sm font-bold text-ink">YOLOv8n</span>
@@ -100,21 +100,21 @@ export default function EdgeAIPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2 p-2.5 rounded-lg bg-surface-soft">
-                      <Activity size={14} className="text-blue-600" />
+                      <Activity size={14} className="text-accent-blue" />
                       <div>
                         <p className="text-[10px] text-muted-soft">Latency</p>
                         <span className="text-sm font-bold text-ink">{device.latency}ms</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 p-2.5 rounded-lg bg-surface-soft">
-                      <Thermometer size={14} className="text-amber-600" />
+                      <Thermometer size={14} className="text-accent-orange" />
                       <div>
                         <p className="text-[10px] text-muted-soft">Temp</p>
                         <span className="text-sm font-bold text-ink">{device.temp}°C</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 p-2.5 rounded-lg bg-surface-soft">
-                      <Clock size={14} className="text-emerald-600" />
+                      <Clock size={14} className="text-accent-green" />
                       <div>
                         <p className="text-[10px] text-muted-soft">Uptime</p>
                         <span className="text-sm font-bold text-ink">{device.uptime}</span>

@@ -72,12 +72,12 @@ export default function DensityPage() {
         </GlassCard>
         <GlassCard>
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-red-500/15">
-              <TrendingUp size={20} className="text-red-600" />
+            <div className="p-3 rounded-xl bg-accent-red/15">
+              <TrendingUp size={20} className="text-accent-red" />
             </div>
             <div>
               <p className="text-xs text-muted uppercase tracking-wider">Peak Density</p>
-              <span className="text-2xl font-bold text-red-600">
+              <span className="text-2xl font-bold text-accent-red">
                 {densityData.length ? Math.max(...densityData.map((z: any) => z.fillPercent)).toFixed(1) : 0}
               </span>
               <span className="text-sm text-muted-soft ml-1">% filled</span>
@@ -86,12 +86,12 @@ export default function DensityPage() {
         </GlassCard>
         <GlassCard>
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-emerald-500/15">
-              <TrendingDown size={20} className="text-emerald-600" />
+            <div className="p-3 rounded-xl bg-accent-green/15">
+              <TrendingDown size={20} className="text-accent-green" />
             </div>
             <div>
               <p className="text-xs text-muted uppercase tracking-wider">Low Density Zones</p>
-              <span className="text-2xl font-bold text-emerald-600">{lowDensityCount}</span>
+              <span className="text-2xl font-bold text-accent-green">{lowDensityCount}</span>
               <span className="text-sm text-muted-soft ml-1">zones</span>
             </div>
           </div>

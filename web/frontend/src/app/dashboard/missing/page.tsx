@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { Clock, MapPin, Phone, ShieldAlert, Stethoscope, Users, X } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Bell, Clock, MapPin, Phone, ShieldAlert, Stethoscope, Users, X } from 'lucide-react';
 import { krApi } from '@/lib/missing/client';
+import { useMissingStream } from '@/lib/missing/useMissingStream';
 import type { MissingReport, Sighting, MissingReportStatus } from '@/lib/missing/types';
 import { STATUS_LABEL } from '@/lib/missing/types';
 import { stageForLevel, withLiveCascade } from '@/lib/missing/cascade';
@@ -18,6 +19,38 @@ import { timeAgo, formatDistance } from '@/lib/geo';
 
 type SortKey = 'recent' | 'age' | 'cascade';
 
+type IncomingAlert = {
+  id: string;
+  name: string;
+  age: number | null;
+  label: string;
+  source: string;
+};
+
+/** Short attention chime via WebAudio (no asset needed). */
+function playChime() {
+  try {
+    const Ctx =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext })
+        .webkitAudioContext;
+    const ctx = new Ctx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.setValueAtTime(1320, ctx.currentTime + 0.12);
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.45);
+  } catch {
+    /* audio not available */
+  }
+}
+
 const PIPELINE: MissingReportStatus[] = [
   'REPORTED',
   'SEARCHING',
@@ -31,19 +64,60 @@ export default function CommandCenterPage() {
   const [sightings, setSightings] = useState<Sighting[]>([]);
   const [sort, setSort] = useState<SortKey>('cascade');
   const [openId, setOpenId] = useState<string | null>(null);
+  const [incoming, setIncoming] = useState<IncomingAlert[]>([]);
+  const [live, setLive] = useState(false);
+  const seenIds = useRef<Set<string>>(new Set());
 
-  async function load() {
+  const load = useCallback(async () => {
     const [rs, ss] = await Promise.all([
       krApi.reports().catch(() => [] as MissingReport[]),
       krApi.sightings().catch(() => [] as Sighting[]),
     ]);
     setReports(rs.map(withLiveCascade));
     setSightings(ss);
-  }
+    rs.forEach((r) => seenIds.current.add(r.id));
+  }, []);
+
+  const raiseAlert = useCallback((report: MissingReport & { source?: string }) => {
+    if (seenIds.current.has(report.id)) return;
+    seenIds.current.add(report.id);
+    setReports((prev) =>
+      prev.some((r) => r.id === report.id) ? prev : [withLiveCascade(report), ...prev],
+    );
+    setIncoming((prev) => [
+      {
+        id: report.id,
+        name: report.person?.name ?? 'Unknown person',
+        age: report.person?.age ?? null,
+        label: report.lastSeenLabel ?? 'Location pending',
+        source: report.source ?? 'mobile',
+      },
+      ...prev,
+    ]);
+    playChime();
+  }, []);
+
+  // Real-time stream from the backend (mobile reports arrive instantly).
+  useMissingStream({
+    onReport: raiseAlert,
+    onSighting: () => load(),
+    onStatus: setLive,
+  });
+
   useEffect(() => {
     load();
-    const id = setInterval(load, 15000);
+    // Polling fallback in case the SSE stream is unavailable.
+    const id = setInterval(load, 8000);
     return () => clearInterval(id);
+  }, [load]);
+
+  const openCase = useCallback((id: string) => {
+    setOpenId(id);
+    setIncoming((prev) => prev.filter((a) => a.id !== id));
+  }, []);
+
+  const dismissAlert = useCallback((id: string) => {
+    setIncoming((prev) => prev.filter((a) => a.id !== id));
   }, []);
 
   const sorted = useMemo(() => {
@@ -66,7 +140,25 @@ export default function CommandCenterPage() {
 
   return (
     <div className="max-w-[1280px] mx-auto">
+      <IncomingAlertStack alerts={incoming} onOpen={openCase} onDismiss={dismissAlert} />
+
       <PageHeading eyebrow="Missing Persons" title="Command Center">
+        <span
+          className={
+            'inline-flex items-center gap-1.5 mr-3 px-2.5 h-9 rounded-lg text-[12px] font-medium ' +
+            (live
+              ? 'bg-success/10 text-success'
+              : 'bg-surface-soft text-muted')
+          }
+          title={live ? 'Live stream connected' : 'Reconnecting…'}
+        >
+          <span
+            className={
+              'size-2 rounded-full ' + (live ? 'bg-success animate-pulse' : 'bg-muted')
+            }
+          />
+          {live ? 'Live' : 'Offline'}
+        </span>
         <div className="inline-flex rounded-lg border border-hairline overflow-hidden">
           {(
             [
@@ -305,6 +397,60 @@ function CaseDrawer({
           </div>
         </div>
       </aside>
+    </div>
+  );
+}
+
+function IncomingAlertStack({
+  alerts,
+  onOpen,
+  onDismiss,
+}: {
+  alerts: IncomingAlert[];
+  onOpen: (id: string) => void;
+  onDismiss: (id: string) => void;
+}) {
+  if (alerts.length === 0) return null;
+  return (
+    <div className="fixed top-4 right-4 z-[60] flex flex-col gap-2 w-[340px] max-w-[calc(100vw-2rem)]">
+      {alerts.slice(0, 4).map((a) => (
+        <div
+          key={a.id}
+          className="card-canvas border-l-4 border-coral shadow-lg p-4 animate-slide-up"
+          role="alert"
+        >
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 shrink-0 size-9 rounded-full bg-coral/15 flex items-center justify-center">
+              <Bell className="size-4 text-coral" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="caption-upper text-coral">New missing person · {a.source}</p>
+              <p className="font-medium text-ink truncate">
+                {a.name}
+                {a.age != null && <span className="text-muted font-normal"> · {a.age}</span>}
+              </p>
+              <p className="text-[12px] text-muted-soft flex items-center gap-1 mt-0.5">
+                <MapPin className="size-3 shrink-0" /> {a.label}
+              </p>
+              <div className="flex items-center gap-2 mt-2.5">
+                <Button size="sm" onClick={() => onOpen(a.id)}>
+                  Open case
+                </Button>
+                <Button variant="secondary" size="sm" onClick={() => onDismiss(a.id)}>
+                  Dismiss
+                </Button>
+              </div>
+            </div>
+            <button
+              onClick={() => onDismiss(a.id)}
+              className="p-1 rounded-md hover:bg-surface-soft"
+              aria-label="Dismiss"
+            >
+              <X className="size-4 text-muted" />
+            </button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

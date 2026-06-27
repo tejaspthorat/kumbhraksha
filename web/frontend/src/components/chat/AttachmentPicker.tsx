@@ -98,7 +98,7 @@ export default function AttachmentPicker({
         type="button"
         onClick={handleClick}
         disabled={disabled || uploading}
-        className="p-2 rounded-lg text-white/40 hover:text-white/70 hover:bg-white/5 transition-all duration-200 disabled:opacity-30"
+        className="p-2 rounded-lg text-muted hover:text-body hover:bg-surface-soft transition-all duration-200 disabled:opacity-30"
         title="Attach file"
       >
         {uploading ? (

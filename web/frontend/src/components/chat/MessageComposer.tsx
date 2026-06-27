@@ -108,20 +108,20 @@ export default function MessageComposer({
   const canSend = text.trim().length > 0 || attachments.length > 0;
 
   return (
-    <div className="border-t border-white/6 bg-[#060e16]">
+    <div className="border-t border-hairline bg-canvas">
       {/* Attachments preview */}
       {attachments.length > 0 && (
         <div className="flex gap-2 px-4 pt-3 flex-wrap">
           {attachments.map((att, i) => (
             <div
               key={i}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-soft border border-hairline text-xs"
             >
               {att.type === "image" ? "🖼️" : att.type === "video" ? "🎬" : "📄"}
-              <span className="text-white/60 max-w-24 truncate">{att.name}</span>
+              <span className="text-body max-w-24 truncate">{att.name}</span>
               <button
                 onClick={() => removeAttachment(i)}
-                className="text-white/30 hover:text-red-400 transition-colors"
+                className="text-muted hover:text-red-400 transition-colors"
               >
                 ×
               </button>
@@ -147,7 +147,7 @@ export default function MessageComposer({
           placeholder="Type a message…"
           disabled={disabled}
           rows={1}
-          className="flex-1 resize-none bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white/90 placeholder-white/25 focus:outline-none focus:border-accent/30 focus:ring-1 focus:ring-accent/20 transition-all duration-200 scrollbar-thin"
+          className="flex-1 resize-none bg-surface-soft border border-hairline rounded-xl px-4 py-2.5 text-sm text-ink placeholder-muted-soft focus:outline-none focus:border-accent/30 focus:ring-1 focus:ring-accent/20 transition-all duration-200 scrollbar-thin"
           aria-label="Type a message"
           aria-multiline="true"
           style={{ maxHeight: "120px" }}
@@ -156,7 +156,7 @@ export default function MessageComposer({
         <button
           onClick={handleSend}
           disabled={disabled || !canSend}
-          className="p-2.5 rounded-xl bg-gradient-to-r from-primary-light to-accent text-white disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-accent/20 transition-all duration-200 active:scale-95"
+          className="p-2.5 rounded-xl bg-gradient-to-r from-primary-light to-accent text-on-primary disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-accent/20 transition-all duration-200 active:scale-95"
           title="Send message"
         >
           <Send size={18} />

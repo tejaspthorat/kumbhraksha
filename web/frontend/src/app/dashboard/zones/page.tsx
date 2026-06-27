@@ -134,20 +134,20 @@ export default function ZonesPage() {
 
               {/* Metrics */}
               <div className="grid grid-cols-3 gap-3 mb-4">
-                <div className="text-center p-2 rounded-lg bg-white/2">
+                <div className="text-center p-2 rounded-lg bg-surface-soft">
                   <ArrowUpRight size={12} className="text-emerald-600 mx-auto mb-1" />
                   <span className="text-xs font-bold text-ink">{Math.floor((zone.people || 0) * 0.8)}</span>
-                  <p className="text-[9px] text-white/25">Entries</p>
+                  <p className="text-[9px] text-muted-soft">Entries</p>
                 </div>
-                <div className="text-center p-2 rounded-lg bg-white/2">
+                <div className="text-center p-2 rounded-lg bg-surface-soft">
                   <ArrowDownRight size={12} className="text-blue-600 mx-auto mb-1" />
                   <span className="text-xs font-bold text-ink">{Math.floor((zone.people || 0) * 0.2)}</span>
-                  <p className="text-[9px] text-white/25">Exits</p>
+                  <p className="text-[9px] text-muted-soft">Exits</p>
                 </div>
-                <div className="text-center p-2 rounded-lg bg-white/2">
+                <div className="text-center p-2 rounded-lg bg-surface-soft">
                   <Users size={12} className="text-coral mx-auto mb-1" />
                   <span className="text-xs font-bold text-ink">{(zone.density || 0).toFixed(1)}</span>
-                  <p className="text-[9px] text-white/25">p/m²</p>
+                  <p className="text-[9px] text-muted-soft">p/m²</p>
                 </div>
               </div>
 

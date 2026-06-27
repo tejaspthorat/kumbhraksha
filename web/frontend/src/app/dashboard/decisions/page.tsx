@@ -52,7 +52,7 @@ export default function DecisionsPage() {
         {groqLoading && decisions.length === 0 ? (
           [1, 2].map(i => <Skeleton key={i} className="h-32 w-full rounded-xl" />)
         ) : groqError ? (
-          <div className="md:col-span-2 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 text-sm flex items-start gap-3">
+          <div className="md:col-span-2 p-4 rounded-xl bg-accent-red/10 border border-accent-red/20 text-accent-red text-sm flex items-start gap-3">
             <AlertTriangle size={16} className="mt-0.5 shrink-0" />
             <p>AI Engine Error: {groqError}</p>
           </div>
@@ -101,7 +101,7 @@ export default function DecisionsPage() {
         {groqLoading && suggestions.length === 0 ? (
           [1, 2, 3].map(i => <Skeleton key={i} className="h-24 w-full rounded-xl" />)
         ) : groqError ? (
-          <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 text-sm flex items-start gap-3">
+          <div className="p-4 rounded-xl bg-accent-red/10 border border-accent-red/20 text-accent-red text-sm flex items-start gap-3">
             <AlertTriangle size={16} className="mt-0.5 shrink-0" />
             <p>Failed to load suggestions: {groqError}</p>
           </div>

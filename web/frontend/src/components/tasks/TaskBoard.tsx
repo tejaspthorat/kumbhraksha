@@ -185,9 +185,9 @@ export default function TaskBoard({ eventId }: { eventId?: string }) {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         {COLUMNS.map(col => (
           <div key={col} className="space-y-3">
-            <div className="h-8 bg-white/5 rounded-lg animate-pulse" />
-            <div className="h-32 bg-white/[0.03] rounded-xl animate-pulse" />
-            <div className="h-28 bg-white/[0.03] rounded-xl animate-pulse" />
+            <div className="h-8 bg-surface-soft rounded-lg animate-pulse" />
+            <div className="h-32 bg-surface-soft rounded-xl animate-pulse" />
+            <div className="h-28 bg-surface-soft rounded-xl animate-pulse" />
           </div>
         ))}
       </div>
@@ -210,8 +210,8 @@ export default function TaskBoard({ eventId }: { eventId?: string }) {
           >
             {/* Column header */}
             <div className={`flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-r ${config.gradient} border ${config.border}`}>
-              <ColIcon size={16} className="text-white/60" />
-              <span className="text-sm font-semibold text-white/80">
+              <ColIcon size={16} className="text-body" />
+              <span className="text-sm font-semibold text-ink">
                 {config.label}
               </span>
               <Badge variant={config.badge} className="ml-auto text-[10px] px-2 py-0.5">
@@ -226,7 +226,7 @@ export default function TaskBoard({ eventId }: { eventId?: string }) {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-center py-8 text-xs text-white/20"
+                    className="text-center py-8 text-xs text-muted-soft"
                   >
                     No tasks
                   </motion.div>
@@ -261,12 +261,12 @@ export default function TaskBoard({ eventId }: { eventId?: string }) {
                           </div>
 
                           {/* Title */}
-                          <h4 className="text-sm font-semibold text-white mb-1 line-clamp-2">
+                          <h4 className="text-sm font-semibold text-ink mb-1 line-clamp-2">
                             {task.title}
                           </h4>
 
                           {/* Assignee */}
-                          <div className="flex items-center gap-1.5 text-[11px] text-white/40 mb-1">
+                          <div className="flex items-center gap-1.5 text-[11px] text-muted mb-1">
                             <User size={11} />
                             <span>{task.assignedTo?.name || 'Unassigned'}</span>
                           </div>
@@ -293,9 +293,9 @@ export default function TaskBoard({ eventId }: { eventId?: string }) {
                           {/* Expand toggle */}
                           <div className="flex justify-end mt-1">
                             {isExpanded ? (
-                              <ChevronUp size={14} className="text-white/30" />
+                              <ChevronUp size={14} className="text-muted" />
                             ) : (
-                              <ChevronDown size={14} className="text-white/30" />
+                              <ChevronDown size={14} className="text-muted" />
                             )}
                           </div>
 
@@ -308,23 +308,23 @@ export default function TaskBoard({ eventId }: { eventId?: string }) {
                                 exit={{ opacity: 0, height: 0 }}
                                 className="overflow-hidden"
                               >
-                                <div className="mt-3 pt-3 border-t border-white/10 space-y-2">
+                                <div className="mt-3 pt-3 border-t border-hairline space-y-2">
                                   {task.description && (
-                                    <p className="text-xs text-white/50 leading-relaxed">
+                                    <p className="text-xs text-body leading-relaxed">
                                       {task.description}
                                     </p>
                                   )}
-                                  <div className="text-[10px] text-white/30">
+                                  <div className="text-[10px] text-muted">
                                     Event: {task.event?.name || '—'}
                                   </div>
-                                  <div className="text-[10px] text-white/30">
+                                  <div className="text-[10px] text-muted">
                                     Created {timeAgo(task.createdAt)}
                                   </div>
 
                                   {/* Status update timeline */}
                                   {task.updates && task.updates.length > 0 && (
                                     <div className="mt-2 space-y-1.5">
-                                      <span className="text-[10px] font-medium text-white/40">
+                                      <span className="text-[10px] font-medium text-muted">
                                         Recent updates
                                       </span>
                                       {task.updates.slice(0, 3).map(u => (
@@ -333,18 +333,18 @@ export default function TaskBoard({ eventId }: { eventId?: string }) {
                                           className="flex items-start gap-2 text-[10px]"
                                         >
                                           <div className="w-1.5 h-1.5 rounded-full bg-accent mt-1 flex-shrink-0" />
-                                          <div className="text-white/40">
-                                            <span className="text-white/60 font-medium">
+                                          <div className="text-muted">
+                                            <span className="text-body font-medium">
                                               {u.staff?.name}
                                             </span>
                                             {' → '}
                                             {u.status.replace('_', ' ')}
                                             {u.note && (
-                                              <span className="text-white/30">
+                                              <span className="text-muted">
                                                 {' '}— {u.note}
                                               </span>
                                             )}
-                                            <div className="text-white/20 mt-0.5">
+                                            <div className="text-muted-soft mt-0.5">
                                               {timeAgo(u.timestamp)}
                                             </div>
                                           </div>

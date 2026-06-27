@@ -28,16 +28,21 @@
   --on-dark: #faf9f5;
   --on-dark-soft: #a09d96;
 
-  /* Surfaces */
-  --canvas: #faf9f5;
-  --surface-soft: #f5f0e8;
-  --surface-card: #efe9de;
-  --surface-cream-strong: #e8e0d2;
+  /* Surfaces — neutral off-white light theme (less warm than legacy cream) */
+  --canvas: #fbfbfa;
+  --surface-soft: #f4f4f3;
+  --surface-card: #efefed;
+  --surface-cream-strong: #e6e6e3;
   --surface-dark: #181715;
   --surface-dark-elevated: #252320;
   --surface-dark-soft: #1f1e1b;
-  --hairline: #e6dfd8;
-  --hairline-soft: #ebe6df;
+  --hairline: #e7e7e4;
+  --hairline-soft: #ededeb;
+
+  /* Off-white scale — explicit clean neutrals (mode-aware; bg-offwhite, …) */
+  --offwhite: #fbfbfa;
+  --offwhite-soft: #f4f4f3;
+  --offwhite-strong: #ececea;
 
   /* Semantic */
   --success: #5db872;
@@ -120,6 +125,11 @@
   --hairline-soft: rgba(255, 255, 255, 0.04);
   --hairline-strong: rgba(255, 255, 255, 0.14);
 
+  /* Off-white scale collapses onto elevated dark surfaces in dark mode */
+  --offwhite: #101012;
+  --offwhite-soft: #0d0d10;
+  --offwhite-strong: #16161a;
+
   /* Semantic — align with tactical accents */
   --success: #11ff99;
   --warning: #ffc53d;
@@ -175,6 +185,11 @@
   --color-accent-red: var(--accent-red);
   --color-hairline-strong: var(--hairline-strong);
   --color-surface-elevated: var(--surface-elevated);
+
+  /* Off-white scale → bg-offwhite / bg-offwhite-soft / bg-offwhite-strong */
+  --color-offwhite: var(--offwhite);
+  --color-offwhite-soft: var(--offwhite-soft);
+  --color-offwhite-strong: var(--offwhite-strong);
 
   /* Legacy aliases */
   --color-primary: var(--coral);

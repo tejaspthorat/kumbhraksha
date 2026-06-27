@@ -209,20 +209,20 @@ export default function ChatPanel({ socketUserId }: ChatPanelProps) {
         onClick={toggleChatPanel}
         className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 ${
           chatPanelOpen
-            ? "bg-white/10 backdrop-blur-xl border border-white/10 scale-90"
+            ? "bg-surface-soft backdrop-blur-xl border border-hairline scale-90"
             : "bg-gradient-to-r from-primary-light to-accent hover:shadow-accent/30 hover:scale-105 active:scale-95"
         }`}
         title={chatPanelOpen ? "Close chat" : "Open chat"}
       >
         {chatPanelOpen ? (
-          <X size={20} className="text-white/70" />
+          <X size={20} className="text-body" />
         ) : (
-          <MessageCircle size={22} className="text-white" />
+          <MessageCircle size={22} className="text-on-primary" />
         )}
 
         {/* Connection indicator */}
         <span
-          className={`absolute top-0.5 right-0.5 w-3 h-3 rounded-full border-2 border-[#050d14] ${
+          className={`absolute top-0.5 right-0.5 w-3 h-3 rounded-full border-2 border-canvas ${
             isConnected ? "bg-emerald-400" : "bg-red-400"
           }`}
         />
@@ -236,19 +236,19 @@ export default function ChatPanel({ socketUserId }: ChatPanelProps) {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 400, scale: 0.95 }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
-            className="fixed right-0 top-0 h-full z-40 w-full sm:w-[420px] lg:w-[480px] flex flex-col bg-[#060e16] border-l border-white/6 shadow-2xl shadow-black/40"
+            className="fixed right-0 top-0 h-full z-40 w-full sm:w-[420px] lg:w-[480px] max-w-full flex flex-col bg-canvas border-l border-hairline shadow-2xl shadow-black/40"
           >
             {/* ─── New Chat Modal ───────────────────────────────────── */}
             {showNewChat && (
-              <div className="absolute inset-0 z-50 bg-[#060e16] flex flex-col">
-                <div className="flex items-center gap-3 px-4 py-4 border-b border-white/6">
+              <div className="absolute inset-0 z-50 bg-canvas flex flex-col">
+                <div className="flex items-center gap-3 px-4 py-4 border-b border-hairline">
                   <button
                     onClick={() => setShowNewChat(false)}
-                    className="p-1.5 rounded-lg text-white/40 hover:text-white/70 hover:bg-white/5 transition-all"
+                    className="p-1.5 rounded-lg text-muted hover:text-body hover:bg-surface-soft transition-all"
                   >
                     <ArrowLeft size={18} />
                   </button>
-                  <h3 className="text-sm font-semibold text-white/80">
+                  <h3 className="text-sm font-semibold text-ink">
                     New Conversation
                   </h3>
                 </div>
@@ -259,7 +259,7 @@ export default function ChatPanel({ socketUserId }: ChatPanelProps) {
                       <div className="w-5 h-5 border-2 border-accent/20 border-t-accent rounded-full animate-spin" />
                     </div>
                   ) : availableUsers.length === 0 ? (
-                    <p className="text-center text-xs text-white/30 py-8">
+                    <p className="text-center text-xs text-muted py-8">
                       No users available
                     </p>
                   ) : (
@@ -267,7 +267,7 @@ export default function ChatPanel({ socketUserId }: ChatPanelProps) {
                       <button
                         key={user._id}
                         onClick={() => handleSelectUser(user)}
-                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/3 transition-colors"
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-soft transition-colors"
                       >
                         <div className="relative">
                           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-light/60 to-accent/60 flex items-center justify-center">
@@ -278,7 +278,7 @@ export default function ChatPanel({ socketUserId }: ChatPanelProps) {
                                 className="w-9 h-9 rounded-full object-cover"
                               />
                             ) : (
-                              <span className="text-xs font-bold text-white/80">
+                              <span className="text-xs font-bold text-on-primary">
                                 {user.name
                                   .split(" ")
                                   .map((n) => n[0])
@@ -289,14 +289,14 @@ export default function ChatPanel({ socketUserId }: ChatPanelProps) {
                             )}
                           </div>
                           {onlineUsers.includes(user._id) && (
-                            <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#060e16]" />
+                            <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-canvas" />
                           )}
                         </div>
                         <div className="text-left">
-                          <p className="text-sm font-medium text-white/80">
+                          <p className="text-sm font-medium text-ink">
                             {user.name}
                           </p>
-                          <p className="text-[10px] text-white/30">{user.email}</p>
+                          <p className="text-[10px] text-muted">{user.email}</p>
                         </div>
                       </button>
                     ))
@@ -313,7 +313,7 @@ export default function ChatPanel({ socketUserId }: ChatPanelProps) {
                   mobileView === "chat"
                     ? "hidden sm:flex"
                     : "flex"
-                } w-full sm:w-[200px] lg:w-[220px] flex-shrink-0 border-r border-white/6 flex-col`}
+                } w-full sm:w-[200px] lg:w-[220px] flex-shrink-0 border-r border-hairline flex-col`}
               >
                 <ConversationList
                   currentUserId={socketUserId}
@@ -336,11 +336,11 @@ export default function ChatPanel({ socketUserId }: ChatPanelProps) {
                 {activeConversationId && activeConv ? (
                   <>
                     {/* Chat header */}
-                    <div className="flex items-center gap-3 px-4 py-3 border-b border-white/6 bg-[#060e16]">
+                    <div className="flex items-center gap-3 px-4 py-3 border-b border-hairline bg-canvas">
                       {/* Back button on mobile */}
                       <button
                         onClick={handleBackToList}
-                        className="sm:hidden p-1 rounded-lg text-white/40 hover:text-white/70 transition-colors"
+                        className="sm:hidden p-1 rounded-lg text-muted hover:text-body transition-colors"
                       >
                         <ArrowLeft size={18} />
                       </button>
@@ -348,7 +348,7 @@ export default function ChatPanel({ socketUserId }: ChatPanelProps) {
                       <div className="relative">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-light/60 to-accent/60 flex items-center justify-center">
                           {activeConv.isGroup ? (
-                            <Users size={14} className="text-white/80" />
+                            <Users size={14} className="text-on-primary" />
                           ) : activeConv.participant?.avatar ? (
                             <img
                               src={activeConv.participant.avatar}
@@ -356,7 +356,7 @@ export default function ChatPanel({ socketUserId }: ChatPanelProps) {
                               className="w-8 h-8 rounded-full object-cover"
                             />
                           ) : (
-                            <span className="text-[10px] font-bold text-white/80">
+                            <span className="text-[10px] font-bold text-on-primary">
                               {getConvName()
                                 .split(" ")
                                 .map((n) => n[0])
@@ -367,15 +367,15 @@ export default function ChatPanel({ socketUserId }: ChatPanelProps) {
                           )}
                         </div>
                         {getConvOnline() && !activeConv.isGroup && (
-                          <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#060e16]" />
+                          <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-canvas" />
                         )}
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-semibold text-white/80 truncate">
+                        <h3 className="text-sm font-semibold text-ink truncate">
                           {getConvName()}
                         </h3>
-                        <p className="text-[10px] text-white/30">
+                        <p className="text-[10px] text-muted">
                           {activeConv.isGroup
                             ? `${participants.length} members`
                             : getConvOnline()
@@ -385,7 +385,7 @@ export default function ChatPanel({ socketUserId }: ChatPanelProps) {
                       </div>
 
                       {/* Connection status */}
-                      <div className="flex items-center gap-1 text-white/20">
+                      <div className="flex items-center gap-1 text-muted-soft">
                         {isConnected ? (
                           <Wifi size={14} className="text-emerald-400/60" />
                         ) : (
@@ -423,14 +423,14 @@ export default function ChatPanel({ socketUserId }: ChatPanelProps) {
                     <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-light/10 to-accent/10 flex items-center justify-center">
                       <MessageCircle
                         size={32}
-                        className="text-white/15"
+                        className="text-muted-soft"
                       />
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-white/40 mb-1">
+                      <h3 className="text-sm font-semibold text-muted mb-1">
                         Staff Chat
                       </h3>
-                      <p className="text-xs text-white/20 max-w-48">
+                      <p className="text-xs text-muted-soft max-w-48">
                         Select a conversation or start a new one to begin messaging
                       </p>
                     </div>

@@ -13,8 +13,21 @@ import {
 import { withLiveCascade } from '../lib/missing/store';
 import { distanceMeters } from '../lib/geo';
 import type { MissingReportStatus } from '../lib/missing/types';
+import { missingBus } from '../lib/missing/bus';
 
 const router = Router();
+
+// ── GET /api/missing/stream ── (Server-Sent Events for live dashboard alerts)
+router.get('/stream', (req: Request, res: Response) => {
+  res.set({
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache, no-transform',
+    Connection: 'keep-alive',
+  });
+  res.flushHeaders?.();
+  const unsubscribe = missingBus.subscribe(res);
+  req.on('close', unsubscribe);
+});
 
 // ── GET /api/missing/cctv ──
 router.get('/cctv', async (_req: Request, res: Response) => {
@@ -74,6 +87,11 @@ router.post('/reports', async (req: Request, res: Response) => {
       lastSeenLabel: body.lastSeenLabel,
       lastSeenTime: body.lastSeenTime,
     });
+    // Real-time alert to the control-room dashboard.
+    missingBus.publish('report:new', {
+      ...withLiveCascade(report),
+      source: body.source ?? 'mobile',
+    });
     return res.status(201).json(report);
   } catch (e) {
     return res.status(400).json({ error: 'Invalid request' });
@@ -121,6 +139,7 @@ router.post('/sightings', async (req: Request, res: Response) => {
       lng: body.lng,
       description: body.description,
     });
+    missingBus.publish('sighting:new', sighting);
     return res.status(201).json(sighting);
   } catch {
     return res.status(400).json({ error: 'Invalid request' });

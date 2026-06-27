@@ -88,12 +88,12 @@ export default function ConversationList({
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b border-white/6">
+      <div className="p-4 border-b border-hairline">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-white/80">Messages</h2>
+          <h2 className="text-sm font-semibold text-ink">Messages</h2>
           <button
             onClick={onNewChatAction}
-            className="p-1.5 rounded-lg text-white/40 hover:text-accent hover:bg-white/5 transition-all"
+            className="p-1.5 rounded-lg text-muted hover:text-accent hover:bg-surface-soft transition-all"
             title="New conversation"
           >
             <MessageSquarePlus size={18} />
@@ -104,14 +104,14 @@ export default function ConversationList({
         <div className="relative">
           <Search
             size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-soft"
           />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search conversations…"
-            className="w-full bg-white/4 border border-white/6 rounded-lg pl-9 pr-3 py-2 text-xs text-white/70 placeholder-white/20 focus:outline-none focus:border-accent/20 transition-colors"
+            className="w-full bg-surface-soft border border-hairline rounded-lg pl-9 pr-3 py-2 text-xs text-body placeholder-muted-soft focus:outline-none focus:border-accent/20 transition-colors"
           />
         </div>
       </div>
@@ -126,10 +126,10 @@ export default function ConversationList({
 
         {!conversationsLoading && filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-            <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-3">
-              <MessageSquarePlus size={20} className="text-white/20" />
+            <div className="w-12 h-12 rounded-full bg-surface-soft flex items-center justify-center mb-3">
+              <MessageSquarePlus size={20} className="text-muted-soft" />
             </div>
-            <p className="text-xs text-white/30">
+            <p className="text-xs text-muted">
               {search ? "No conversations match your search" : "No conversations yet"}
             </p>
             {!search && (
@@ -162,10 +162,10 @@ export default function ConversationList({
             <button
               key={conv._id}
               onClick={() => onSelectAction(conv._id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all duration-200 border-b border-white/3 ${
+              className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all duration-200 border-b border-hairline ${
                 isActive
                   ? "bg-primary-light/10 border-l-2 border-l-accent"
-                  : "hover:bg-white/3"
+                  : "hover:bg-surface-soft"
               }`}
               role="listitem"
               aria-current={isActive ? "true" : undefined}
@@ -174,7 +174,7 @@ export default function ConversationList({
               <div className="relative flex-shrink-0">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-light/60 to-accent/60 flex items-center justify-center">
                   {info.isGroup ? (
-                    <Users size={16} className="text-white/80" />
+                    <Users size={16} className="text-on-primary" />
                   ) : info.avatar ? (
                     <img
                       src={info.avatar}
@@ -182,29 +182,29 @@ export default function ConversationList({
                       className="w-10 h-10 rounded-full object-cover"
                     />
                   ) : (
-                    <span className="text-xs font-bold text-white/80">
+                    <span className="text-xs font-bold text-on-primary">
                       {getInitials(info.name)}
                     </span>
                   )}
                 </div>
                 {/* Online indicator */}
                 {info.isOnline && (
-                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#060e16]" />
+                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-canvas" />
                 )}
               </div>
 
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-white/80 truncate">
+                  <span className="text-sm font-medium text-ink truncate">
                     {info.name}
                   </span>
-                  <span className="text-[10px] text-white/20 flex-shrink-0">
+                  <span className="text-[10px] text-muted-soft flex-shrink-0">
                     {formatLastTime(conv.lastMessageAt)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between mt-0.5">
-                  <p className="text-xs text-white/30 truncate max-w-36">
+                  <p className="text-xs text-muted truncate max-w-36">
                     {hasTyping ? (
                       <span className="text-accent italic">typing…</span>
                     ) : (
@@ -212,7 +212,7 @@ export default function ConversationList({
                     )}
                   </p>
                   {unreadCount > 0 && (
-                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-accent/80 text-[10px] font-bold text-white flex items-center justify-center">
+                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-accent/80 text-[10px] font-bold text-on-primary flex items-center justify-center">
                       {unreadCount > 9 ? "9+" : unreadCount}
                     </span>
                   )}
