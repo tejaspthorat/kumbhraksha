@@ -76,13 +76,13 @@ Each phase folder contains:
 
 ## Success Metrics (Hackathon)
 
-- ✅ BLE scanning/advertising working locally
-- ✅ End-to-end flow: Register → Report → Witness Alert → Response
-- ✅ Home feed with real-time alerts (WebSocket)
-- ✅ Map with active cases and sightings
-- ✅ Authority dashboard MVP (case management)
-- ✅ Builds & runs on Android (iOS optional)
-- ✅ Documentation & demo-ready
+- 🔄 **BLE Proximity Detection**: Scanning functional; Advertising is stubbed (Central-only scanning via `flutter_blue_plus`, peripheral advertising deferred).
+- ✅ **End-to-End Flow**: Simulated OTP login, report creation, witness detection, and sighting alerts work fully.
+- ✅ **Home Feed**: Live paginated scroll feed with WebSocket integration works fully.
+- 🔄 **Active Alerts Map**: Custom pure-Dart interactive map works fully; Google Maps SDK integration is ready but stubbed pending API key configuration.
+- ✅ **Authority Dashboard**: Next.js SentinelView dashboard, YOLOv8 crowd monitoring, and coordinator task flow are fully implemented.
+- 🔄 **Platform Support**: Builds cleanly and parses with zero analyze issues; local packaging was blocked by local system resources.
+- ✅ **Documentation**: Complete set of phase-by-phase implementation blueprints and developer specifications.
 
 ---
 
@@ -124,6 +124,74 @@ Each phase folder contains:
 | 2 | Phase 2 | Alert System + Feed | Witness alerts, Home feed, WebSocket |
 | 3 | Phase 3 | Map + Dashboard | Active alerts map, Authority dashboard, Sightings |
 | 4 | Phase 4 | Polish + Scale | Audio beacon, Localization, Load testing, Deployment |
+
+---
+
+## 📊 Project Implementation Status & Tasks Checklist
+
+This checklist tracks all the tasks and features outlined in the modular guides, showing which are fully implemented, partially implemented/stubbed, deferred, or not implemented.
+
+### Legend
+*   🟢 **Fully Implemented**: Complete production-ready or fully functional code.
+*   🟡 **Partially Implemented / Stubbed**: Feature code exists but relies on stubs, mock data, or a custom implementation instead of external APIs (e.g. custom map instead of Google Maps API).
+*   🟠 **Deferred / Skipped**: Postponed due to hardware/credential limitations (documented with clean integration paths).
+*   🔴 **Not Implemented**: Scheduled for Phase 4 but not yet developed.
+
+### 📱 Citizen Mobile App (Flutter) & Backend API
+
+#### Phase 1: BLE Foundation & Core Reporting (Week 1)
+- [x] **Project Initialization** — 🟢 *Fully Implemented* (Flutter project setup with Provider state management and modular directory structure)
+- [x] **Theme & Design System** — 🟢 *Fully Implemented* (Material Design 3 light/dark themes, dynamic typography, custom brand theme)
+- [x] **Dart Data Models** — 🟢 *Fully Implemented* (Models for `User`, `MissingReport`, `WitnessAlert`, `Sighting`, `FamilyGroup`, and `BLEEncounter` with JSON serialization and unit tests)
+- [x] **BLE Scanner Service** — 🟢 *Fully Implemented* (Foreground scanning to discover nearby devices via `flutter_blue_plus`)
+- [/] **BLE Advertising Service** — 🟡 *Partially Implemented / Stubbed* (BLE advertising is stubbed because `flutter_blue_plus` is central-only; advertising requires a peripheral-specific plugin)
+- [x] **RSSI-to-Distance Utility** — 🟢 *Fully Implemented* (Logarithmic path loss model accurately estimating proximity in meters)
+- [x] **BLE Permissions Handling** — 🟢 *Fully Implemented* (Runtime permissions for location, Bluetooth, notifications, camera)
+- [x] **UUID Rotation System** — 🟢 *Fully Implemented* (Generates and rotates temporary BLE advertisement UUIDs every 15 minutes with a 5-minute grace period)
+- [x] **Local SQLite Database** — 🟢 *Fully Implemented* (SQLite storage via `sqflite` for encounters, rotated registry, and offline queues with a 2-hour rolling window)
+- [x] **GPS Location Service** — 🟢 *Fully Implemented* (Position tracking and caching via `geolocator`)
+- [x] **Onboarding UI Flow** — 🟢 *Fully Implemented* (Indian phone number validation and OTP verification countdown screens)
+- [x] **Report Missing Person Form** — 🟢 *Fully Implemented* (Photo picker/compressor, physical descriptors, clothing selector, coordinates/landmark picker, and Provider form state submission)
+- [x] **Backend API & PostgreSQL Schema** — 🟢 *Fully Implemented* (JWT auth, report processing, and SQLite sync endpoints mapped on backend)
+- [ ] **Android BLE Foreground Service** — 🟠 *Deferred / Skipped* (Android-native Kotlin service deferred to Phase 4; documented clean setup path)
+- [x] **Unit & Integration Testing** — 🟢 *Fully Implemented* (Validation of data models and distance calculations, 5 passing unit tests)
+
+#### Phase 2: Alert System + Feed (Week 2)
+- [/] **Firebase Cloud Messaging (FCM)** — 🟡 *Partially Implemented / Stubbed* (FCM token management and notification routing are fully implemented; production-ready FCM is stubbed pending `google-services.json`)
+- [x] **BLE Witness Matching** — 🟢 *Fully Implemented* (Local SQLite logs queried against missing person UUIDs on backend to find matching co-located witnesses)
+- [x] **GPS Radius Cascade Alerting** — 🟢 *Fully Implemented* (Geospatial queries (`ST_DWithin`) implemented on Postgres/PostGIS to target users in expanding geographical zones)
+- [x] **Home Screen & Alert Feed UI** — 🟢 *Fully Implemented* (Proximity-sorted alert feed with pull-to-refresh, infinite scroll, and live status badges)
+- [x] **WebSocket Real-Time Broadcast** — 🟢 *Fully Implemented* (Live feed updates instantly via Socket.io/`web_socket_channel` with reconnection and backoff handlers)
+- [x] **Sighting ("I See Them") Flow** — 🟢 *Fully Implemented* (One-tap reporting with camera snapshot, location pins, and notes)
+- [x] **Witness Memory ("I Was There") Flow** — 🟢 *Fully Implemented* (Forms allowing citizens to retrospectively share details on direction, location, and timestamps)
+- [x] **Phase 2 UI Testing** — 🟢 *Fully Implemented* (7 passing tests, including widget-level tests for Alert feed cards)
+
+#### Phase 3: Sighting, Map, and Family (Week 3)
+- [x] **Report Proactive Sighting Screen** — 🟢 *Fully Implemented* (Photo uploads, emoji-based behavior tags, confidence score feedback, and live guiding options)
+- [/] **Interactive Active Alerts Map** — 🟡 *Partially Implemented / Stubbed* (A high-fidelity, pure-Dart InteractiveViewer map with pulsing circles, heatmaps, layer toggles, and detail sheets. Google Maps SDK integration is ready but deferred/stubbed due to key configuration requirements)
+- [x] **Family Group Management** — 🟢 *Fully Implemented* (Pre-registration list (max 10), editable detail cards, and one-tap auto-prefilled reporting)
+- [x] **Attribute Matching Engine** — 🟢 *Fully Implemented* (Algorithmic comparison of clothing/visual attributes on the backend to match sightings with missing reports)
+
+#### Phase 4: Polish & Scale (Week 4)
+- [ ] **Melody Audio Beacon** — 🔴 *Not Implemented* (Pre-recorded audio alerts loop at max volume for lost family members)
+- [ ] **SMS Escalation (MSG91)** — 🔴 *Not Implemented* (Police notifications and citizen SMS fallback via MSG91 API gateway)
+- [ ] **iOS Background BLE Optimization** — 🔴 *Not Implemented* (iOS background capabilities and entitlements configuration)
+- [ ] **Multi-Language Localization** — 🔴 *Not Implemented* (Support for 11 regional languages; UI language picker is fully coded but translation file infrastructure is not integrated)
+- [ ] **Load & Scale Testing** — 🔴 *Not Implemented* (Locust/K6 simulation for 10K concurrent users and high-throughput WebSockets)
+- [ ] **Performance Tuning** — 🔴 *Not Implemented* (Cold start timing, ProGuard compilation, and memory profiling)
+- [ ] **Offline Resilience Utilities** — 🔴 *Not Implemented* (Integration of `connectivity_plus` for network state-switching and polling fallbacks)
+- [ ] **Analytics Engine** — 🔴 *Not Implemented* (Statistical reporting on reunion metrics, volunteer response, and coverage)
+
+---
+
+### 🖥️ Real-time Crowd Management Dashboard (SentinelView)
+
+- [x] **UI Layout & Pages** — 🟢 *Fully Implemented* (Interactive Next.js screens for live operations, zones, alerts log, and setup layouts)
+- [x] **State Management (Zustand)** — 🟢 *Fully Implemented* (Centralized store with type-safe interfaces, local selectors, and optimistic updates)
+- [x] **Prisma & Database Migrations** — 🟢 *Fully Implemented* (PostgreSQL schema mapped via Prisma ORM including custom enums and high-performance indexes)
+- [x] **Real-time YOLOv8 ML Backend** — 🟢 *Fully Implemented* (FastAPI engine running YOLOv8 crowd detection on active camera feeds to generate density counts)
+- [x] **AI Decision & Suggestion Engine (Groq/Llama3)** — 🟢 *Fully Implemented* (Three-tier AI pipeline querying LLM models to generate predictions, crowd rerouting suggestions, and action directives)
+- [x] **Internal Coordination API** — 🟢 *Fully Implemented* (Mobile login, task dispatching, and live progress updating for ground coordinators)
 
 ---
 
