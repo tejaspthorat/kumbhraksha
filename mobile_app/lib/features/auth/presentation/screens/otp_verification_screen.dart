@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/dimensions.dart';
+import '../../../../core/utils/app_translations.dart';
 import '../../../../providers/auth_provider.dart';
 import '../../../../repositories/auth_repository.dart';
 import '../../../../screens/nav_shell.dart';
@@ -56,7 +57,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       Navigator.of(context).pushNamedAndRemoveUntil(NavShell.route, (_) => false);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(auth.errorMessage ?? 'Verification failed')),
+        SnackBar(content: Text(auth.errorMessage ?? context.tr('otp_failed'))),
       );
     }
   }
@@ -84,7 +85,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
             children: [
               const SizedBox(height: Dimens.md),
               Text(
-                'Enter verification code',
+                context.tr('otp_title'),
                 style: text.headlineMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.5,
@@ -92,7 +93,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               ),
               const SizedBox(height: Dimens.xs),
               Text(
-                'Sent to ${auth.phoneNumber}',
+                '${context.tr('otp_desc')} ${auth.phoneNumber}',
                 style: text.bodyLarge?.copyWith(
                   color: scheme.onSurface.withOpacity(0.6),
                 ),
@@ -224,7 +225,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           color: Colors.white,
                         ),
                       )
-                    : const Text('Verify and login'),
+                    : Text(context.tr('verify')),
               ),
               const SizedBox(height: Dimens.md),
             ],

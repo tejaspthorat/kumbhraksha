@@ -1,39 +1,58 @@
 import 'package:uuid/uuid.dart';
 
+import '../core/constants/api_constants.dart';
 import '../core/utils/app_logger.dart';
 import '../models/sighting.dart';
 import '../models/witness_alert.dart';
 import '../services/api_service.dart';
+import 'missing_api_mapper.dart';
 
 /// Fetches the alert feed and submits responses, sightings and witness memories.
 ///
-/// Defaults to [mockMode] so the feed is populated and interactive without the
-/// Phase 2 backend. Real endpoints are wired behind the same methods.
+/// Reads the live, geo-sorted feed of active missing-person reports from the
+/// Express backend (`GET /api/missing/feed`) and maps each report into the
+/// feed's witness-alert view model. When [mockMode] is true — or the backend is
+/// unreachable — it falls back to a seeded feed so the screen stays populated
+/// and interactive offline.
 class AlertsRepository {
-  AlertsRepository(this._api, {this.mockMode = true});
+  AlertsRepository(this._api, {this.mockMode = false});
 
   final ApiService _api;
   final bool mockMode;
 
-  Future<List<WitnessAlert>> getAlerts({int page = 0, int pageSize = 10}) async {
+  /// The backend feed is not paginated: it returns every active report sorted
+  /// by proximity. We surface it all on the first page and report no more.
+  Future<List<WitnessAlert>> getAlerts({
+    int page = 0,
+    int pageSize = 10,
+    double? lat,
+    double? lng,
+  }) async {
     if (mockMode) {
       await Future<void>.delayed(const Duration(milliseconds: 500));
       return _mockPage(page, pageSize);
     }
-    final res = await _api.get('/alerts',
-        query: {'page': page, 'page_size': pageSize});
-    final list = (res.data['alerts'] as List<dynamic>);
-    return list
-        .map((e) => WitnessAlert.fromJson(e as Map<String, dynamic>))
-        .toList();
+    if (page > 0) return const [];
+    try {
+      final res = await _api.get(
+        ApiConstants.missingFeed,
+        query: {if (lat != null) 'lat': lat, if (lng != null) 'lng': lng},
+      );
+      final items = (res.data['items'] as List<dynamic>);
+      return items
+          .map((e) =>
+              MissingApiMapper.alertFromFeedItem(e as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      appLogger.w('Feed fetch failed, falling back to seeded feed: $e');
+      return _mockPage(page, pageSize);
+    }
   }
 
+  /// Marking an alert seen/not-seen is a local optimistic action — the backend
+  /// records engagement implicitly through the sightings a witness submits.
   Future<void> respond(String alertId, String response) async {
-    if (mockMode) {
-      appLogger.i('Mock respond to $alertId: $response');
-      return;
-    }
-    await _api.post('/alerts/$alertId/respond', data: {'response': response});
+    appLogger.i('Respond to $alertId: $response');
   }
 
   Future<void> submitSighting(Sighting sighting) async {
@@ -42,27 +61,36 @@ class AlertsRepository {
       await Future<void>.delayed(const Duration(milliseconds: 500));
       return;
     }
-    await _api.post('/sightings', data: sighting.toJson());
+    await _api.post(
+      ApiConstants.sightings,
+      data: MissingApiMapper.sightingToBackend(sighting),
+    );
   }
 
+  /// "I was there" memories map to a citizen sighting at the witness's location
+  /// linked to the report — the backend's sole sighting-intake endpoint.
   Future<void> submitWitnessMemory({
     required String missingReportId,
     required DateTime seenAt,
     String? direction,
     String? notes,
+    double? lat,
+    double? lng,
   }) async {
-    final payload = {
-      'missing_report_id': missingReportId,
-      'seen_at': seenAt.toIso8601String(),
-      'direction': direction,
-      'notes': notes,
-    };
-    if (mockMode) {
-      appLogger.i('Mock witness memory: $payload');
+    if (mockMode || lat == null || lng == null) {
+      appLogger.i('Mock witness memory for $missingReportId');
       await Future<void>.delayed(const Duration(milliseconds: 500));
       return;
     }
-    await _api.post('/witness-memories', data: payload);
+    await _api.post(ApiConstants.sightings, data: {
+      'missingReportId': missingReportId,
+      'lat': lat,
+      'lng': lng,
+      'description': [
+        if (direction != null) 'Heading $direction',
+        if (notes != null) notes,
+      ].join(' — '),
+    });
   }
 
   List<WitnessAlert> _mockPage(int page, int pageSize) {

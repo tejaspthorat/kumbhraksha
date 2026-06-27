@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/dimensions.dart';
+import '../../../../core/utils/app_translations.dart';
 import '../../../../providers/ble_provider.dart';
 import 'phone_input_screen.dart';
 
@@ -44,7 +45,7 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Permissions we need',
+                context.tr('permissions_title'),
                 style: text.headlineMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.5,
@@ -52,22 +53,22 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
               ),
               const SizedBox(height: Dimens.xs),
               Text(
-                'KumbhRaksha uses these only to help find missing people near you.',
+                context.tr('permissions_desc'),
                 style: text.bodyLarge?.copyWith(
                   color: theme.colorScheme.onSurface.withOpacity(0.6),
                 ),
               ),
               const SizedBox(height: Dimens.xl),
-              const _PermissionCard(
+              _PermissionCard(
                 icon: Icons.bluetooth,
-                title: 'Bluetooth Scan',
-                subtitle: 'Detect when you were near a missing person, anonymously.',
+                title: context.tr('bluetooth_title'),
+                subtitle: context.tr('bluetooth_desc'),
               ),
               const SizedBox(height: Dimens.md),
-              const _PermissionCard(
+              _PermissionCard(
                 icon: Icons.location_on_outlined,
-                title: 'Location Services',
-                subtitle: 'Send area alerts and tag where someone was last seen.',
+                title: context.tr('location_title'),
+                subtitle: context.tr('location_desc'),
               ),
               const SizedBox(height: Dimens.md),
               const _PermissionCard(
@@ -87,7 +88,7 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
                           color: Colors.white,
                         ),
                       )
-                    : const Text('Allow & continue'),
+                    : Text(context.tr('allow_access')),
               ),
               const SizedBox(height: 8),
               SizedBox(

@@ -44,13 +44,19 @@ class AlertsFeedProvider extends ChangeNotifier {
     });
   }
 
+  double? _lat;
+  double? _lng;
+
   Future<void> refresh() async {
     status = FeedStatus.loading;
     notifyListeners();
     try {
+      final pos = await _location.getCurrentLocation();
+      _lat = pos?.latitude;
+      _lng = pos?.longitude;
       _page = 0;
       hasMore = true;
-      final first = await _repo.getAlerts(page: _page);
+      final first = await _repo.getAlerts(page: _page, lat: _lat, lng: _lng);
       alerts
         ..clear()
         ..addAll(first);
@@ -67,7 +73,7 @@ class AlertsFeedProvider extends ChangeNotifier {
     if (_loadingMore || !hasMore || status != FeedStatus.loaded) return;
     _loadingMore = true;
     try {
-      final next = await _repo.getAlerts(page: ++_page);
+      final next = await _repo.getAlerts(page: ++_page, lat: _lat, lng: _lng);
       if (next.isEmpty) {
         hasMore = false;
       } else {
@@ -133,11 +139,14 @@ class AlertsFeedProvider extends ChangeNotifier {
     String? direction,
     String? notes,
   }) async {
+    final pos = await _location.getCurrentLocation();
     await _repo.submitWitnessMemory(
       missingReportId: alert.missingReportId,
       seenAt: seenAt,
       direction: direction,
       notes: notes,
+      lat: pos?.latitude,
+      lng: pos?.longitude,
     );
     await respond(alert.id, 'yes');
   }

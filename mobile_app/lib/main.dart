@@ -46,11 +46,17 @@ void main() {
   final notificationService = NotificationService(storage);
   notificationService.init();
 
+  // Live against the centralized Express backend (/api/missing/*) — these
+  // endpoints exist and return real DB data. The alerts feed is derived from
+  // GET /api/missing/feed (see AlertsRepository, which defaults to live).
+  final reportRepo = ReportRepository(api, database, mockMode: false);
+  final sightingRepo = SightingRepository(api, mockMode: false);
+  final alertsRepo = AlertsRepository(api);
+
+  // Still mocked: the backend does not yet expose citizen-facing OTP auth or
+  // BLE encounter sync. See repository TODOs.
   final authRepo = AuthRepository(api, storage);
   final encounterRepo = EncounterRepository(database);
-  final reportRepo = ReportRepository(api, database);
-  final alertsRepo = AlertsRepository(api);
-  final sightingRepo = SightingRepository(api);
   final familyRepo = FamilyRepository(storage);
 
   runApp(KumbhRakshaApp(

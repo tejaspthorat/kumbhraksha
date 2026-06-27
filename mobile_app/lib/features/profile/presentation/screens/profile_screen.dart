@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/dimensions.dart';
+import '../../../../core/utils/app_translations.dart';
 import '../../../../providers/auth_provider.dart';
 import '../../../../providers/ble_provider.dart';
 import '../../../../screens/nav_shell.dart';
@@ -23,7 +24,7 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Pilgrim Profile',
+          context.tr('profile_title'),
           style: text.headlineSmall?.copyWith(
             fontWeight: FontWeight.w900,
             letterSpacing: -0.8,
@@ -53,7 +54,7 @@ class ProfileScreen extends StatelessWidget {
                         Icon(Icons.badge_outlined, color: scheme.primary, size: 20),
                         const SizedBox(width: 8),
                         Text(
-                          'KUMBH TRUST PASS',
+                          context.tr('trust_pass'),
                           style: text.labelSmall?.copyWith(
                             fontWeight: FontWeight.w900,
                             letterSpacing: 1.5,
@@ -69,7 +70,7 @@ class ProfileScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        'VERIFIED',
+                        context.tr('verified'),
                         style: TextStyle(
                           color: scheme.secondary,
                           fontWeight: FontWeight.bold,
@@ -99,7 +100,7 @@ class ProfileScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            user != null ? 'Pilgrim Account' : 'Guest Account',
+                            user != null ? context.tr('pilgrim_acc') : context.tr('guest_acc'),
                             style: text.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               letterSpacing: -0.2,
@@ -124,7 +125,7 @@ class ProfileScreen extends StatelessWidget {
                 
                 // BLE UUID Detail
                 Text(
-                  'BLE RADAR ID',
+                  context.tr('ble_radar_id'),
                   style: text.labelSmall?.copyWith(
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.5,
@@ -176,7 +177,7 @@ class ProfileScreen extends StatelessWidget {
 
           // 2. Settings Section Header
           Text(
-            'Security & Hardware',
+            context.tr('security_hardware'),
             style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold, letterSpacing: -0.3),
           ),
           const SizedBox(height: Dimens.md),
@@ -192,11 +193,11 @@ class ProfileScreen extends StatelessWidget {
               secondary: Icon(Icons.bluetooth_searching_rounded, color: scheme.secondary),
               activeColor: scheme.secondary,
               title: Text(
-                'BLE Protection',
+                context.tr('ble_protection'),
                 style: text.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
-                ble.isActive ? 'Active scanning & broadcast' : 'Radar offline',
+                ble.isActive ? context.tr('active_scanning') : context.tr('radar_disabled'),
                 style: TextStyle(color: scheme.onSurface.withOpacity(0.5), fontSize: 13),
               ),
               value: ble.isActive,
@@ -209,7 +210,7 @@ class ProfileScreen extends StatelessWidget {
 
           // 3. Pilgrim Configuration & Group
           Text(
-            'Preferences & Safety',
+            context.tr('preferences_safety'),
             style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold, letterSpacing: -0.3),
           ),
           const SizedBox(height: Dimens.md),
@@ -224,11 +225,11 @@ class ProfileScreen extends StatelessWidget {
                 ListTile(
                   leading: Icon(Icons.group_outlined, color: scheme.primary),
                   title: Text(
-                    'Family Group',
+                    context.tr('family_group'),
                     style: text.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    'Pre-register members for one-tap alerts',
+                    context.tr('family_desc'),
                     style: TextStyle(color: scheme.onSurface.withOpacity(0.5), fontSize: 13),
                   ),
                   trailing: Icon(Icons.chevron_right_rounded, color: scheme.onSurface.withOpacity(0.3)),
@@ -238,11 +239,11 @@ class ProfileScreen extends StatelessWidget {
                 ListTile(
                   leading: Icon(Icons.language_rounded, color: scheme.primary),
                   title: Text(
-                    'Switch Language',
+                    context.tr('switch_lang'),
                     style: text.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    'Choose English, Hindi, or regional languages',
+                    context.tr('switch_lang_desc'),
                     style: TextStyle(color: scheme.onSurface.withOpacity(0.5), fontSize: 13),
                   ),
                   trailing: Icon(Icons.chevron_right_rounded, color: scheme.onSurface.withOpacity(0.3)),
@@ -255,7 +256,7 @@ class ProfileScreen extends StatelessWidget {
 
           // 4. Quick Actions
           Text(
-            'Emergency Actions',
+            context.tr('emergency_actions'),
             style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold, letterSpacing: -0.3),
           ),
           const SizedBox(height: Dimens.md),
@@ -303,7 +304,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Report Missing Person',
+                          context.tr('report_missing'),
                           style: text.titleMedium?.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w800,
@@ -313,7 +314,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          'Broadcast a missing alert to authorities and nearby pilgrims immediately.',
+                          context.tr('report_missing_desc'),
                           style: text.bodyMedium?.copyWith(
                             color: Colors.white.withOpacity(0.85),
                             fontSize: 13.5,
@@ -354,7 +355,7 @@ class ProfileScreen extends StatelessWidget {
                       children: [
                         Icon(Icons.visibility_outlined, color: scheme.primary, size: 24),
                         Text(
-                          'Report Sighting',
+                          context.tr('report_sighting'),
                           style: text.bodyLarge?.copyWith(fontWeight: FontWeight.bold, fontSize: 14),
                         ),
                       ],
@@ -380,7 +381,7 @@ class ProfileScreen extends StatelessWidget {
                       children: [
                         Icon(Icons.map_outlined, color: scheme.primary, size: 24),
                         Text(
-                          'Radar Map',
+                          context.tr('radar_map'),
                           style: text.bodyLarge?.copyWith(fontWeight: FontWeight.bold, fontSize: 14),
                         ),
                       ],
@@ -394,7 +395,7 @@ class ProfileScreen extends StatelessWidget {
 
           // 5. Account Section Header
           Text(
-            'Account Management',
+            context.tr('account_mgmt'),
             style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold, letterSpacing: -0.3),
           ),
           const SizedBox(height: Dimens.md),
@@ -407,11 +408,11 @@ class ProfileScreen extends StatelessWidget {
             child: ListTile(
               leading: Icon(Icons.logout_rounded, color: scheme.error),
               title: Text(
-                'Log Out',
+                context.tr('logout'),
                 style: text.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: scheme.error),
               ),
               subtitle: Text(
-                'Disconnect this phone from pilgrim services',
+                context.tr('logout_desc'),
                 style: TextStyle(color: scheme.error.withOpacity(0.6), fontSize: 13),
               ),
               onTap: () async {

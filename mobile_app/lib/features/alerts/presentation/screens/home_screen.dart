@@ -10,6 +10,7 @@ import '../widgets/area_alert_card.dart';
 import 'confirm_sighting_screen.dart';
 import 'witness_memory_screen.dart';
 
+import '../../../../core/utils/app_translations.dart';
 import '../../../../screens/nav_shell.dart';
 
 /// Home / alert feed — paginated list backed by [AlertsFeedProvider] with live
@@ -114,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Icon(Icons.map_outlined, size: 16, color: scheme.primary),
                                   const SizedBox(width: 6),
                                   Text(
-                                    'Radar Map',
+                                    context.tr('radar_map'),
                                     style: text.labelMedium?.copyWith(
                                       color: scheme.primary,
                                       fontWeight: FontWeight.bold,
@@ -130,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const _ProtectionBanner(),
                       const SizedBox(height: Dimens.xl),
                       Text(
-                        'Active Alerts Near You',
+                        context.tr('active_alerts'),
                         style: text.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: scheme.onSurface,
@@ -244,7 +245,7 @@ class _ConnectionDot extends StatelessWidget {
             size: 8, color: connected ? scheme.secondary : scheme.onSurface.withOpacity(0.3)),
         const SizedBox(width: 4),
         Text(
-          connected ? 'Live Sync Active' : 'Offline Mode',
+          connected ? context.tr('live_sync') : context.tr('offline_mode'),
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
             color: connected ? scheme.secondary : scheme.onSurface.withOpacity(0.4),
             fontWeight: FontWeight.bold,
@@ -298,7 +299,7 @@ class _ProtectionBanner extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    active ? 'BLE Radar Active' : 'BLE Radar Inactive',
+                    active ? context.tr('protection_active') : context.tr('radar_disabled'),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -309,7 +310,7 @@ class _ProtectionBanner extends StatelessWidget {
                   Text(
                     active
                         ? 'Scanning nearby • ${ble.encounterCount} encounters'
-                        : 'Turn on to scan for missing people near you',
+                        : context.tr('radar_disabled_desc'),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: scheme.onSurface.withOpacity(0.5),
                     ),
