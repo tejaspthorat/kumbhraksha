@@ -203,17 +203,12 @@ function PhotoFrame({ url, tone }: { url?: string | null; tone: 'amber' | 'coral
     // eslint-disable-next-line @next/next/no-img-element
     return <img src={url} alt="sighting" className="w-full aspect-video object-cover rounded-lg" />;
   }
+  // eslint-disable-next-line @next/next/no-img-element
   return (
-    <div
-      className={
-        'w-full aspect-video rounded-lg grid place-items-center bg-surface-soft border border-dashed ' +
-        (tone === 'amber' ? 'border-accent-amber/40' : 'border-coral/40')
-      }
-    >
-      <div className="text-center text-muted-soft">
-        <ImageOff className="size-6 mx-auto mb-1" />
-        <p className="text-[12px]">No photo attached</p>
-      </div>
-    </div>
+    <img
+      src="/images/image-asset.jpg"
+      alt="Sighting preview"
+      className="w-full aspect-video object-cover rounded-lg border border-hairline"
+    />
   );
 }
