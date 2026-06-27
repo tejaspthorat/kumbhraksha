@@ -124,18 +124,17 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
   @override
   Widget build(BuildContext context) {
     final p = context.watch<SightingProvider>();
-    final text = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final text = theme.textTheme;
+    final scheme = theme.colorScheme;
     final busy = p.state == SightingSubmitState.submitting;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
       body: SafeArea(
         child: ListView(
@@ -146,7 +145,7 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
               style: text.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 26,
-                color: Colors.black87,
+                color: scheme.onSurface,
               ),
             ),
             const SizedBox(height: 20),
@@ -158,7 +157,7 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
                 height: 380,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2C2C2C), // Dark smartphone screen color
+                  color: const Color(0xFF2C2C2C), // Dark smartphone viewfinder screen
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
@@ -173,7 +172,6 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      // Subtly simulated smartphone screen background
                       if (p.photoPath != null)
                         Positioned.fill(
                           child: Image.file(
@@ -182,7 +180,6 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
                           ),
                         )
                       else ...[
-                        // Viewport inner simulated phone outline
                         Container(
                           width: 220,
                           height: 340,
@@ -191,7 +188,6 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                        // Inner camera grid/circle overlay
                         Container(
                           width: 70,
                           height: 70,
@@ -202,7 +198,6 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
                         ),
                       ],
 
-                      // White corner crop marks
                       Positioned.fill(
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
@@ -212,13 +207,11 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
                         ),
                       ),
 
-                      // Glossy white camera shutter button & prompt text at bottom
                       Positioned(
                         bottom: 24,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // White shutter button
                             Container(
                               width: 64,
                               height: 64,
@@ -257,14 +250,15 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFECECEC),
-                borderRadius: BorderRadius.circular(12),
+                color: scheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: scheme.outlineVariant, width: 1),
               ),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.location_on,
-                    color: Color(0xFF8D5332),
+                  Icon(
+                    Icons.location_on_rounded,
+                    color: scheme.secondary,
                     size: 24,
                   ),
                   const SizedBox(width: 14),
@@ -272,10 +266,10 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'GPS Location Captured',
                           style: TextStyle(
-                            color: Colors.black87,
+                            color: scheme.onSurface,
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                           ),
@@ -286,7 +280,7 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
                               ? 'Lat: ${p.latitude!.toStringAsFixed(4)}, Long: ${p.longitude!.toStringAsFixed(4)}'
                               : 'Detecting GPS location...',
                           style: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: scheme.onSurface.withOpacity(0.5),
                             fontSize: 12,
                           ),
                         ),
@@ -302,7 +296,7 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
             Text(
               'Additional Details',
               style: text.titleMedium?.copyWith(
-                color: Colors.black87,
+                color: scheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),

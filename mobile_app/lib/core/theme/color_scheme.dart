@@ -1,52 +1,50 @@
 import 'package:flutter/material.dart';
 
-/// KumbhRaksha brand colors. Primary red signals urgency for missing-person
-/// alerts; blue conveys trust/action; green marks positive outcomes.
+/// KumbhRaksha tactical brand colors and accents from DESIGN.md.
 class AppColors {
   AppColors._();
 
-  // Brand
-  static const Color primary = Color(0xFFEF4444); // Emergency red
-  static const Color secondary = Color(0xFF3B82F6); // Action blue
-  static const Color tertiary = Color(0xFF10B981); // Success green
+  // Mode-Independent Accents
+  static const Color accentOrange = Color(0xFFFF801F);
+  static const Color accentYellow = Color(0xFFFFC53D);
+  static const Color accentBlue = Color(0xFF3B9EFF);
+  static const Color accentGreen = Color(0xFF11FF99);
+  static const Color accentRed = Color(0xFFFF2047);
 
-  // Light variants
-  static const Color primaryLight = Color(0xFFFEE2E2);
-  static const Color secondaryLight = Color(0xFFDBEAFE);
-  static const Color tertiaryLight = Color(0xFFD1FAE5);
-
-  // Dark variants
-  static const Color primaryDark = Color(0xFF7F1D1D);
-  static const Color secondaryDark = Color(0xFF1E3A8A);
-  static const Color tertiaryDark = Color(0xFF064E3B);
-
-  // Neutrals
-  static const Color outline = Color(0xFF9CA3AF);
-  static const Color outlineVariant = Color(0xFFD1D5DB);
-  static const Color onSurfaceLight = Color(0xFF1F2937);
-  static const Color onSurfaceDark = Color(0xFFF3F4F6);
+  // Neutrals for direct access
+  static const Color transparent = Colors.transparent;
 }
 
-final ColorScheme lightColorScheme = ColorScheme.fromSeed(
-  seedColor: AppColors.primary,
-  brightness: Brightness.light,
-).copyWith(
-  primary: AppColors.primary,
-  secondary: AppColors.secondary,
-  tertiary: AppColors.tertiary,
-  error: AppColors.primary,
-  surface: const Color(0xFFFAFAFA),
-  onSurface: AppColors.onSurfaceLight,
+final ColorScheme lightColorScheme = const ColorScheme.light().copyWith(
+  primary: Colors.black,
+  onPrimary: Colors.white,
+  secondary: AppColors.accentBlue,
+  onSecondary: Colors.white,
+  tertiary: AppColors.accentGreen,
+  onTertiary: Colors.black,
+  error: AppColors.accentRed,
+  onError: Colors.white,
+  surface: Colors.white,
+  onSurface: Color(0xDB000000), // 86% black
+  outlineVariant: Color(0x0F000000), // 6% black hairline border
+  outline: Color(0x1F000000), // 12% black stronger hairline border
+  surfaceContainerHighest: Color(0xFFF9F9FB), // surface-card
+  surfaceDim: Color(0xFFF2F2F7), // surface-elevated
 );
 
-final ColorScheme darkColorScheme = ColorScheme.fromSeed(
-  seedColor: AppColors.primary,
-  brightness: Brightness.dark,
-).copyWith(
-  primary: const Color(0xFFFF6B6B),
-  secondary: const Color(0xFF60A5FA),
-  tertiary: const Color(0xFF34D399),
-  error: const Color(0xFFFF6B6B),
-  surface: const Color(0xFF121212),
-  onSurface: AppColors.onSurfaceDark,
+final ColorScheme darkColorScheme = const ColorScheme.dark().copyWith(
+  primary: Color(0xFFFCFDFF),
+  onPrimary: Colors.black,
+  secondary: AppColors.accentBlue,
+  onSecondary: Colors.white,
+  tertiary: AppColors.accentGreen,
+  onTertiary: Colors.black,
+  error: AppColors.accentRed,
+  onError: Colors.white,
+  surface: Colors.black, // True Black
+  onSurface: Color(0xDBFCFDFF), // 86% white/silver
+  outlineVariant: Color(0x0FFFFFFF), // 6% white hairline border
+  outline: Color(0x24FFFFFF), // 14% white stronger hairline border
+  surfaceContainerHighest: Color(0xFF0A0A0C), // surface-card
+  surfaceDim: Color(0xFF101012), // surface-elevated
 );

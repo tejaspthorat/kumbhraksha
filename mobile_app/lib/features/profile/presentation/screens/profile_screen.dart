@@ -10,339 +10,423 @@ import '../../../report/presentation/screens/report_missing_screen.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
-  void _showSettings(BuildContext context) {
-    final auth = context.read<AuthProvider>();
-    final ble = context.read<BleProvider>();
-    final text = Theme.of(context).textTheme;
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final text = theme.textTheme;
+    final scheme = theme.colorScheme;
+    
+    final auth = context.watch<AuthProvider>();
+    final ble = context.watch<BleProvider>();
     final user = auth.user;
 
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Pilgrim Profile',
+          style: text.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.8,
+            color: scheme.onSurface,
+          ),
+        ),
       ),
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(Dimens.lg),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: Dimens.xl, vertical: Dimens.md),
+        children: [
+          // 1. Digital Pilgrim Pass Wallet Card
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: scheme.outlineVariant, width: 1.5),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('App Settings', style: text.titleLarge),
-                        IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () => Navigator.of(context).pop(),
+                        Icon(Icons.badge_outlined, color: scheme.primary, size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          'KUMBH TRUST PASS',
+                          style: text.labelSmall?.copyWith(
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.5,
+                            color: scheme.onSurface.withOpacity(0.6),
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: Dimens.md),
-                    if (user != null) ...[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Text(
-                          'Phone: ${user.phoneNumber}',
-                          style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                        ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: scheme.secondary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      const Divider(height: 1),
-                    ],
-                    SwitchListTile(
-                      secondary: const Icon(Icons.bluetooth),
-                      title: const Text('BLE protection'),
-                      subtitle: Text(ble.isActive ? 'Scanning nearby' : 'Off'),
-                      value: ble.isActive,
-                      onChanged: (v) {
-                        v ? ble.start() : ble.stop();
-                        setModalState(() {});
-                      },
-                    ),
-                    const Divider(height: 1),
-                    ListTile(
-                      leading: const Icon(Icons.group_outlined),
-                      title: const Text('Family group'),
-                      subtitle: const Text('Pre-register family for quick reporting'),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pushNamed('/family');
-                      },
-                    ),
-                    const Divider(height: 1),
-                    ListTile(
-                      leading: const Icon(Icons.language),
-                      title: const Text('Language'),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pushNamed('/onboarding/language');
-                      },
-                    ),
-                    const SizedBox(height: Dimens.lg),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        icon: const Icon(Icons.logout),
-                        label: const Text('Log out'),
-                        onPressed: () async {
-                          await auth.logout();
-                          if (context.mounted) {
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/onboarding/language',
-                              (_) => false,
-                            );
-                          }
-                        },
+                      child: Text(
+                        'VERIFIED',
+                        style: TextStyle(
+                          color: scheme.secondary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 9,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
                   ],
                 ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final text = Theme.of(context).textTheme;
-
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Settings trigger row at the top
-            Padding(
-              padding: const EdgeInsets.only(top: Dimens.md, right: Dimens.lg, left: Dimens.lg),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  icon: const Icon(Icons.settings_outlined, color: Colors.black54, size: 26),
-                  onPressed: () => _showSettings(context),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: scheme.primary.withOpacity(0.05),
+                        border: Border.all(color: scheme.outlineVariant, width: 1),
+                      ),
+                      child: Icon(Icons.person_pin_rounded, color: scheme.primary, size: 36),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            user != null ? 'Pilgrim Account' : 'Guest Account',
+                            style: text.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: -0.2,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            user != null ? user.phoneNumber : 'Not logged in',
+                            style: text.bodyMedium?.copyWith(
+                              color: scheme.onSurface.withOpacity(0.5),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ),
+                const SizedBox(height: 20),
+                Divider(color: scheme.outlineVariant, height: 1),
+                const SizedBox(height: 16),
+                
+                // BLE UUID Detail
+                Text(
+                  'BLE RADAR ID',
+                  style: text.labelSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
+                    color: scheme.onSurface.withOpacity(0.4),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  user?.bleRotatingUuid ?? 'Not Broadcasted (Start Radar)',
+                  style: TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 12,
+                    color: scheme.onSurface.withOpacity(0.7),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                
+                // Barcode simulation
+                Center(
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(32, (index) => Container(
+                          width: (index % 4 == 0) ? 3.5 : ((index % 3 == 0) ? 2 : 1),
+                          height: 36,
+                          margin: const EdgeInsets.symmetric(horizontal: 1),
+                          color: scheme.onSurface.withOpacity(0.75),
+                        )),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'ID: ${user?.id.toUpperCase().substring(0, 12) ?? "KUMBH-GUEST-PASS"}',
+                        style: TextStyle(
+                          fontSize: 10,
+                          letterSpacing: 2,
+                          color: scheme.onSurface.withOpacity(0.4),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: Dimens.xl, vertical: Dimens.sm),
+          ),
+          const SizedBox(height: Dimens.xl),
+
+          // 2. Settings Section Header
+          Text(
+            'Security & Hardware',
+            style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold, letterSpacing: -0.3),
+          ),
+          const SizedBox(height: Dimens.md),
+          
+          // BLE Protection Toggle
+          Container(
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: scheme.outlineVariant, width: 1),
+            ),
+            child: SwitchListTile.adaptive(
+              secondary: Icon(Icons.bluetooth_searching_rounded, color: scheme.secondary),
+              activeColor: scheme.secondary,
+              title: Text(
+                'BLE Protection',
+                style: text.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                ble.isActive ? 'Active scanning & broadcast' : 'Radar offline',
+                style: TextStyle(color: scheme.onSurface.withOpacity(0.5), fontSize: 13),
+              ),
+              value: ble.isActive,
+              onChanged: (v) {
+                v ? ble.start() : ble.stop();
+              },
+            ),
+          ),
+          const SizedBox(height: Dimens.xl),
+
+          // 3. Pilgrim Configuration & Group
+          Text(
+            'Preferences & Safety',
+            style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold, letterSpacing: -0.3),
+          ),
+          const SizedBox(height: Dimens.md),
+          Container(
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: scheme.outlineVariant, width: 1),
+            ),
+            child: Column(
+              children: [
+                ListTile(
+                  leading: Icon(Icons.group_outlined, color: scheme.primary),
+                  title: Text(
+                    'Family Group',
+                    style: text.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    'Pre-register members for one-tap alerts',
+                    style: TextStyle(color: scheme.onSurface.withOpacity(0.5), fontSize: 13),
+                  ),
+                  trailing: Icon(Icons.chevron_right_rounded, color: scheme.onSurface.withOpacity(0.3)),
+                  onTap: () => Navigator.of(context).pushNamed('/family'),
+                ),
+                Divider(height: 1, color: scheme.outlineVariant),
+                ListTile(
+                  leading: Icon(Icons.language_rounded, color: scheme.primary),
+                  title: Text(
+                    'Switch Language',
+                    style: text.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    'Choose English, Hindi, or regional languages',
+                    style: TextStyle(color: scheme.onSurface.withOpacity(0.5), fontSize: 13),
+                  ),
+                  trailing: Icon(Icons.chevron_right_rounded, color: scheme.onSurface.withOpacity(0.3)),
+                  onTap: () => Navigator.of(context).pushNamed('/onboarding/language'),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: Dimens.xl),
+
+          // 4. Quick Actions
+          Text(
+            'Emergency Actions',
+            style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold, letterSpacing: -0.3),
+          ),
+          const SizedBox(height: Dimens.md),
+          
+          // Card: Report Missing (Urgent Red Card)
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamed(ReportMissingScreen.route);
+            },
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: scheme.error,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Card 1: Active Alerts
-                  GestureDetector(
-                    onTap: () {
-                      // Switch to Home tab (index 0)
-                      const TabSwitchNotification(0).dispatch(context);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF5F5F5),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade200, width: 1),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(
-                            Icons.warning_amber_rounded,
-                            color: Color(0xFF8D5332),
-                            size: 28,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Active Alerts',
-                                  style: text.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.black87,
-                                  ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.error_outline, color: Colors.white, size: 14),
+                              SizedBox(width: 4),
+                              Text(
+                                'URGENT ACTION',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 0.5,
                                 ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  '3 active alerts near you in the last 24 hours.',
-                                  style: text.bodyMedium?.copyWith(
-                                    color: Colors.black54,
-                                    height: 1.3,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Report Missing Person',
+                          style: text.titleMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 22,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Broadcast a missing alert to authorities and nearby pilgrims immediately.',
+                          style: text.bodyMedium?.copyWith(
+                            color: Colors.white.withOpacity(0.85),
+                            fontSize: 13.5,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: Dimens.lg),
-
-                  // Card 2: Report Missing (Urgent)
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(ReportMissingScreen.route);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF8D5332),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: const Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(Icons.error_outline, color: Colors.white, size: 14),
-                                      SizedBox(width: 4),
-                                      Text(
-                                        'Urgent',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  'Report Missing',
-                                  style: text.titleMedium?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 22,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  'Start a new missing person alert immediately.',
-                                  style: text.bodyMedium?.copyWith(
-                                    color: Colors.white.withOpacity(0.85),
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Icon(
-                            Icons.notifications_active_outlined,
-                            color: Colors.white.withOpacity(0.9),
-                            size: 36,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: Dimens.lg),
-
-                  // Card 3: Report a Sighting
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed('/sighting/report');
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFEBE6E3),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(
-                            Icons.visibility_outlined,
-                            color: Color(0xFF8D5332),
-                            size: 28,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Report a Sighting',
-                            style: text.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            'Share information.',
-                            style: text.bodyMedium?.copyWith(
-                              color: Colors.black54,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: Dimens.lg),
-
-                  // Card 4: View Alert Map
-                  GestureDetector(
-                    onTap: () {
-                      // Switch to Map tab (index 2)
-                      const TabSwitchNotification(2).dispatch(context);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.grey.shade200, width: 1),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(
-                            Icons.map_outlined,
-                            color: Color(0xFF8D5332),
-                            size: 28,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'View Alert Map',
-                            style: text.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            'See alerts near you.',
-                            style: text.bodyMedium?.copyWith(
-                              color: Colors.black54,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  const SizedBox(width: 8),
+                  const Icon(
+                    Icons.notifications_active,
+                    color: Colors.white,
+                    size: 32,
                   ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: Dimens.lg),
+
+          // Cards Row (Report Sighting & Map Radar Shortcuts)
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context).pushNamed('/sighting/report'),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: scheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: scheme.outlineVariant, width: 1),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(Icons.visibility_outlined, color: scheme.primary, size: 24),
+                        Text(
+                          'Report Sighting',
+                          style: text.bodyLarge?.copyWith(fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => const TabSwitchNotification(2).dispatch(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: scheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: scheme.outlineVariant, width: 1),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(Icons.map_outlined, color: scheme.primary, size: 24),
+                        Text(
+                          'Radar Map',
+                          style: text.bodyLarge?.copyWith(fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: Dimens.xl),
+
+          // 5. Account Section Header
+          Text(
+            'Account Management',
+            style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold, letterSpacing: -0.3),
+          ),
+          const SizedBox(height: Dimens.md),
+          Container(
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: scheme.outlineVariant, width: 1),
+            ),
+            child: ListTile(
+              leading: Icon(Icons.logout_rounded, color: scheme.error),
+              title: Text(
+                'Log Out',
+                style: text.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: scheme.error),
+              ),
+              subtitle: Text(
+                'Disconnect this phone from pilgrim services',
+                style: TextStyle(color: scheme.error.withOpacity(0.6), fontSize: 13),
+              ),
+              onTap: () async {
+                await auth.logout();
+                if (context.mounted) {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/onboarding/language',
+                    (_) => false,
+                  );
+                }
+              },
+            ),
+          ),
+          const SizedBox(height: 100), // padding at bottom to avoid blocking by bottom navigation bar
+        ],
       ),
     );
   }

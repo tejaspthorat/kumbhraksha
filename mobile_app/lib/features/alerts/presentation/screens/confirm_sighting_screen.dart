@@ -102,17 +102,16 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final text = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final text = theme.textTheme;
+    final scheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
       body: SafeArea(
         child: Column(
@@ -124,9 +123,9 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
                   // 1. Active Search Profile Header Card
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: scheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.grey.shade200),
+                      border: Border.all(color: scheme.outlineVariant, width: 1),
                     ),
                     padding: const EdgeInsets.all(16),
                     child: Row(
@@ -138,7 +137,7 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
                             width: 56,
                             height: 56,
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
+                              color: scheme.surfaceDim,
                               image: widget.alert.photoUrl != null
                                   ? DecorationImage(
                                       image: NetworkImage(widget.alert.photoUrl!),
@@ -147,7 +146,7 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
                                   : null,
                             ),
                             child: widget.alert.photoUrl == null
-                                ? const Icon(Icons.person, color: Colors.grey)
+                                ? Icon(Icons.person_outline_rounded, color: scheme.onSurface.withOpacity(0.4))
                                 : null,
                           ),
                         ),
@@ -162,18 +161,18 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
                                   Container(
                                     width: 6,
                                     height: 6,
-                                    decoration: const BoxDecoration(
-                                      color: Color(0xFFB06F43),
+                                    decoration: BoxDecoration(
+                                      color: scheme.error,
                                       shape: BoxShape.circle,
                                     ),
                                   ),
                                   const SizedBox(width: 6),
-                                  const Text(
+                                  Text(
                                     'ACTIVE SEARCH',
                                     style: TextStyle(
-                                      color: Color(0xFFB06F43),
+                                      color: scheme.error,
                                       fontSize: 10,
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w900,
                                       letterSpacing: 0.5,
                                     ),
                                   ),
@@ -185,14 +184,14 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
                                 style: text.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
-                                  color: Colors.black87,
+                                  color: scheme.onSurface,
                                 ),
                               ),
                               const SizedBox(height: 2),
                               Text(
                                 _formatTimeAgo(widget.alert.createdAt),
-                                style: const TextStyle(
-                                  color: Colors.grey,
+                                style: TextStyle(
+                                  color: scheme.onSurface.withOpacity(0.5),
                                   fontSize: 12,
                                 ),
                               ),
@@ -211,13 +210,13 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
                     onTap: _pickPhoto,
                     child: CustomPaint(
                       painter: _photoPath == null
-                          ? DashedBorderPainter(color: Colors.grey.shade400, strokeWidth: 1.2, gap: 8)
+                          ? DashedBorderPainter(color: scheme.outline, strokeWidth: 1.2, gap: 8)
                           : null,
                       child: Container(
                         width: double.infinity,
                         height: 160,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFAFAFA),
+                          color: scheme.surfaceDim,
                           borderRadius: BorderRadius.circular(12),
                           image: _photoPath != null
                               ? DecorationImage(
@@ -231,12 +230,12 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
                             : Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Icon(Icons.camera_alt_outlined, color: Colors.black54, size: 28),
+                                  Icon(Icons.camera_alt_outlined, color: scheme.onSurface.withOpacity(0.5), size: 28),
                                   const SizedBox(height: 8),
                                   Text(
                                     'Tap to capture current appearance',
                                     style: text.bodyMedium?.copyWith(
-                                      color: Colors.black54,
+                                      color: scheme.onSurface.withOpacity(0.5),
                                       fontWeight: FontWeight.w500,
                                       fontSize: 13,
                                     ),
@@ -255,9 +254,9 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
                     height: 140,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFCBE3F5), // Soft map blue-grid look
+                      color: scheme.brightness == Brightness.light ? const Color(0xFFCBE3F5) : const Color(0xFF1E2F3F), // Map background compatible
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade200),
+                      border: Border.all(color: scheme.outlineVariant),
                     ),
                     child: Stack(
                       children: [
@@ -347,42 +346,43 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFECECEC),
+                        color: scheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: scheme.outlineVariant, width: 1),
                       ),
                       child: Row(
                         children: [
                           Container(
                             width: 36,
                             height: 36,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
+                            decoration: BoxDecoration(
+                              color: scheme.surfaceDim,
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.phone, color: Color(0xFF8D5332), size: 18),
+                            child: Icon(Icons.phone, color: scheme.secondary, size: 18),
                           ),
                           const SizedBox(width: 14),
-                          const Expanded(
+                          Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   'Call Emergency Contact',
                                   style: TextStyle(
-                                    color: Colors.black87,
+                                    color: scheme.onSurface,
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(height: 2),
+                                const SizedBox(height: 2),
                                 Row(
                                   children: [
-                                    Icon(Icons.lock_outline, color: Colors.grey, size: 12),
-                                    SizedBox(width: 4),
+                                    Icon(Icons.lock_outline, color: scheme.onSurface.withOpacity(0.4), size: 12),
+                                    const SizedBox(width: 4),
                                     Text(
                                       'Number Masked',
                                       style: TextStyle(
-                                        color: Colors.grey,
+                                        color: scheme.onSurface.withOpacity(0.4),
                                         fontSize: 12,
                                       ),
                                     ),
@@ -391,7 +391,7 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
                               ],
                             ),
                           ),
-                          const Icon(Icons.chevron_right, color: Colors.black54),
+                          Icon(Icons.chevron_right_rounded, color: scheme.onSurface.withOpacity(0.4)),
                         ],
                       ),
                     ),
@@ -402,9 +402,9 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: scheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade200),
+                      border: Border.all(color: scheme.outlineVariant, width: 1),
                     ),
                     child: Row(
                       children: [
@@ -412,10 +412,10 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
+                              Text(
                                 'Stay with them',
                                 style: TextStyle(
-                                  color: Colors.black87,
+                                  color: scheme.onSurface,
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -424,7 +424,7 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
                               Text(
                                 'Continuously share your live location with responders',
                                 style: TextStyle(
-                                  color: Colors.grey.shade600,
+                                  color: scheme.onSurface.withOpacity(0.5),
                                   fontSize: 12,
                                   height: 1.3,
                                 ),
@@ -433,42 +433,14 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        // Custom Checkmark Switch matching the screenshot
-                        GestureDetector(
-                          onTap: () {
+                        Switch.adaptive(
+                          value: _shareLocation,
+                          activeColor: scheme.secondary,
+                          onChanged: (v) {
                             setState(() {
-                              _shareLocation = !_shareLocation;
+                              _shareLocation = v;
                             });
                           },
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            width: 48,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              color: _shareLocation ? const Color(0xFFE8E8E8) : Colors.grey.shade300,
-                            ),
-                            child: Stack(
-                              children: [
-                                AnimatedPositioned(
-                                  duration: const Duration(milliseconds: 200),
-                                  left: _shareLocation ? 20 : 2,
-                                  top: 2,
-                                  child: Container(
-                                    width: 24,
-                                    height: 24,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: _shareLocation ? const Color(0xFF3B82F6) : Colors.white,
-                                    ),
-                                    child: _shareLocation
-                                        ? const Icon(Icons.check, color: Colors.white, size: 14)
-                                        : null,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -482,14 +454,8 @@ class _ConfirmSightingScreenState extends State<ConfirmSightingScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: Dimens.lg, vertical: 16),
               decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
-                    blurRadius: 10,
-                    offset: const Offset(0, -4),
-                  ),
-                ],
+                color: scheme.surface,
+                border: Border(top: BorderSide(color: scheme.outlineVariant, width: 1)),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,

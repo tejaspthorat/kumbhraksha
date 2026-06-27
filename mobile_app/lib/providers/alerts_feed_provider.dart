@@ -22,6 +22,8 @@ class AlertsFeedProvider extends ChangeNotifier {
 
   StreamSubscription<WitnessAlert>? _wsSub;
 
+  bool get isConnected => _ws.isConnected;
+
   FeedStatus status = FeedStatus.initial;
   String? errorMessage;
   final List<WitnessAlert> alerts = [];

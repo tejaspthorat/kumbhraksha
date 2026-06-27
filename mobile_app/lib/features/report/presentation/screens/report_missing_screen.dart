@@ -247,17 +247,16 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
   Widget build(BuildContext context) {
     final form = context.watch<ReportFormProvider>();
     final busy = form.state == ReportSubmitState.submitting;
-    final text = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final text = theme.textTheme;
+    final scheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
       body: SafeArea(
         child: Form(
@@ -270,29 +269,22 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
                 style: text.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 26,
-                  color: Colors.black87,
+                  color: scheme.onSurface,
                 ),
               ),
               const SizedBox(height: Dimens.sm),
               Text(
                 'Please provide as much accurate information as possible. Fields marked with * are required.',
-                style: text.bodyMedium?.copyWith(color: Colors.grey.shade600, fontSize: 13),
+                style: text.bodyMedium?.copyWith(color: scheme.onSurface.withOpacity(0.6), fontSize: 13),
               ),
               const SizedBox(height: Dimens.lg),
 
               // Main content card wrapper
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: scheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.grey.shade200),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.01),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  border: Border.all(color: scheme.outlineVariant),
                 ),
                 padding: const EdgeInsets.all(20),
                 child: Column(
@@ -306,13 +298,13 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
                         onTap: () => _pickPhoto(form),
                         child: CustomPaint(
                           painter: form.photoPath == null
-                              ? DashedBorderPainter(color: const Color(0xFFB06F43), strokeWidth: 1.2, gap: 8)
+                              ? DashedBorderPainter(color: scheme.primary, strokeWidth: 1.2, gap: 8)
                               : null,
                           child: Container(
                             width: double.infinity,
                             height: 150,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFAFAFA),
+                              color: scheme.surfaceDim,
                               borderRadius: BorderRadius.circular(12),
                               image: form.photoPath != null
                                   ? DecorationImage(
@@ -511,24 +503,18 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: scheme.surface,
                                 borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.08),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
+                                border: Border.all(color: scheme.outlineVariant, width: 1),
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.map_outlined, size: 16, color: Colors.black87),
-                                  SizedBox(width: 6),
+                                  Icon(Icons.map_outlined, size: 16, color: scheme.onSurface),
+                                  const SizedBox(width: 6),
                                   Text(
                                     'Tap to open map',
-                                    style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 13),
+                                    style: TextStyle(color: scheme.onSurface, fontWeight: FontWeight.bold, fontSize: 13),
                                   ),
                                 ],
                               ),
@@ -537,7 +523,7 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
                         ),
                       ),
                     ),
-                    Divider(color: Colors.grey.shade200, height: 40),
+                    Divider(color: scheme.outlineVariant, height: 40),
 
                     // Section: Additional Context
                     Text('Additional Context', style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
@@ -545,16 +531,16 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFAFAFA),
+                        color: scheme.surfaceDim,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade200),
+                        border: Border.all(color: scheme.outlineVariant),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Checkbox(
                             value: _hasMedicalConditions,
-                            activeColor: const Color(0xFF8D5332),
+                            activeColor: scheme.primary,
                             onChanged: (v) {
                               setState(() {
                                 _hasMedicalConditions = v ?? false;

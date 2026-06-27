@@ -14,38 +14,63 @@ class LanguageSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
-    final text = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final text = theme.textTheme;
+    final scheme = theme.colorScheme;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(Dimens.lg),
+          padding: const EdgeInsets.symmetric(horizontal: Dimens.xl, vertical: Dimens.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: Dimens.lg),
-              Text('Choose your language', style: text.headlineSmall),
-              const SizedBox(height: Dimens.xs),
-              Text('अपनी भाषा चुनें', style: text.bodyMedium),
-              const SizedBox(height: Dimens.lg),
-              Expanded(
-                child: ListView.separated(
-                  itemCount: supportedLanguages.length,
-                  separatorBuilder: (_, index) => const SizedBox(height: Dimens.sm),
-                  itemBuilder: (context, i) {
-                    final code = supportedLanguages[i];
-                    final selected = auth.language == code;
-                    return _LanguageTile(
-                      code: code,
-                      selected: selected,
-                      onTap: () => auth.selectLanguage(code),
-                    );
-                  },
+              const SizedBox(height: Dimens.xl),
+              Text(
+                'Choose your language',
+                style: text.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
                 ),
               ),
-              const SizedBox(height: Dimens.sm),
+              const SizedBox(height: Dimens.xs),
+              Text(
+                'अपनी भाषा चुनें',
+                style: text.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                ),
+              ),
+              const SizedBox(height: Dimens.xl),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: scheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: scheme.outlineVariant, width: 1),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: ListView.separated(
+                    itemCount: supportedLanguages.length,
+                    separatorBuilder: (_, __) => Divider(
+                      height: 1,
+                      color: scheme.outlineVariant,
+                      indent: Dimens.lg,
+                    ),
+                    itemBuilder: (context, i) {
+                      final code = supportedLanguages[i];
+                      final selected = auth.language == code;
+                      return _LanguageRow(
+                        code: code,
+                        selected: selected,
+                        onTap: () => auth.selectLanguage(code),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: Dimens.lg),
               FilledButton(
-                onPressed: () => Navigator.of(context)
-                    .pushNamed(PermissionsScreen.route),
+                onPressed: () => Navigator.of(context).pushNamed(PermissionsScreen.route),
                 child: const Text('Continue'),
               ),
               const SizedBox(height: Dimens.sm),
@@ -57,8 +82,8 @@ class LanguageSelectionScreen extends StatelessWidget {
   }
 }
 
-class _LanguageTile extends StatelessWidget {
-  const _LanguageTile({
+class _LanguageRow extends StatelessWidget {
+  const _LanguageRow({
     required this.code,
     required this.selected,
     required this.onTap,
@@ -70,33 +95,56 @@ class _LanguageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final text = theme.textTheme;
+
     return InkWell(
-      borderRadius: BorderRadius.circular(Dimens.radiusCard),
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(Dimens.lg),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Dimens.radiusCard),
-          border: Border.all(
-            color: selected ? scheme.primary : scheme.outlineVariant,
-            width: selected ? 2 : 1,
-          ),
-          color: selected ? scheme.primary.withValues(alpha: 0.06) : null,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: Dimens.lg, vertical: 16),
+        color: selected ? scheme.primary.withOpacity(0.03) : Colors.transparent,
         child: Row(
           children: [
             Expanded(
-              child: Text(
-                languageNames[code] ?? code,
-                style: Theme.of(context).textTheme.titleMedium,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    languageNames[code] ?? code,
+                    style: text.titleMedium?.copyWith(
+                      fontWeight: selected ? FontWeight.bold : FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    code.toUpperCase(),
+                    style: text.bodySmall?.copyWith(
+                      color: scheme.onSurface.withOpacity(0.4),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ),
-            Text(code, style: Theme.of(context).textTheme.bodySmall),
-            if (selected) ...[
-              const SizedBox(width: Dimens.sm),
-              Icon(Icons.check_circle, color: scheme.primary),
-            ],
+            if (selected)
+              Icon(
+                Icons.check_circle_rounded,
+                color: scheme.primary,
+                size: 22,
+              )
+            else
+              Container(
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: scheme.onSurface.withOpacity(0.15),
+                    width: 1.5,
+                  ),
+                ),
+              ),
           ],
         ),
       ),

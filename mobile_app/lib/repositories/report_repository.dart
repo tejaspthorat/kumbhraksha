@@ -7,6 +7,7 @@ import '../core/utils/app_logger.dart';
 import '../models/missing_report.dart';
 import '../services/api_service.dart';
 import '../services/database_service.dart';
+import 'missing_api_mapper.dart';
 
 /// Submits missing-person reports. Falls back to a local pending queue when the
 /// network/backend is unavailable so reports are never lost.
@@ -26,11 +27,15 @@ class ReportRepository {
       return (reportId: report.id, witnessCount: 3);
     }
     try {
-      final res = await _api.post(ApiConstants.reports, data: report.toJson());
+      final res = await _api.post(
+        ApiConstants.reports,
+        data: MissingApiMapper.reportToBackend(report),
+      );
       final data = res.data as Map<String, dynamic>;
       return (
         reportId: data['id'] as String,
-        witnessCount: (data['witness_count'] as int?) ?? 0,
+        // Backend reports how many nearby users were alerted by the cascade.
+        witnessCount: (data['usersNotified'] as int?) ?? 0,
       );
     } catch (e) {
       appLogger.w('Report submit failed, queued offline: $e');

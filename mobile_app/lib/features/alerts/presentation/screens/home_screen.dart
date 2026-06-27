@@ -63,41 +63,77 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final feed = context.watch<AlertsFeedProvider>();
     final text = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       body: SafeArea(
+        bottom: false,
         child: RefreshIndicator(
           onRefresh: feed.refresh,
           child: ListView.builder(
             controller: _scroll,
-            padding: const EdgeInsets.all(Dimens.lg),
+            padding: const EdgeInsets.symmetric(horizontal: Dimens.lg, vertical: Dimens.md),
             itemCount: _itemCount(feed),
             itemBuilder: (context, index) {
               if (index == 0) {
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: Dimens.md, left: Dimens.xs, right: Dimens.xs),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  padding: const EdgeInsets.only(bottom: Dimens.lg, left: Dimens.xs, right: Dimens.xs, top: Dimens.sm),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'KumbhRaksha',
+                                style: text.headlineMedium?.copyWith(
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: -0.8,
+                                  color: scheme.onSurface,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              _ConnectionDot(connected: feed.isConnected),
+                            ],
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              const TabSwitchNotification(2).dispatch(context);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: scheme.outlineVariant, width: 1),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.map_outlined, size: 16, color: scheme.primary),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'Radar Map',
+                                    style: text.labelMedium?.copyWith(
+                                      color: scheme.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: Dimens.lg),
+                      const _ProtectionBanner(),
+                      const SizedBox(height: Dimens.xl),
                       Text(
                         'Active Alerts Near You',
-                        style: text.titleLarge?.copyWith(
-                          fontSize: 22,
+                        style: text.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          // Tab index 2 is Map (Home=0, Cases=1, Map=2)
-                          const TabSwitchNotification(2).dispatch(context);
-                        },
-                        child: Text(
-                          'View Map',
-                          style: text.titleSmall?.copyWith(
-                            color: const Color(0xFFB06F43),
-                            fontWeight: FontWeight.bold,
-                          ),
+                          color: scheme.onSurface,
                         ),
                       ),
                     ],
@@ -123,7 +159,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                 );
               }
-              return _FeedFooter(feed: feed);
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 80), // extra padding for floating nav bar
+                child: _FeedFooter(feed: feed),
+              );
             },
           ),
         ),
@@ -132,7 +171,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   int _itemCount(AlertsFeedProvider feed) {
-    // header + alerts + footer
     return 1 + feed.alerts.length + 1;
   }
 }
@@ -143,6 +181,7 @@ class _FeedFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     if (feed.status == FeedStatus.loading && feed.alerts.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(Dimens.xl),
@@ -155,7 +194,8 @@ class _FeedFooter extends StatelessWidget {
         child: Center(
           child: Column(children: [
             Text(feed.errorMessage ?? 'Something went wrong'),
-            TextButton(onPressed: feed.refresh, child: const Text('Retry')),
+            const SizedBox(height: 8),
+            OutlinedButton(onPressed: feed.refresh, child: const Text('Retry')),
           ]),
         ),
       );
@@ -178,9 +218,14 @@ class _FeedFooter extends StatelessWidget {
         ),
       );
     }
-    return const Padding(
-      padding: EdgeInsets.all(Dimens.lg),
-      child: Center(child: Text("You're all caught up")),
+    return Padding(
+      padding: const EdgeInsets.all(Dimens.lg),
+      child: Center(
+        child: Text(
+          "You're all caught up",
+          style: TextStyle(color: scheme.onSurface.withOpacity(0.4), fontWeight: FontWeight.w600),
+        ),
+      ),
     );
   }
 }
@@ -193,18 +238,24 @@ class _ConnectionDot extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Icon(Icons.circle,
-            size: 10, color: connected ? scheme.tertiary : scheme.outline),
+            size: 8, color: connected ? scheme.secondary : scheme.onSurface.withOpacity(0.3)),
         const SizedBox(width: 4),
-        Text(connected ? 'Live' : 'Offline',
-            style: Theme.of(context).textTheme.labelSmall),
+        Text(
+          connected ? 'Live Sync Active' : 'Offline Mode',
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: connected ? scheme.secondary : scheme.onSurface.withOpacity(0.4),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ],
     );
   }
 }
 
-/// Live BLE scanning toggle + status.
+/// Live BLE scanning toggle + status card styled like Apple Health.
 class _ProtectionBanner extends StatelessWidget {
   const _ProtectionBanner();
 
@@ -215,32 +266,60 @@ class _ProtectionBanner extends StatelessWidget {
     final active = ble.isActive;
     return Card(
       color: active
-          ? scheme.tertiary.withValues(alpha: 0.10)
+          ? scheme.secondary.withOpacity(0.02)
           : scheme.surfaceContainerHighest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: active ? scheme.secondary.withOpacity(0.3) : scheme.outlineVariant,
+          width: 1,
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(Dimens.lg),
         child: Row(
           children: [
-            Icon(active ? Icons.bluetooth_audio : Icons.bluetooth_disabled,
-                color: active ? scheme.tertiary : scheme.outline, size: 32),
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: active ? scheme.secondary.withOpacity(0.08) : scheme.onSurface.withOpacity(0.04),
+              ),
+              child: Icon(
+                active ? Icons.bluetooth_searching_rounded : Icons.bluetooth_disabled_rounded,
+                color: active ? scheme.secondary : scheme.onSurface.withOpacity(0.3),
+                size: 24,
+              ),
+            ),
             const SizedBox(width: Dimens.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(active ? 'Protection active' : 'Protection off',
-                      style: Theme.of(context).textTheme.titleMedium),
+                  Text(
+                    active ? 'BLE Radar Active' : 'BLE Radar Inactive',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: scheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
                   Text(
                     active
-                        ? 'Scanning nearby • ${ble.encounterCount} signals seen'
-                        : 'Turn on to help find people near you',
-                    style: Theme.of(context).textTheme.bodySmall,
+                        ? 'Scanning nearby • ${ble.encounterCount} encounters'
+                        : 'Turn on to scan for missing people near you',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: scheme.onSurface.withOpacity(0.5),
+                    ),
                   ),
                 ],
               ),
             ),
-            Switch(
+            Switch.adaptive(
               value: active,
+              activeColor: scheme.secondary,
               onChanged: (v) => v ? ble.start() : ble.stop(),
             ),
           ],

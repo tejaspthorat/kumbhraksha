@@ -28,38 +28,51 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final text = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final text = theme.textTheme;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(Dimens.lg),
+          padding: const EdgeInsets.symmetric(horizontal: Dimens.xl, vertical: Dimens.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Permissions we need', style: text.headlineSmall),
+              Text(
+                'Permissions we need',
+                style: text.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
+                ),
+              ),
               const SizedBox(height: Dimens.xs),
               Text(
                 'KumbhRaksha uses these only to help find missing people near you.',
-                style: text.bodyMedium,
+                style: text.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                ),
               ),
-              const SizedBox(height: Dimens.lg),
+              const SizedBox(height: Dimens.xl),
               const _PermissionCard(
                 icon: Icons.bluetooth,
-                title: 'Bluetooth',
-                subtitle:
-                    'Detect when you were near a missing person, anonymously.',
+                title: 'Bluetooth Scan',
+                subtitle: 'Detect when you were near a missing person, anonymously.',
               ),
               const SizedBox(height: Dimens.md),
               const _PermissionCard(
-                icon: Icons.location_on,
-                title: 'Location',
+                icon: Icons.location_on_outlined,
+                title: 'Location Services',
                 subtitle: 'Send area alerts and tag where someone was last seen.',
               ),
               const SizedBox(height: Dimens.md),
               const _PermissionCard(
-                icon: Icons.notifications_active,
-                title: 'Notifications',
+                icon: Icons.notifications_active_outlined,
+                title: 'Instant Notifications',
                 subtitle: 'Alert you instantly when you can help nearby.',
               ),
               const Spacer(),
@@ -70,15 +83,27 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
                         height: 20,
                         width: 20,
                         child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white),
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
                       )
                     : const Text('Allow & continue'),
               ),
-              TextButton(
-                onPressed: () =>
-                    Navigator.of(context).pushNamed(PhoneInputScreen.route),
-                child: const Text('Skip for now'),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () => Navigator.of(context).pushNamed(PhoneInputScreen.route),
+                  child: Text(
+                    'Skip for now',
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
+              const SizedBox(height: Dimens.sm),
             ],
           ),
         ),
@@ -100,24 +125,43 @@ class _PermissionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(Dimens.lg),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
-              backgroundColor: scheme.secondary.withValues(alpha: 0.12),
-              child: Icon(icon, color: scheme.secondary),
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: scheme.primary.withOpacity(0.04),
+                border: Border.all(color: scheme.outlineVariant, width: 1),
+              ),
+              child: Icon(icon, color: scheme.primary, size: 22),
             ),
             const SizedBox(width: Dimens.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: Dimens.xs),
-                  Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
+                  Text(
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: scheme.onSurface.withOpacity(0.6),
+                      height: 1.3,
+                    ),
+                  ),
                 ],
               ),
             ),

@@ -22,54 +22,95 @@ class FamilyMemberCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final text = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final text = theme.textTheme;
     final photo = member.photoUrl;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(Dimens.md),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 26,
-              backgroundColor: scheme.surfaceContainerHighest,
+
+    return Container(
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: scheme.outlineVariant, width: 1),
+      ),
+      padding: const EdgeInsets.all(Dimens.md),
+      child: Row(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: scheme.outlineVariant, width: 1.5),
+            ),
+            child: CircleAvatar(
+              radius: 24,
+              backgroundColor: scheme.surfaceDim,
               backgroundImage: (photo != null && File(photo).existsSync())
                   ? FileImage(File(photo))
                   : null,
-              child: (photo == null) ? const Icon(Icons.person) : null,
+              child: (photo == null)
+                  ? Icon(Icons.person_outline_rounded, color: scheme.onSurface.withOpacity(0.4), size: 24)
+                  : null,
             ),
-            const SizedBox(width: Dimens.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(member.name, style: text.titleMedium),
-                  Text(
-                    [
-                      if (member.age != null) '${member.age} yrs',
-                      if (member.gender != null) member.gender!,
-                    ].join(' • '),
-                    style: text.bodySmall,
+          ),
+          const SizedBox(width: Dimens.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  member.name,
+                  style: text.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: scheme.onSurface,
                   ),
-                ],
-              ),
-            ),
-            PopupMenuButton<String>(
-              onSelected: (v) {
-                if (v == 'edit') onEdit?.call();
-                if (v == 'delete') onDelete?.call();
-              },
-              itemBuilder: (_) => const [
-                PopupMenuItem(value: 'edit', child: Text('Edit')),
-                PopupMenuItem(value: 'delete', child: Text('Delete')),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  [
+                    if (member.age != null) '${member.age} yrs',
+                    if (member.gender != null) member.gender!,
+                  ].join('  •  '),
+                  style: text.bodySmall?.copyWith(
+                    color: scheme.onSurface.withOpacity(0.5),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
             ),
-            FilledButton.tonal(
+          ),
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert_rounded, color: scheme.onSurface.withOpacity(0.5)),
+            onSelected: (v) {
+              if (v == 'edit') onEdit?.call();
+              if (v == 'delete') onDelete?.call();
+            },
+            itemBuilder: (_) => const [
+              PopupMenuItem(value: 'edit', child: Text('Edit Member')),
+              PopupMenuItem(value: 'delete', child: Text('Remove Member')),
+            ],
+          ),
+          const SizedBox(width: 4),
+          SizedBox(
+            height: 36,
+            child: OutlinedButton(
               onPressed: onQuickReport,
-              child: const Text('Report'),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: scheme.error.withOpacity(0.5), width: 1.2),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                minimumSize: Size.zero,
+                shape: const StadiumBorder(),
+              ),
+              child: Text(
+                'Alert',
+                style: TextStyle(
+                  color: scheme.error,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

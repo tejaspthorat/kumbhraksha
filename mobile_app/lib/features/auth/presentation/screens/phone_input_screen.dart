@@ -40,22 +40,40 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final text = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final text = theme.textTheme;
+    final scheme = theme.colorScheme;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(Dimens.lg),
+          padding: const EdgeInsets.symmetric(horizontal: Dimens.xl, vertical: Dimens.lg),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Your phone number', style: text.headlineSmall),
+                const SizedBox(height: Dimens.md),
+                Text(
+                  'Your phone number',
+                  style: text.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
+                  ),
+                ),
                 const SizedBox(height: Dimens.xs),
-                Text('We will send a one-time code to verify it.',
-                    style: text.bodyMedium),
-                const SizedBox(height: Dimens.xl),
+                Text(
+                  'We will send a one-time code to verify it.',
+                  style: text.bodyLarge?.copyWith(
+                    color: scheme.onSurface.withOpacity(0.6),
+                  ),
+                ),
+                const SizedBox(height: Dimens.xxl),
                 TextFormField(
                   controller: _controller,
                   keyboardType: TextInputType.phone,
@@ -63,11 +81,20 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                   maxLength: 10,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   validator: Validators.phone,
-                  decoration: const InputDecoration(
+                  style: text.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
+                  ),
+                  decoration: InputDecoration(
                     prefixText: '+91  ',
+                    prefixStyle: text.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: scheme.onSurface.withOpacity(0.4),
+                    ),
                     labelText: 'Mobile number',
                     hintText: '98765 43210',
-                    prefixIcon: Icon(Icons.phone),
+                    prefixIcon: Icon(Icons.phone_iphone_outlined, color: scheme.primary),
+                    counterText: '',
                   ),
                 ),
                 const Spacer(),
@@ -78,10 +105,13 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                           height: 20,
                           width: 20,
                           child: CircularProgressIndicator(
-                              strokeWidth: 2, color: Colors.white),
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
-                      : const Text('Send code'),
+                      : const Text('Send verification code'),
                 ),
+                const SizedBox(height: Dimens.md),
               ],
             ),
           ),
