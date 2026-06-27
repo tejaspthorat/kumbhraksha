@@ -6,6 +6,8 @@ export interface CrowdCamera {
   ip?: string | number | null;
   port?: number | string | null;
   protocol?: string;
+  camera_type?: string;
+  endpoint_path?: string | null;
   video_source?: string;
   status: CameraStatus;
   count?: number;
@@ -31,7 +33,22 @@ export interface CameraStats {
 export type CameraCreatePayload =
   | { name: string; ip: '0'; port: 0; protocol: 'http' }
   | { name: string; video_path: string; ip: ''; port: 0; protocol: 'http' }
-  | { name: string; ip: string; port: number; protocol: string };
+  | {
+      name: string;
+      stream_url: string;
+      ip?: string;
+      port?: number;
+      protocol?: string;
+      camera_type?: 'phone' | 'network';
+    }
+  | {
+      name: string;
+      ip: string;
+      port: number;
+      protocol: string;
+      endpoint_path?: string;
+      camera_type?: 'phone' | 'network';
+    };
 
 async function json<T>(res: Response): Promise<T> {
   const body = await res.json().catch(() => ({}));

@@ -75,6 +75,14 @@ def save_cameras():
     with open(CAMERAS_FILE, 'w') as f:
         json.dump(cameras, f)
 
+def normalize_stream_path(path, default_path):
+    path = (path or default_path or '').strip()
+    if not path:
+        path = default_path
+    if not path.startswith('/'):
+        path = f"/{path}"
+    return path
+
 def read_crowd_log_dataframe(csv_file):
     """Read old and new crowd log row shapes into one normalized dataframe."""
     columns = ['Timestamp', 'Camera ID', 'Count', 'Density', 'Zone A', 'Zone B']
@@ -491,7 +499,7 @@ def get_cameras():
 
 @app.route('/api/cameras', methods=['POST'])
 def add_camera():
-    data = request.json
+    data = request.json or {}
     print(f"Received camera data: {data}")
     
     camera_name = data.get('name')
@@ -499,9 +507,20 @@ def add_camera():
     port = data.get('port')
     protocol = data.get('protocol', 'http')
     video_path = data.get('video_path')
+    stream_url = data.get('stream_url') or data.get('streamUrl')
+    endpoint_path = data.get('endpoint_path') or data.get('endpointPath')
+    camera_type = data.get('camera_type') or data.get('cameraType')
     
     # Construct video source
-    if video_path:
+    if stream_url:
+        stream_url = str(stream_url).strip()
+        if not stream_url.startswith(('http://', 'https://', 'rtsp://')):
+            return jsonify({'success': False, 'error': 'Stream URL must start with http://, https://, or rtsp://'}), 400
+
+        video_source = stream_url
+        protocol = stream_url.split(':', 1)[0]
+        display_name = camera_name or ("Phone IP Camera" if camera_type == 'phone' else "Network Camera")
+    elif video_path:
         # Resolve video path to absolute path
         video_source = resolve_local_path(video_path)
         if not video_source:
@@ -512,11 +531,13 @@ def add_camera():
         video_source = 0
         display_name = camera_name or "Webcam"
     elif ip and port:
+        default_path = '/live' if protocol == 'rtsp' else '/video'
+        stream_path = normalize_stream_path(endpoint_path, default_path)
         if protocol == 'rtsp':
-            video_source = f"rtsp://{ip}:{port}/live"
+            video_source = f"rtsp://{ip}:{port}{stream_path}"
         else:
-            video_source = f"http://{ip}:{port}/video"
-        display_name = camera_name or f"Camera at {ip}:{port}"
+            video_source = f"{protocol}://{ip}:{port}{stream_path}"
+        display_name = camera_name or ("Phone IP Camera" if camera_type == 'phone' else f"Camera at {ip}:{port}")
     else:
         return jsonify({'success': False, 'error': 'Invalid camera configuration'}), 400
     
@@ -529,6 +550,8 @@ def add_camera():
         'ip': ip,
         'port': port,
         'protocol': protocol,
+        'camera_type': camera_type or 'network',
+        'endpoint_path': endpoint_path,
         'video_source': str(video_source),
         'status': 'connecting',
         'count': 0,

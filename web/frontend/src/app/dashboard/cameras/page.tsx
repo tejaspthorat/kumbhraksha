@@ -61,6 +61,17 @@ function statusDot(status: string) {
   return 'bg-muted-soft';
 }
 
+function cameraPriority(camera: CrowdCamera) {
+  if (camera.status !== 'online') return camera.status === 'connecting' ? 20 : 30;
+  if (camera.camera_type === 'phone') return 0;
+  if (camera.video_source?.startsWith('http')) return 1;
+  return 2;
+}
+
+function preferredCameraId(cameras: CrowdCamera[]) {
+  return [...cameras].sort((a, b) => cameraPriority(a) - cameraPriority(b) || a.id - b.id)[0]?.id ?? null;
+}
+
 export default function CctvIntelligencePage() {
   const [mapCameras, setMapCameras] = useState<CctvCamera[]>([]);
   const [zones, setZones] = useState<CctvZone[]>([]);
@@ -79,10 +90,13 @@ export default function CctvIntelligencePage() {
   const loadLiveCameras = useCallback(async () => {
     try {
       const data = await crowdCameraApi.list();
-      setLiveCameras(data);
-      setSelectedCameraId((prev) =>
-        prev && data.some((camera) => camera.id === prev) ? prev : data[0]?.id ?? null
-      );
+      const sorted = [...data].sort((a, b) => cameraPriority(a) - cameraPriority(b) || a.id - b.id);
+      setLiveCameras(sorted);
+      setSelectedCameraId((prev) => {
+        const previous = prev ? sorted.find((camera) => camera.id === prev) : null;
+        if (previous?.status === 'online') return prev;
+        return preferredCameraId(sorted);
+      });
       setLiveError(null);
     } catch (error) {
       setLiveError(error instanceof Error ? error.message : 'Unable to load live cameras');
