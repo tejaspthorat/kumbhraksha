@@ -120,7 +120,7 @@ export default function AlertCascadePage() {
                   <p className="text-on-dark text-[14px] font-medium">
                     +{s.atMinutes} min · {s.label}
                   </p>
-                  <Badge variant="dark" className="border border-white/10 text-on-dark-soft">
+                  <Badge variant="dark" className="border border-hairline text-on-dark-soft">
                     {formatDistance(s.radiusMeters)}
                   </Badge>
                 </div>
@@ -128,7 +128,7 @@ export default function AlertCascadePage() {
               </li>
             ))}
           </ol>
-          <p className="text-on-dark-soft text-[12px] mt-5 pt-4 border-t border-white/10">
+          <p className="text-on-dark-soft text-[12px] mt-5 pt-4 border-t border-hairline">
             Automatic but overridable — authorities can accelerate (missing toddler) or
             hold (teenager likely exploring).
           </p>

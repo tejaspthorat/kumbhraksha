@@ -20,45 +20,45 @@ export default function EdgeAIPage() {
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Edge AI Nodes</h1>
-        <p className="text-sm text-white/40 mt-1">Monitor edge devices running YOLOv8 inference on low-power hardware</p>
+        <h1 className="text-2xl font-bold text-ink">Edge AI Nodes</h1>
+        <p className="text-sm text-muted mt-1">Monitor edge devices running YOLOv8 inference on low-power hardware</p>
       </div>
 
       {/* Stats */}
       <motion.div variants={item} className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <GlassCard>
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-emerald-500/15"><Cpu size={20} className="text-emerald-400" /></div>
+            <div className="p-3 rounded-xl bg-emerald-500/15"><Cpu size={20} className="text-emerald-600" /></div>
             <div>
-              <p className="text-xs text-white/40">Nodes Online</p>
-              <span className="text-2xl font-bold text-white">{online}/{devices.length}</span>
+              <p className="text-xs text-muted">Nodes Online</p>
+              <span className="text-2xl font-bold text-ink">{online}/{devices.length}</span>
             </div>
           </div>
         </GlassCard>
         <GlassCard>
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-accent/15"><Gauge size={20} className="text-accent" /></div>
+            <div className="p-3 rounded-xl bg-accent/15"><Gauge size={20} className="text-coral" /></div>
             <div>
-              <p className="text-xs text-white/40">Avg FPS</p>
-              <span className="text-2xl font-bold text-accent">{avgFps}</span>
+              <p className="text-xs text-muted">Avg FPS</p>
+              <span className="text-2xl font-bold text-coral">{avgFps}</span>
             </div>
           </div>
         </GlassCard>
         <GlassCard>
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-blue-500/15"><Activity size={20} className="text-blue-400" /></div>
+            <div className="p-3 rounded-xl bg-blue-500/15"><Activity size={20} className="text-blue-600" /></div>
             <div>
-              <p className="text-xs text-white/40">Avg Latency</p>
-              <span className="text-2xl font-bold text-blue-400">42ms</span>
+              <p className="text-xs text-muted">Avg Latency</p>
+              <span className="text-2xl font-bold text-blue-600">42ms</span>
             </div>
           </div>
         </GlassCard>
         <GlassCard>
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-purple-500/15"><Zap size={20} className="text-purple-400" /></div>
+            <div className="p-3 rounded-xl bg-purple-500/15"><Zap size={20} className="text-purple-600" /></div>
             <div>
-              <p className="text-xs text-white/40">AI Model</p>
-              <span className="text-sm font-bold text-white">YOLOv8n</span>
+              <p className="text-xs text-muted">AI Model</p>
+              <span className="text-sm font-bold text-ink">YOLOv8n</span>
             </div>
           </div>
         </GlassCard>
@@ -71,8 +71,8 @@ export default function EdgeAIPage() {
             <GlassCard className={`h-full ${device.status === 'offline' ? 'opacity-50' : ''}`}>
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h3 className="text-sm font-semibold text-white">{device.name}</h3>
-                  <p className="text-[10px] text-white/30 mt-0.5">{device.model} • {device.location}</p>
+                  <h3 className="text-sm font-semibold text-ink">{device.name}</h3>
+                  <p className="text-[10px] text-muted-soft mt-0.5">{device.model} • {device.location}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant={device.status === 'online' ? 'success' : 'danger'} pulse={device.status === 'online'}>
@@ -92,45 +92,45 @@ export default function EdgeAIPage() {
 
                   {/* Metrics */}
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="flex items-center gap-2 p-2.5 rounded-lg bg-white/[0.02]">
-                      <Gauge size={14} className="text-accent" />
+                    <div className="flex items-center gap-2 p-2.5 rounded-lg bg-surface-soft">
+                      <Gauge size={14} className="text-coral" />
                       <div>
-                        <p className="text-[10px] text-white/30">FPS</p>
-                        <span className="text-sm font-bold text-white">{device.fps}</span>
+                        <p className="text-[10px] text-muted-soft">FPS</p>
+                        <span className="text-sm font-bold text-ink">{device.fps}</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 p-2.5 rounded-lg bg-white/[0.02]">
-                      <Activity size={14} className="text-blue-400" />
+                    <div className="flex items-center gap-2 p-2.5 rounded-lg bg-surface-soft">
+                      <Activity size={14} className="text-blue-600" />
                       <div>
-                        <p className="text-[10px] text-white/30">Latency</p>
-                        <span className="text-sm font-bold text-white">{device.latency}ms</span>
+                        <p className="text-[10px] text-muted-soft">Latency</p>
+                        <span className="text-sm font-bold text-ink">{device.latency}ms</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 p-2.5 rounded-lg bg-white/[0.02]">
-                      <Thermometer size={14} className="text-amber-400" />
+                    <div className="flex items-center gap-2 p-2.5 rounded-lg bg-surface-soft">
+                      <Thermometer size={14} className="text-amber-600" />
                       <div>
-                        <p className="text-[10px] text-white/30">Temp</p>
-                        <span className="text-sm font-bold text-white">{device.temp}°C</span>
+                        <p className="text-[10px] text-muted-soft">Temp</p>
+                        <span className="text-sm font-bold text-ink">{device.temp}°C</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 p-2.5 rounded-lg bg-white/[0.02]">
-                      <Clock size={14} className="text-emerald-400" />
+                    <div className="flex items-center gap-2 p-2.5 rounded-lg bg-surface-soft">
+                      <Clock size={14} className="text-emerald-600" />
                       <div>
-                        <p className="text-[10px] text-white/30">Uptime</p>
-                        <span className="text-sm font-bold text-white">{device.uptime}</span>
+                        <p className="text-[10px] text-muted-soft">Uptime</p>
+                        <span className="text-sm font-bold text-ink">{device.uptime}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* AI Model */}
-                  <div className="mt-3 p-2.5 rounded-lg bg-white/[0.02] flex items-center gap-2">
-                    <Zap size={12} className="text-accent" />
-                    <span className="text-[10px] text-white/40">Model: </span>
-                    <span className="text-xs font-medium text-accent">{device.aiModel}</span>
+                  <div className="mt-3 p-2.5 rounded-lg bg-surface-soft flex items-center gap-2">
+                    <Zap size={12} className="text-coral" />
+                    <span className="text-[10px] text-muted">Model: </span>
+                    <span className="text-xs font-medium text-coral">{device.aiModel}</span>
                   </div>
                 </>
               ) : (
-                <div className="flex items-center justify-center h-40 text-white/20 text-sm">
+                <div className="flex items-center justify-center h-40 text-muted-soft text-sm">
                   Device is offline
                 </div>
               )}

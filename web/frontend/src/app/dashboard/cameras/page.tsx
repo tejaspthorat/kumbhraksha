@@ -1,11 +1,18 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Camera, ShieldAlert, Route, Eye } from 'lucide-react';
 import { krApi } from '@/lib/missing/client';
 import type { CctvLocation, MissingReport } from '@/lib/missing/types';
 import { NETWORK_CENTER as networkCenter, withLiveCascade } from '@/lib/missing/cascade';
-import TacticalMap from '@/components/missing/TacticalMap';
+
+const OpsMap = dynamic(() => import('@/components/missing/OpsMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="aspect-[16/10] w-full rounded-xl bg-surface-soft border border-hairline animate-pulse" />
+  ),
+});
 import { PageHeading, StatTile } from '@/components/missing/CaseUI';
 import { distanceMeters } from '@/lib/geo';
 
@@ -80,7 +87,7 @@ export default function CctvIntelligencePage() {
             <Camera className="size-4 text-muted" />
             <h2 className="text-lg font-medium tracking-tight">Coverage map</h2>
           </div>
-          <TacticalMap
+          <OpsMap
             className="aspect-[16/10] w-full"
             center={networkCenter}
             spanMeters={4000}

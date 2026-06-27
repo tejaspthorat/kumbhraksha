@@ -3,10 +3,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, Camera, MapPin, Radio, ScanEye } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { krApi } from '@/lib/missing/client';
 import type { MissingReport, Sighting, CctvLocation } from '@/lib/missing/types';
 import { NETWORK_CENTER as networkCenter, withLiveCascade } from '@/lib/missing/cascade';
-import TacticalMap from '@/components/missing/TacticalMap';
+
+const OpsMap = dynamic(() => import('@/components/missing/OpsMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="aspect-[16/10] w-full rounded-xl bg-surface-soft border border-hairline animate-pulse" />
+  ),
+});
 import {
   StatTile,
   StatusBadge,
@@ -110,7 +117,7 @@ export default function LiveOperationsPage() {
             </div>
           </div>
 
-          <TacticalMap
+          <OpsMap
             className="aspect-[16/10] w-full"
             center={center}
             spanMeters={3000}

@@ -228,7 +228,7 @@ export default function ReportsPage() {
     if (chartData.length === 0) {
       return (
         <div className="h-64 flex items-center justify-center">
-          <p className="text-white/40">No data available for this period</p>
+          <p className="text-muted">No data available for this period</p>
         </div>
       );
     }
@@ -333,14 +333,14 @@ export default function ReportsPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">Reports & Analytics</h1>
-            <p className="text-sm text-white/40 mt-1">Loading report data...</p>
+            <h1 className="text-2xl font-bold text-ink">Reports & Analytics</h1>
+            <p className="text-sm text-muted mt-1">Loading report data...</p>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map(i => (
             <GlassCard key={i} className="h-24 animate-pulse">
-              <div className="bg-white/10 rounded-lg h-full" />
+              <div className="bg-surface-cream-strong rounded-lg h-full" />
             </GlassCard>
           ))}
         </div>
@@ -352,9 +352,9 @@ export default function ReportsPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <GlassCard className="text-center py-12">
-          <AlertTriangle size={48} className="mx-auto text-red-400 mb-4" />
-          <p className="text-red-400 mb-2">{error || 'No data available'}</p>
-          <p className="text-sm text-white/40">Make sure the backend server is running and cameras are configured</p>
+          <AlertTriangle size={48} className="mx-auto text-red-600 mb-4" />
+          <p className="text-red-600 mb-2">{error || 'No data available'}</p>
+          <p className="text-sm text-muted">Make sure the backend server is running and cameras are configured</p>
         </GlassCard>
       </div>
     );
@@ -423,16 +423,16 @@ export default function ReportsPage() {
       {/* Header with controls */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Reports & Analytics</h1>
-          <p className="text-sm text-white/40 mt-1">Comprehensive crowd analytics and incident reports</p>
+          <h1 className="text-2xl font-bold text-ink">Reports & Analytics</h1>
+          <p className="text-sm text-muted mt-1">Comprehensive crowd analytics and incident reports</p>
         </div>
         <div className="flex items-center gap-3">
           {/* Time Range Selector */}
-          <div className="flex items-center gap-2 p-1 rounded-xl bg-white/[0.04] border border-white/[0.06]">
+          <div className="flex items-center gap-2 p-1 rounded-xl bg-surface-card border border-hairline">
             <button
               onClick={() => handleTimeRangeChange('1day')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                timeRange === '1day' && !selectedDate ? 'bg-primary-light text-white' : 'text-white/40 hover:text-white/70'
+                timeRange === '1day' && !selectedDate ? 'bg-primary-light text-ink' : 'text-muted hover:text-body'
               }`}
             >
               1 Day
@@ -440,7 +440,7 @@ export default function ReportsPage() {
             <button
               onClick={() => handleTimeRangeChange('7days')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                timeRange === '7days' && !selectedDate ? 'bg-primary-light text-white' : 'text-white/40 hover:text-white/70'
+                timeRange === '7days' && !selectedDate ? 'bg-primary-light text-ink' : 'text-muted hover:text-body'
               }`}
             >
               7 Days
@@ -448,7 +448,7 @@ export default function ReportsPage() {
             <button
               onClick={() => handleTimeRangeChange('30days')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                timeRange === '30days' && !selectedDate ? 'bg-primary-light text-white' : 'text-white/40 hover:text-white/70'
+                timeRange === '30days' && !selectedDate ? 'bg-primary-light text-ink' : 'text-muted hover:text-body'
               }`}
             >
               30 Days
@@ -456,11 +456,11 @@ export default function ReportsPage() {
           </div>
           
           {/* Chart Type Selector */}
-          <div className="flex items-center gap-2 p-1 rounded-xl bg-white/[0.04] border border-white/[0.06]">
+          <div className="flex items-center gap-2 p-1 rounded-xl bg-surface-card border border-hairline">
             <button
               onClick={() => setChartType('area')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                chartType === 'area' ? 'bg-primary-light text-white' : 'text-white/40 hover:text-white/70'
+                chartType === 'area' ? 'bg-primary-light text-ink' : 'text-muted hover:text-body'
               }`}
             >
               Area
@@ -468,7 +468,7 @@ export default function ReportsPage() {
             <button
               onClick={() => setChartType('line')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                chartType === 'line' ? 'bg-primary-light text-white' : 'text-white/40 hover:text-white/70'
+                chartType === 'line' ? 'bg-primary-light text-ink' : 'text-muted hover:text-body'
               }`}
             >
               Line
@@ -476,7 +476,7 @@ export default function ReportsPage() {
             <button
               onClick={() => setChartType('bar')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                chartType === 'bar' ? 'bg-primary-light text-white' : 'text-white/40 hover:text-white/70'
+                chartType === 'bar' ? 'bg-primary-light text-ink' : 'text-muted hover:text-body'
               }`}
             >
               Bar
@@ -485,7 +485,7 @@ export default function ReportsPage() {
           
           <button
             onClick={handleExportCSV}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-light/15 hover:bg-primary-light/25 text-accent text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-light/15 hover:bg-primary-light/25 text-coral text-sm font-medium transition-colors"
           >
             <Download size={14} /> Export CSV
           </button>
@@ -494,24 +494,24 @@ export default function ReportsPage() {
 
       {/* Date Navigation */}
       {selectedDate && reportData.daily_data.length > 0 && (
-        <div className="flex items-center justify-between gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+        <div className="flex items-center justify-between gap-4 p-4 rounded-xl bg-surface-soft border border-hairline">
           <button
             onClick={handlePreviousDay}
             disabled={reportData.daily_data.findIndex(d => d.date === selectedDate) === 0}
-            className="p-2 rounded-lg hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-2 rounded-lg hover:bg-surface-cream-strong disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            <ChevronLeft size={20} className="text-white/60" />
+            <ChevronLeft size={20} className="text-body" />
           </button>
           <div className="text-center">
-            <p className="text-sm text-white/40">Selected Date</p>
-            <p className="text-lg font-bold text-white">{selectedDate}</p>
+            <p className="text-sm text-muted">Selected Date</p>
+            <p className="text-lg font-bold text-ink">{selectedDate}</p>
           </div>
           <button
             onClick={handleNextDay}
             disabled={reportData.daily_data.findIndex(d => d.date === selectedDate) === reportData.daily_data.length - 1}
-            className="p-2 rounded-lg hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-2 rounded-lg hover:bg-surface-cream-strong disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            <ChevronRight size={20} className="text-white/60" />
+            <ChevronRight size={20} className="text-body" />
           </button>
         </div>
       )}
@@ -521,11 +521,11 @@ export default function ReportsPage() {
         <GlassCard>
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-xl bg-accent/15 flex-shrink-0">
-              <TrendingUp size={20} className="text-accent" />
+              <TrendingUp size={20} className="text-coral" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-white/40 mb-1">Total People</p>
-              <p className="text-2xl font-bold text-white truncate">{actualStats.total.toLocaleString()}</p>
+              <p className="text-xs text-muted mb-1">Total People</p>
+              <p className="text-2xl font-bold text-ink truncate">{actualStats.total.toLocaleString()}</p>
             </div>
           </div>
         </GlassCard>
@@ -533,12 +533,12 @@ export default function ReportsPage() {
         <GlassCard>
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-xl bg-blue-500/15 flex-shrink-0">
-              <Clock size={20} className="text-blue-400" />
+              <Clock size={20} className="text-blue-600" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-white/40 mb-1">Peak Time</p>
-              <p className="text-lg font-bold text-white truncate">{actualStats.peakTime}</p>
-              <p className="text-xs text-white/40">{actualStats.peak} people</p>
+              <p className="text-xs text-muted mb-1">Peak Time</p>
+              <p className="text-lg font-bold text-ink truncate">{actualStats.peakTime}</p>
+              <p className="text-xs text-muted">{actualStats.peak} people</p>
             </div>
           </div>
         </GlassCard>
@@ -546,11 +546,11 @@ export default function ReportsPage() {
         <GlassCard>
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-xl bg-red-500/15 flex-shrink-0">
-              <AlertTriangle size={20} className="text-red-400" />
+              <AlertTriangle size={20} className="text-red-600" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-white/40 mb-1">Total Alerts</p>
-              <p className="text-2xl font-bold text-red-400 truncate">{reportData.total_alerts}</p>
+              <p className="text-xs text-muted mb-1">Total Alerts</p>
+              <p className="text-2xl font-bold text-red-600 truncate">{reportData.total_alerts}</p>
             </div>
           </div>
         </GlassCard>
@@ -558,14 +558,14 @@ export default function ReportsPage() {
         <GlassCard>
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-xl bg-emerald-500/15 flex-shrink-0">
-              <MapPin size={20} className="text-emerald-400" />
+              <MapPin size={20} className="text-emerald-600" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-white/40 mb-1">Busiest Zone</p>
-              <p className="text-base font-bold text-white truncate" title={reportData.busiest_zone}>
+              <p className="text-xs text-muted mb-1">Busiest Zone</p>
+              <p className="text-base font-bold text-ink truncate" title={reportData.busiest_zone}>
                 {reportData.busiest_zone}
               </p>
-              <p className="text-xs text-white/40">{actualStats.density} density</p>
+              <p className="text-xs text-muted">{actualStats.density} density</p>
             </div>
           </div>
         </GlassCard>
@@ -574,8 +574,8 @@ export default function ReportsPage() {
       {/* Main Chart */}
       <GlassCard hover={false}>
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-          <h3 className="text-sm font-semibold text-white">{getChartTitle()}</h3>
-          <p className="text-xs text-white/40">{getXAxisLabel()}</p>
+          <h3 className="text-sm font-semibold text-ink">{getChartTitle()}</h3>
+          <p className="text-xs text-muted">{getXAxisLabel()}</p>
         </div>
         <div className="h-80 w-full">
           {renderChart()}
@@ -586,7 +586,7 @@ export default function ReportsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Alert breakdown */}
         <GlassCard hover={false}>
-          <h3 className="text-sm font-semibold text-white mb-4">Alert Breakdown</h3>
+          <h3 className="text-sm font-semibold text-ink mb-4">Alert Breakdown</h3>
           <div className="h-64">
             {reportData.alert_summary.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -614,7 +614,7 @@ export default function ReportsPage() {
               </ResponsiveContainer>
             ) : (
               <div className="h-full flex items-center justify-center">
-                <p className="text-white/40 text-sm">No alerts in selected period</p>
+                <p className="text-muted text-sm">No alerts in selected period</p>
               </div>
             )}
           </div>
@@ -623,9 +623,9 @@ export default function ReportsPage() {
               <div key={a.name} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ background: a.color }} />
-                  <span className="text-xs text-white/50">{a.name.charAt(0).toUpperCase() + a.name.slice(1)}</span>
+                  <span className="text-xs text-muted">{a.name.charAt(0).toUpperCase() + a.name.slice(1)}</span>
                 </div>
-                <span className="text-xs font-bold text-white">{a.value}</span>
+                <span className="text-xs font-bold text-ink">{a.value}</span>
               </div>
             ))}
           </div>
@@ -633,11 +633,11 @@ export default function ReportsPage() {
 
         {/* Zone ranking */}
         <GlassCard hover={false}>
-          <h3 className="text-sm font-semibold text-white mb-4">Crowded Zones Ranking</h3>
+          <h3 className="text-sm font-semibold text-ink mb-4">Crowded Zones Ranking</h3>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-[10px] text-white/30 uppercase tracking-wider border-b border-white/[0.04]">
+                <tr className="text-left text-[10px] text-muted-soft uppercase tracking-wider border-b border-hairline">
                   <th className="pb-3 pr-4">#</th>
                   <th className="pb-3 pr-4">Zone</th>
                   <th className="pb-3 pr-4">Avg Density</th>
@@ -647,16 +647,16 @@ export default function ReportsPage() {
               </thead>
               <tbody>
                 {reportData.zone_rankings.map((z, i) => (
-                  <tr key={z.zone} className="border-b border-white/[0.02]">
-                    <td className="py-3 pr-4 text-sm font-bold text-white/40">{i + 1}</td>
-                    <td className="py-3 pr-4 text-sm font-medium text-white/80">{z.zone}</td>
+                  <tr key={z.zone} className="border-b border-hairline">
+                    <td className="py-3 pr-4 text-sm font-bold text-muted">{i + 1}</td>
+                    <td className="py-3 pr-4 text-sm font-medium text-body-strong">{z.zone}</td>
                     <td className="py-3 pr-4">
                       <Badge variant={z.avg_density > 3 ? 'danger' : z.avg_density > 1.5 ? 'warning' : 'success'}>
                         {z.avg_density.toFixed(1)} p/m²
                       </Badge>
                     </td>
-                    <td className="py-3 pr-4 text-sm text-white/60">{z.peak_count}</td>
-                    <td className="py-3 text-sm font-medium text-white/60">{z.alerts}</td>
+                    <td className="py-3 pr-4 text-sm text-body">{z.peak_count}</td>
+                    <td className="py-3 text-sm font-medium text-body">{z.alerts}</td>
                   </tr>
                 ))}
               </tbody>
@@ -667,21 +667,21 @@ export default function ReportsPage() {
 
       {/* Alert Log */}
       <GlassCard hover={false}>
-        <h3 className="text-sm font-semibold text-white mb-4">Recent Alerts</h3>
+        <h3 className="text-sm font-semibold text-ink mb-4">Recent Alerts</h3>
         <div className="space-y-2 max-h-[300px] overflow-y-auto">
           {reportData.alert_log.length > 0 ? (
             reportData.alert_log.slice(0, 20).map((a, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
-                <span className="text-xs font-mono text-white/30 w-24 flex-shrink-0">{new Date(a.time).toLocaleString()}</span>
+              <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-surface-soft hover:bg-surface-card transition-colors">
+                <span className="text-xs font-mono text-muted-soft w-24 flex-shrink-0">{new Date(a.time).toLocaleString()}</span>
                 <Badge variant={a.level === 'danger' ? 'danger' : a.level === 'warning' ? 'warning' : 'info'}>
                   {a.type}
                 </Badge>
-                <span className="text-xs text-white/50 flex-1 truncate">{a.zone}</span>
+                <span className="text-xs text-muted flex-1 truncate">{a.zone}</span>
               </div>
             ))
           ) : (
             <div className="text-center py-8">
-              <p className="text-white/40 text-sm">No alerts in selected period</p>
+              <p className="text-muted text-sm">No alerts in selected period</p>
             </div>
           )}
         </div>
@@ -689,7 +689,7 @@ export default function ReportsPage() {
 
       {/* Date range info */}
       <div className="text-center">
-        <p className="text-[10px] text-white/20">
+        <p className="text-[10px] text-muted-soft">
           Report period: {new Date(reportData.date_range.start).toLocaleDateString()} - {new Date(reportData.date_range.end).toLocaleDateString()}
           {selectedDate && ` • Showing detailed data for ${selectedDate}`}
           {!selectedDate && timeRange === '1day' && ` • Last 24 hours`}

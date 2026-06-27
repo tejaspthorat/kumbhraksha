@@ -68,27 +68,27 @@ export default function ZonesPage() {
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Zone Intelligence</h1>
-        <p className="text-sm text-white/40 mt-1">Track specific areas with entry/exit counting and smart detection</p>
+        <h1 className="text-2xl font-bold text-ink">Zone Intelligence</h1>
+        <p className="text-sm text-muted mt-1">Track specific areas with entry/exit counting and smart detection</p>
       </div>
 
       {/* Summary stats */}
       <motion.div variants={item} className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <GlassCard>
-          <p className="text-xs text-white/40 uppercase tracking-wider">Total Zones</p>
-          <AnimatedCounter value={zones.length} className="text-2xl font-bold text-white mt-1" />
+          <p className="text-xs text-muted uppercase tracking-wider">Total Zones</p>
+          <AnimatedCounter value={zones.length} className="text-2xl font-bold text-ink mt-1" />
         </GlassCard>
         <GlassCard>
-          <p className="text-xs text-white/40 uppercase tracking-wider">People Inside</p>
-          <AnimatedCounter value={totalCurrent} className="text-2xl font-bold text-accent mt-1" />
+          <p className="text-xs text-muted uppercase tracking-wider">People Inside</p>
+          <AnimatedCounter value={totalCurrent} className="text-2xl font-bold text-coral mt-1" />
         </GlassCard>
         <GlassCard>
-          <p className="text-xs text-white/40 uppercase tracking-wider">Critical Zones</p>
-          <AnimatedCounter value={criticalZones} className="text-2xl font-bold text-red-400 mt-1" />
+          <p className="text-xs text-muted uppercase tracking-wider">Critical Zones</p>
+          <AnimatedCounter value={criticalZones} className="text-2xl font-bold text-red-600 mt-1" />
         </GlassCard>
         <GlassCard>
-          <p className="text-xs text-white/40 uppercase tracking-wider">Queue Detected</p>
-          <AnimatedCounter value={zones.filter((z: any) => (z.density || 0) > 3.0).length} className="text-2xl font-bold text-amber-400 mt-1" />
+          <p className="text-xs text-muted uppercase tracking-wider">Queue Detected</p>
+          <AnimatedCounter value={zones.filter((z: any) => (z.density || 0) > 3.0).length} className="text-2xl font-bold text-amber-600 mt-1" />
         </GlassCard>
       </motion.div>
 
@@ -101,12 +101,12 @@ export default function ZonesPage() {
             <GlassCard className="h-full">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <MapPin size={16} className="text-accent" />
+                  <MapPin size={16} className="text-coral" />
                   <div>
-                    <h3 className="text-sm font-semibold text-white">{zone.name}</h3>
+                    <h3 className="text-sm font-semibold text-ink">{zone.name}</h3>
                     <div className="flex items-center gap-2">
-                       <span className="text-[10px] text-accent/70 font-medium uppercase">{zone.floorName || 'Default Floor'}</span>
-                       <span className="text-[10px] text-white/30">{zone.area || 0} m²</span>
+                       <span className="text-[10px] text-coral/70 font-medium uppercase">{zone.floorName || 'Default Floor'}</span>
+                       <span className="text-[10px] text-muted-soft">{zone.area || 0} m²</span>
                     </div>
                   </div>
                 </div>
@@ -116,10 +116,10 @@ export default function ZonesPage() {
               {/* Capacity bar */}
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] text-white/30">Capacity</span>
-                  <span className="text-[10px] text-white/50">{zone.people}/{capacity}</span>
+                  <span className="text-[10px] text-muted-soft">Capacity</span>
+                  <span className="text-[10px] text-muted">{zone.people}/{capacity}</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                <div className="h-1.5 rounded-full bg-surface-soft overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${Math.min((zone.people / capacity) * 100, 100)}%` }}
@@ -135,18 +135,18 @@ export default function ZonesPage() {
               {/* Metrics */}
               <div className="grid grid-cols-3 gap-3 mb-4">
                 <div className="text-center p-2 rounded-lg bg-white/2">
-                  <ArrowUpRight size={12} className="text-emerald-400 mx-auto mb-1" />
-                  <span className="text-xs font-bold text-white">{Math.floor((zone.people || 0) * 0.8)}</span>
+                  <ArrowUpRight size={12} className="text-emerald-600 mx-auto mb-1" />
+                  <span className="text-xs font-bold text-ink">{Math.floor((zone.people || 0) * 0.8)}</span>
                   <p className="text-[9px] text-white/25">Entries</p>
                 </div>
                 <div className="text-center p-2 rounded-lg bg-white/2">
-                  <ArrowDownRight size={12} className="text-blue-400 mx-auto mb-1" />
-                  <span className="text-xs font-bold text-white">{Math.floor((zone.people || 0) * 0.2)}</span>
+                  <ArrowDownRight size={12} className="text-blue-600 mx-auto mb-1" />
+                  <span className="text-xs font-bold text-ink">{Math.floor((zone.people || 0) * 0.2)}</span>
                   <p className="text-[9px] text-white/25">Exits</p>
                 </div>
                 <div className="text-center p-2 rounded-lg bg-white/2">
-                  <Users size={12} className="text-accent mx-auto mb-1" />
-                  <span className="text-xs font-bold text-white">{(zone.density || 0).toFixed(1)}</span>
+                  <Users size={12} className="text-coral mx-auto mb-1" />
+                  <span className="text-xs font-bold text-ink">{(zone.density || 0).toFixed(1)}</span>
                   <p className="text-[9px] text-white/25">p/m²</p>
                 </div>
               </div>
@@ -154,17 +154,17 @@ export default function ZonesPage() {
               {/* Smart detection badges */}
               <div className="flex items-center gap-2">
                 {zone.queue && (
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-500/10 text-amber-400 text-[10px] font-medium">
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-500/10 text-amber-600 text-[10px] font-medium">
                     <Eye size={10} /> Queue Detected
                   </span>
                 )}
                 {zone.restricted && (
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-red-500/10 text-red-400 text-[10px] font-medium">
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-red-500/10 text-red-600 text-[10px] font-medium">
                     <Shield size={10} /> Restricted
                   </span>
                 )}
                 {zone.level === 'danger' && (
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-red-500/10 text-red-400 text-[10px] font-medium">
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-red-500/10 text-red-600 text-[10px] font-medium">
                     <AlertTriangle size={10} /> Over Capacity
                   </span>
                 )}

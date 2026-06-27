@@ -59,19 +59,19 @@ function HeatmapSkeleton() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="space-y-2">
-          <div className="h-8 w-64 bg-white/5 rounded-lg animate-pulse" />
-          <div className="h-4 w-80 bg-white/5 rounded-lg animate-pulse" />
+          <div className="h-8 w-64 bg-surface-soft rounded-lg animate-pulse" />
+          <div className="h-4 w-80 bg-surface-soft rounded-lg animate-pulse" />
         </div>
-        <div className="h-8 w-32 bg-white/5 rounded-full animate-pulse" />
+        <div className="h-8 w-32 bg-surface-soft rounded-full animate-pulse" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map(i => (
-          <div key={i} className="h-[100px] bg-white/[0.04] rounded-2xl animate-pulse" />
+          <div key={i} className="h-[100px] bg-surface-card rounded-2xl animate-pulse" />
         ))}
       </div>
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2 h-[500px] bg-white/[0.04] rounded-2xl animate-pulse" />
-        <div className="h-[500px] bg-white/[0.04] rounded-2xl animate-pulse" />
+        <div className="xl:col-span-2 h-[500px] bg-surface-card rounded-2xl animate-pulse" />
+        <div className="h-[500px] bg-surface-card rounded-2xl animate-pulse" />
       </div>
     </div>
   );
@@ -174,13 +174,13 @@ export default function HeatmapPage() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-ink flex items-center gap-3">
             <div className="p-2 rounded-xl bg-gradient-to-br from-red-500/20 to-amber-500/20 border border-red-500/20">
-              <Layers size={22} className="text-red-400" />
+              <Layers size={22} className="text-red-600" />
             </div>
             Crowd Density Heatmap
           </h1>
-          <p className="text-sm text-white/40 mt-1">Real-time spatial analysis from YOLO person detection</p>
+          <p className="text-sm text-muted mt-1">Real-time spatial analysis from YOLO person detection</p>
         </div>
         <div className="flex items-center gap-3">
           <Badge variant={cameras.length > 0 ? 'success' : 'warning'} pulse={cameras.length > 0}>
@@ -198,14 +198,14 @@ export default function HeatmapPage() {
         <GlassCard className="relative overflow-hidden">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-white/40 font-medium uppercase tracking-wider">Total Detected</p>
+              <p className="text-xs text-muted font-medium uppercase tracking-wider">Total Detected</p>
               <div className="mt-2">
-                <AnimatedCounter value={totalPeople} className="text-3xl font-bold text-white" />
+                <AnimatedCounter value={totalPeople} className="text-3xl font-bold text-ink" />
               </div>
-              <p className="text-xs text-white/30 mt-1">people across all cameras</p>
+              <p className="text-xs text-muted-soft mt-1">people across all cameras</p>
             </div>
             <div className="p-2.5 rounded-xl bg-accent/15">
-              <Users size={18} className="text-accent" />
+              <Users size={18} className="text-coral" />
             </div>
           </div>
           <div className="absolute -bottom-2 -right-2 w-20 h-20 bg-accent/5 rounded-full blur-2xl" />
@@ -214,14 +214,14 @@ export default function HeatmapPage() {
         <GlassCard className="relative overflow-hidden">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-white/40 font-medium uppercase tracking-wider">Active Cameras</p>
+              <p className="text-xs text-muted font-medium uppercase tracking-wider">Active Cameras</p>
               <div className="mt-2">
-                <AnimatedCounter value={activeCameras} className="text-3xl font-bold text-white" />
+                <AnimatedCounter value={activeCameras} className="text-3xl font-bold text-ink" />
               </div>
-              <p className="text-xs text-white/30 mt-1">{highDensityCameras} with high density</p>
+              <p className="text-xs text-muted-soft mt-1">{highDensityCameras} with high density</p>
             </div>
             <div className="p-2.5 rounded-xl bg-blue-500/15">
-              <Camera size={18} className="text-blue-400" />
+              <Camera size={18} className="text-blue-600" />
             </div>
           </div>
         </GlassCard>
@@ -229,18 +229,18 @@ export default function HeatmapPage() {
         <GlassCard className="relative overflow-hidden">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-white/40 font-medium uppercase tracking-wider">Hottest Zone</p>
+              <p className="text-xs text-muted font-medium uppercase tracking-wider">Hottest Zone</p>
               <div className="mt-2">
-                <span className="text-xl font-bold text-white">
+                <span className="text-xl font-bold text-ink">
                   {maxDensityCamera ? maxDensityCamera[1].name : 'N/A'}
                 </span>
               </div>
-              <p className="text-xs text-white/30 mt-1">
+              <p className="text-xs text-muted-soft mt-1">
                 {maxDensityCamera ? `${maxDensityCamera[1].count} people` : 'No data'}
               </p>
             </div>
             <div className="p-2.5 rounded-xl bg-red-500/15">
-              <Crosshair size={18} className="text-red-400" />
+              <Crosshair size={18} className="text-red-600" />
             </div>
           </div>
         </GlassCard>
@@ -248,14 +248,14 @@ export default function HeatmapPage() {
         <GlassCard className="relative overflow-hidden">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-white/40 font-medium uppercase tracking-wider">High Density Alerts</p>
+              <p className="text-xs text-muted font-medium uppercase tracking-wider">High Density Alerts</p>
               <div className="mt-2">
-                <AnimatedCounter value={highDensityCameras} className="text-3xl font-bold text-red-400" />
+                <AnimatedCounter value={highDensityCameras} className="text-3xl font-bold text-red-600" />
               </div>
-              <p className="text-xs text-white/30 mt-1">cameras in critical state</p>
+              <p className="text-xs text-muted-soft mt-1">cameras in critical state</p>
             </div>
             <div className="p-2.5 rounded-xl bg-red-500/15">
-              <AlertTriangle size={18} className="text-red-400" />
+              <AlertTriangle size={18} className="text-red-600" />
             </div>
           </div>
         </GlassCard>
@@ -263,7 +263,7 @@ export default function HeatmapPage() {
 
       {/* View Controls */}
       <motion.div variants={item} className="flex items-center gap-4 flex-wrap">
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-white/4 border border-white/6">
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-white/4 border border-hairline">
           {([
             { key: 'grid', icon: Grid3X3, label: 'Density Grid' },
             { key: 'overlay', icon: Layers, label: 'Camera Heatmaps' },
@@ -273,7 +273,7 @@ export default function HeatmapPage() {
               key={mode.key}
               onClick={() => setViewMode(mode.key)}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                viewMode === mode.key ? 'bg-primary-light text-white' : 'text-white/40 hover:text-white/70'
+                viewMode === mode.key ? 'bg-primary-light text-ink' : 'text-muted hover:text-body'
               }`}
             >
               <mode.icon size={14} />
@@ -287,21 +287,21 @@ export default function HeatmapPage() {
             onClick={() => setShowPositions(!showPositions)}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${
               showPositions
-                ? 'bg-accent/20 border-accent/30 text-accent'
-                : 'bg-white/4 border-white/6 text-white/40'
+                ? 'bg-accent/20 border-accent/30 text-coral'
+                : 'bg-white/4 border-hairline text-muted'
             }`}
           >
             <Eye size={12} />
             Positions
           </button>
           <div className="flex items-center gap-1">
-            <span className="text-[10px] text-white/30 mr-1">Grid:</span>
+            <span className="text-[10px] text-muted-soft mr-1">Grid:</span>
             {([20, 30, 40] as const).map(size => (
               <button
                 key={size}
                 onClick={() => setGridSize(size)}
                 className={`px-2 py-1 rounded text-[10px] font-medium transition-all ${
-                  gridSize === size ? 'bg-primary-light text-white' : 'bg-white/4 text-white/30'
+                  gridSize === size ? 'bg-primary-light text-ink' : 'bg-white/4 text-muted-soft'
                 }`}
               >
                 {size}×{size}
@@ -316,8 +316,8 @@ export default function HeatmapPage() {
         <motion.div variants={item}>
           <GlassCard className="text-center py-20" hover={false}>
             <Camera size={64} className="mx-auto text-white/15 mb-4" />
-            <p className="text-white/40 text-lg">No cameras connected</p>
-            <p className="text-xs text-white/20 mt-2">Add cameras from the Live Cameras page to see heatmap data</p>
+            <p className="text-muted text-lg">No cameras connected</p>
+            <p className="text-xs text-muted-soft mt-2">Add cameras from the Live Cameras page to see heatmap data</p>
           </GlassCard>
         </motion.div>
       ) : (
@@ -330,26 +330,26 @@ export default function HeatmapPage() {
                 <GlassCard hover={false}>
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                        <Grid3X3 size={14} className="text-accent" />
+                      <h3 className="text-sm font-semibold text-ink flex items-center gap-2">
+                        <Grid3X3 size={14} className="text-coral" />
                         Aggregated Density Grid
                       </h3>
-                      <p className="text-[10px] text-white/30 mt-0.5">
+                      <p className="text-[10px] text-muted-soft mt-0.5">
                         {gridSize}×{gridSize} spatial density from {activeCameras} camera{activeCameras !== 1 ? 's' : ''} • {totalPeople} people tracked
                       </p>
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-1">
                         <div className="w-2.5 h-2.5 rounded-sm bg-emerald-500" />
-                        <span className="text-[10px] text-white/30">Low</span>
+                        <span className="text-[10px] text-muted-soft">Low</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <div className="w-2.5 h-2.5 rounded-sm bg-amber-500" />
-                        <span className="text-[10px] text-white/30">Medium</span>
+                        <span className="text-[10px] text-muted-soft">Medium</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <div className="w-2.5 h-2.5 rounded-sm bg-red-500" />
-                        <span className="text-[10px] text-white/30">High</span>
+                        <span className="text-[10px] text-muted-soft">High</span>
                       </div>
                       <Badge variant="success" pulse>
                         <RefreshCw size={10} className="mr-1" />
@@ -359,7 +359,7 @@ export default function HeatmapPage() {
                   </div>
 
                   <div
-                    className="rounded-xl overflow-hidden border border-white/[0.06] bg-black/20"
+                    className="rounded-xl overflow-hidden border border-hairline bg-black/20"
                     style={{ aspectRatio: '1 / 1', maxHeight: '500px' }}
                   >
                     <div
@@ -388,7 +388,7 @@ export default function HeatmapPage() {
                           )}
                           {/* Tooltip on hover */}
                           <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block z-50 pointer-events-none">
-                            <div className="px-2 py-1 rounded bg-black/90 border border-white/10 text-[9px] text-white whitespace-nowrap">
+                            <div className="px-2 py-1 rounded bg-black/90 border border-white/10 text-[9px] text-on-dark whitespace-nowrap">
                               {(v * 100).toFixed(0)}% density
                             </div>
                           </div>
@@ -398,8 +398,8 @@ export default function HeatmapPage() {
                   </div>
 
                   {/* Density gradient bar */}
-                  <div className="mt-4 pt-3 border-t border-white/10">
-                    <div className="flex items-center justify-between text-[10px] text-white/30 mb-1.5">
+                  <div className="mt-4 pt-3 border-t border-hairline">
+                    <div className="flex items-center justify-between text-[10px] text-muted-soft mb-1.5">
                       <span>Density Gradient</span>
                       <span className="font-medium">
                         {overallDensity === 'High' ? '⚠️ CRITICAL' : overallDensity === 'Medium' ? '⚠️ ELEVATED' : '✅ NORMAL'}
@@ -410,7 +410,7 @@ export default function HeatmapPage() {
                         background: 'linear-gradient(to right, rgba(16,185,129,0.3), rgba(234,179,8,0.5), rgba(249,115,22,0.7), rgba(239,68,68,0.9))'
                       }}
                     />
-                    <div className="flex justify-between text-[9px] text-white/20 mt-1">
+                    <div className="flex justify-between text-[9px] text-muted-soft mt-1">
                       <span>0%</span>
                       <span>25%</span>
                       <span>50%</span>
@@ -425,15 +425,15 @@ export default function HeatmapPage() {
               {viewMode === 'split' && (
                 <motion.div variants={item}>
                   <GlassCard hover={false} className="h-full">
-                    <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-                      <BarChart3 size={14} className="text-accent" />
+                    <h3 className="text-sm font-semibold text-ink mb-4 flex items-center gap-2">
+                      <BarChart3 size={14} className="text-coral" />
                       Per-Camera Breakdown
                     </h3>
                     <div className="space-y-3 max-h-[460px] overflow-y-auto pr-2">
                       {cameraEntries.map(([camId, camData]) => (
                         <div
                           key={camId}
-                          className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] transition-all cursor-pointer"
+                          className="p-3 rounded-xl bg-surface-soft border border-hairline hover:bg-surface-cream-strong transition-all cursor-pointer"
                           onClick={() => setExpandedCamera(expandedCamera === parseInt(camId) ? null : parseInt(camId))}
                         >
                           <div className="flex items-center justify-between">
@@ -443,10 +443,10 @@ export default function HeatmapPage() {
                                 : camData.density === 'Medium' ? 'bg-amber-500'
                                 : 'bg-emerald-500'
                               }`} />
-                              <span className="text-sm font-medium text-white/80">{camData.name}</span>
+                              <span className="text-sm font-medium text-body-strong">{camData.name}</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs text-white/60 font-mono">{camData.count} ppl</span>
+                              <span className="text-xs text-body font-mono">{camData.count} ppl</span>
                               <Badge variant={getDensityLevel(camData.density)}>
                                 {camData.density}
                               </Badge>
@@ -455,7 +455,7 @@ export default function HeatmapPage() {
 
                           {/* Person position dots visualization */}
                           {showPositions && camData.positions.length > 0 && (
-                            <div className="mt-3 relative h-16 rounded-lg bg-black/30 border border-white/[0.04] overflow-hidden">
+                            <div className="mt-3 relative h-16 rounded-lg bg-black/30 border border-hairline overflow-hidden">
                               {camData.positions.map((pos, idx) => (
                                 <div
                                   key={idx}
@@ -476,7 +476,7 @@ export default function HeatmapPage() {
                                   }}
                                 />
                               ))}
-                              <div className="absolute top-1 left-1 text-[8px] text-white/30 font-mono">
+                              <div className="absolute top-1 left-1 text-[8px] text-muted-soft font-mono">
                                 {camData.frame_width}×{camData.frame_height}
                               </div>
                             </div>
@@ -491,7 +491,7 @@ export default function HeatmapPage() {
                                 exit={{ opacity: 0, height: 0 }}
                                 className="mt-3"
                               >
-                                <div className="relative rounded-lg overflow-hidden border border-white/[0.06]">
+                                <div className="relative rounded-lg overflow-hidden border border-hairline">
                                   <img
                                     ref={el => { heatmapFrameRefs.current[parseInt(camId)] = el; }}
                                     src={`http://localhost:5000/api/cameras/${camId}/heatmap?t=${Date.now()}`}
@@ -513,7 +513,7 @@ export default function HeatmapPage() {
                       {cameraEntries.length === 0 && (
                         <div className="text-center py-8">
                           <Camera size={32} className="mx-auto text-white/15 mb-2" />
-                          <p className="text-xs text-white/30">Waiting for detection data...</p>
+                          <p className="text-xs text-muted-soft">Waiting for detection data...</p>
                         </div>
                       )}
                     </div>
@@ -528,11 +528,11 @@ export default function HeatmapPage() {
             <motion.div variants={item}>
               <GlassCard hover={false}>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                    <Layers size={14} className="text-accent" />
+                  <h3 className="text-sm font-semibold text-ink flex items-center gap-2">
+                    <Layers size={14} className="text-coral" />
                     Camera Density Heatmaps
                   </h3>
-                  <p className="text-[10px] text-white/30">
+                  <p className="text-[10px] text-muted-soft">
                     Generated from YOLO person detections with Gaussian density smoothing
                   </p>
                 </div>
@@ -544,7 +544,7 @@ export default function HeatmapPage() {
                     const camData = heatmapData?.cameras?.[String(cam.id)];
                     return (
                       <div key={cam.id} className="relative group">
-                        <div className="rounded-xl overflow-hidden border border-white/[0.06] bg-black/30">
+                        <div className="rounded-xl overflow-hidden border border-hairline bg-black/30">
                           {/* Heatmap image from backend */}
                           <div className="relative aspect-video">
                             <img
@@ -593,11 +593,11 @@ export default function HeatmapPage() {
                             {/* Bottom info */}
                             <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-3">
                               <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium text-white">{cam.name}</span>
+                                <span className="text-sm font-medium text-ink">{cam.name}</span>
                                 <div className="flex items-center gap-2">
                                   {camData && (
                                     <>
-                                      <span className="text-xs text-white/60 font-mono flex items-center gap-1">
+                                      <span className="text-xs text-body font-mono flex items-center gap-1">
                                         <Users size={10} />
                                         {camData.count}
                                       </span>
@@ -624,25 +624,25 @@ export default function HeatmapPage() {
             <motion.div variants={item}>
               <GlassCard hover={false}>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                    <Crosshair size={14} className="text-accent" />
+                  <h3 className="text-sm font-semibold text-ink flex items-center gap-2">
+                    <Crosshair size={14} className="text-coral" />
                     Real-Time Person Locations
                   </h3>
-                  <span className="text-[10px] text-white/30">
+                  <span className="text-[10px] text-muted-soft">
                     {totalPeople} people tracked across {activeCameras} camera{activeCameras !== 1 ? 's' : ''}
                   </span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                   {cameraEntries.map(([camId, camData]) => (
-                    <div key={camId} className="relative h-32 rounded-xl bg-black/30 border border-white/[0.06] overflow-hidden">
+                    <div key={camId} className="relative h-32 rounded-xl bg-black/30 border border-hairline overflow-hidden">
                       {/* Grid lines */}
                       <div className="absolute inset-0 pointer-events-none" style={{
                         backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
                         backgroundSize: '25% 25%'
                       }} />
                       {/* Center line */}
-                      <div className="absolute top-0 bottom-0 left-1/2 w-px bg-white/[0.06]" />
-                      <div className="absolute left-0 right-0 top-1/2 h-px bg-white/[0.06]" />
+                      <div className="absolute top-0 bottom-0 left-1/2 w-px bg-surface-cream-strong" />
+                      <div className="absolute left-0 right-0 top-1/2 h-px bg-surface-cream-strong" />
 
                       {/* Person dots */}
                       {camData.positions.map((pos, idx) => (
@@ -667,10 +667,10 @@ export default function HeatmapPage() {
 
                       {/* Label */}
                       <div className="absolute top-2 left-2 flex items-center gap-2">
-                        <span className="text-[10px] text-white/50 font-medium bg-black/50 px-2 py-0.5 rounded">
+                        <span className="text-[10px] text-on-dark font-medium bg-black/50 px-2 py-0.5 rounded">
                           {camData.name}
                         </span>
-                        <span className="text-[10px] text-white/30 font-mono">{camData.count} ppl</span>
+                        <span className="text-[10px] text-on-dark-soft font-mono bg-black/40 px-1.5 py-0.5 rounded">{camData.count} ppl</span>
                       </div>
                     </div>
                   ))}
@@ -683,7 +683,7 @@ export default function HeatmapPage() {
 
       {/* Footer */}
       <motion.div variants={item} className="text-center">
-        <p className="text-[10px] text-white/20 flex items-center justify-center gap-2">
+        <p className="text-[10px] text-muted-soft flex items-center justify-center gap-2">
           <RefreshCw size={10} className="animate-spin" />
           Heatmap data refreshes every 2 seconds • Powered by YOLOv8 person detection
           {heatmapData?.timestamp && (
