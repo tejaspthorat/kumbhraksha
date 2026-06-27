@@ -1,0 +1,201 @@
+{
+  "id": "5w10dzr6mnan2loh",
+  "name": "Export",
+  "createdAt": "2026-03-28T18:03:38.177Z",
+  "floors": [
+    {
+      "id": "floor-1",
+      "name": "Ground Floor",
+      "order": 1,
+      "scale": 1,
+      "rooms": [
+        {
+          "id": "ido757s0mn9ebt8q",
+          "name": "MainHall",
+          "type": "General Area",
+          "x": 620,
+          "y": 80,
+          "width": 400,
+          "height": 200,
+          "color": "#378ADD",
+          "alertThreshold": 85,
+          "currentOccupancy": 0,
+          "assignedUserIds": [],
+          "assetIds": [],
+          "floorId": "floor-1",
+          "notes": "hello"
+        },
+        {
+          "id": "nue1j2v1mn9efy3o",
+          "name": "Gate A",
+          "type": "General Area",
+          "x": 140,
+          "y": 100,
+          "width": 300,
+          "height": 160,
+          "color": "#32e251",
+          "alertThreshold": 85,
+          "currentOccupancy": 0,
+          "assignedUserIds": [],
+          "assetIds": [],
+          "floorId": "floor-1"
+        },
+        {
+          "id": "ks4cqr33mn9egobk",
+          "name": "Stage",
+          "type": "General Area",
+          "x": 140,
+          "y": 380,
+          "width": 420,
+          "height": 120,
+          "color": "#d3f222",
+          "alertThreshold": 85,
+          "currentOccupancy": 0,
+          "assignedUserIds": [],
+          "assetIds": [],
+          "floorId": "floor-1"
+        },
+        {
+          "id": "xg9014v9mn9eh6tw",
+          "name": "Food Court",
+          "type": "Kitchen / Pantry",
+          "x": 700,
+          "y": 380,
+          "width": 280,
+          "height": 180,
+          "color": "#BA7517",
+          "alertThreshold": 85,
+          "currentOccupancy": 0,
+          "assignedUserIds": [],
+          "assetIds": [],
+          "floorId": "floor-1"
+        }
+      ],
+      "entryPoints": [],
+      "corridors": [],
+      "evacuationRoutes": []
+    },
+    {
+      "id": "floor-9rbw0e9jmn9ekx50",
+      "name": "1st Floor",
+      "order": 2,
+      "scale": 1,
+      "rooms": [
+        {
+          "id": "pl32df5wmn9elh0j",
+          "name": "Room  101",
+          "type": "General Area",
+          "x": 160,
+          "y": 60,
+          "width": 240,
+          "height": 100,
+          "color": "#378ADD",
+          "alertThreshold": 85,
+          "currentOccupancy": 0,
+          "assignedUserIds": [],
+          "assetIds": [],
+          "floorId": "floor-9rbw0e9jmn9ekx50"
+        },
+        {
+          "id": "4jv2ppltmn9ely4j",
+          "name": "Meeting Room",
+          "type": "Meeting Room",
+          "x": 540,
+          "y": 40,
+          "width": 360,
+          "height": 160,
+          "color": "#378ADD",
+          "alertThreshold": 85,
+          "currentOccupancy": 0,
+          "assignedUserIds": [],
+          "assetIds": [],
+          "floorId": "floor-9rbw0e9jmn9ekx50"
+        },
+        {
+          "id": "fptjuct6mn9emm6z",
+          "name": "Seminar Hall",
+          "type": "Auditorium / Hall",
+          "x": 200,
+          "y": 300,
+          "width": 720,
+          "height": 100,
+          "color": "#E24B4A",
+          "alertThreshold": 85,
+          "currentOccupancy": 0,
+          "assignedUserIds": [],
+          "assetIds": [],
+          "floorId": "floor-9rbw0e9jmn9ekx50"
+        }
+      ],
+      "entryPoints": [
+        {
+          "id": "j3sb4eo4mn9eo2gz",
+          "x": 160,
+          "y": 120
+        },
+        {
+          "id": "vdx31ajkmn9eo4g5",
+          "x": 540,
+          "y": 120
+        },
+        {
+          "id": "icojob7vmn9eo5w8",
+          "x": 260,
+          "y": 300
+        },
+        {
+          "id": "msvjb48zmn9eo6ng",
+          "x": 340,
+          "y": 300
+        }
+      ],
+      "corridors": [],
+      "evacuationRoutes": [
+        {
+          "id": "tcxefg39mn9eolmu",
+          "points": [
+            {
+              "x": 560,
+              "y": 100
+            },
+            {
+              "x": 580,
+              "y": 220
+            },
+            {
+              "x": 500,
+              "y": 120
+            },
+            {
+              "x": 560,
+              "y": 100
+            },
+            {
+              "x": 580,
+              "y": 220
+            },
+            {
+              "x": 400,
+              "y": 120
+            },
+            {
+              "x": 900,
+              "y": 260
+            },
+            {
+              "x": 900,
+              "y": 260
+            },
+            {
+              "x": 900,
+              "y": 260
+            }
+          ],
+          "floorId": "floor-9rbw0e9jmn9ekx50"
+        }
+      ]
+    }
+  ],
+  "users": [],
+  "assets": []
+}
