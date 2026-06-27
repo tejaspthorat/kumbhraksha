@@ -1,0 +1,7 @@
+{
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true,
+    "conductor@conductor-skills": true,
+    "figma@claude-plugins-official": true
+  }
+}
