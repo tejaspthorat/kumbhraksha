@@ -153,7 +153,7 @@ export default function StaffPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (confirm('Are you sure you want to remove this staff member? This will also delete their Clerk login.')) {
+    if (confirm('Are you sure you want to remove this staff member?')) {
       try {
         await deleteStaff(id);
       } catch (err: any) {

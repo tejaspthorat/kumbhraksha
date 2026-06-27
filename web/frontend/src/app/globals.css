@@ -122,6 +122,8 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  /* Brand logotype / nav wordmark — humanist sans per DESIGN.md (nav = StyreneB/Inter). */
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   --radius-sm: 6px;
   --radius-md: 8px;

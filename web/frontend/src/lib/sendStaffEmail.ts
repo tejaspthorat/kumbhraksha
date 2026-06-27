@@ -100,7 +100,7 @@ export async function sendStaffWelcomeEmail({ email, password, role, zone }: Sta
             </div>
 
             <center>
-              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/login" class="btn">Launch Command Center</a>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard" class="btn">Launch Command Center</a>
             </center>
           </div>
           <div class="footer">

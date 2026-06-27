@@ -62,9 +62,6 @@ export default function LandingPage() {
             <a href="#features" className="hover:text-ink transition-colors">Platform</a>
           </div>
           <div className="flex items-center gap-3">
-            <Link href="/login" className="text-[14px] font-medium text-body hover:text-ink hidden sm:block">
-              Sign in
-            </Link>
             <Link href="/dashboard" className="btn-coral inline-flex items-center gap-1.5 h-10 px-5">
               Open dashboard <ArrowRight className="size-4" />
             </Link>
@@ -249,10 +246,7 @@ export default function LandingPage() {
         <div className="max-w-[1200px] mx-auto px-6 py-16">
           <div className="flex flex-col md:flex-row justify-between gap-8">
             <div>
-              <span className="inline-flex items-center gap-2 text-on-dark">
-                <SpikeMark className="size-5 text-coral" />
-                <span className="font-display text-xl">KumbhRaksha</span>
-              </span>
+              <Wordmark labelClassName="text-on-dark" />
               <p className="text-[14px] mt-3 max-w-xs">
                 A living missing-persons network for mass gatherings. No hardware — just the phones
                 people already carry.

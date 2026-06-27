@@ -2,7 +2,9 @@
 
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
-import { auth } from '@clerk/nextjs/server';
+
+// Auth removed — actions run as the shared Control Room identity.
+const CONTROL_ROOM_ID = 'control-room';
 
 export async function assignTask(data: {
   text: string;
@@ -22,8 +24,7 @@ export async function assignTask(data: {
 
     if (!staff) throw new Error('Staff not found');
 
-    const { userId } = await auth();
-    if (!userId) throw new Error('Unauthorized');
+    const userId = CONTROL_ROOM_ID;
 
     // userId maps directly to Profile.id in the schema
     const result = await prisma.$transaction([
