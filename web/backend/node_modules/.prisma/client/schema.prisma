@@ -1,0 +1,1174 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator clientSocket {
+  provider = "prisma-client-js"
+  output   = "../../socket/node_modules/.prisma/client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+/// Second client build for the `socket/` Node server (same schema, separate output).
+model Profile {
+  id                String             @id @default(uuid())
+  email             String             @unique
+  name              String?
+  role              Role               @default(USER)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  alertSummaries    AlertSummary[]
+  Camera            Camera[]
+  assignedTasks     CoordinatorTask[]  @relation("TaskAssigner")
+  crowdData         CrowdData[]
+  densityThresholds DensityThreshold[]
+  devices           Device[]
+  entryPoints       EntryPoint[]
+  events            Event[]
+  floorPlans        FloorPlan[]
+  flowData          FlowData[]
+  peakData          PeakData[]
+  rooms             Room[]
+  Staff             Staff[]
+  staffTasks        StaffTask[]
+  suggestions       Suggestion[]
+  createdTasks      Task[]             @relation("TaskCreator")
+  zones             Zone[]
+  zoneRankings      ZoneRanking[]
+  taskAssignees     Task[]             @relation("TaskAssignees")
+
+  @@index([email])
+  @@index([role])
+}
+
+model Room {
+  id        Int      @id @default(autoincrement())
+  type      String
+  x         Float
+  y         Float
+  width     Float
+  height    Float
+  name      String
+  color     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, name])
+  @@index([profileId])
+}
+
+model EntryPoint {
+  id        Int      @id @default(autoincrement())
+  x         Float
+  y         Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model Zone {
+  id          Int           @id @default(autoincrement())
+  name        String
+  people      Int           @default(0)
+  area        Int
+  density     Float
+  level       ZoneLevel
+  updatedAt   DateTime      @updatedAt
+  createdAt   DateTime      @default(now())
+  profileId   String
+  alerts      Alert[]
+  log         AlertLog[]
+  cameras     Camera[]
+  devices     Device[]
+  predictions Prediction[]
+  staff       Staff[]
+  profile     Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  zoneDensity ZoneDensity[]
+
+  @@unique([profileId, name])
+  @@index([profileId])
+  @@index([level])
+  @@index([density])
+}
+
+model Alert {
+  id          Int        @id @default(autoincrement())
+  type        String
+  level       AlertLevel
+  title       String
+  description String
+  time        String
+  createdAt   DateTime   @default(now())
+  resolved    Boolean    @default(false)
+  resolvedAt  DateTime?
+  zoneId      Int
+  updatedAt   DateTime   @updatedAt
+  zone        Zone       @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([zoneId])
+  @@index([resolved])
+  @@index([level])
+  @@index([zoneId, resolved])
+  @@index([zoneId, level])
+  @@index([createdAt(sort: Desc)])
+}
+
+model AlertSummary {
+  id        Int      @id @default(autoincrement())
+  name      String
+  value     Int
+  color     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([name])
+}
+
+model AlertLog {
+  id        Int      @id @default(autoincrement())
+  time      String
+  createdAt DateTime @default(now())
+  type      String
+  severity  String
+  resolved  Boolean
+  zoneId    Int
+  updatedAt DateTime @updatedAt
+  zone      Zone     @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([zoneId])
+  @@index([severity])
+  @@index([resolved])
+  @@index([zoneId, severity])
+  @@index([createdAt(sort: Desc)])
+}
+
+model Camera {
+  id        Int          @id @default(autoincrement())
+  name      String
+  status    DeviceStatus @default(online)
+  fps       Int
+  updatedAt DateTime     @updatedAt
+  zoneId    Int
+  createdAt DateTime     @default(now())
+  profileId String
+  profile   Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  zone      Zone         @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([zoneId])
+  @@index([status])
+  @@index([zoneId, status])
+}
+
+model Device {
+  id        Int          @id @default(autoincrement())
+  name      String
+  model     String
+  location  String
+  status    DeviceStatus @default(online)
+  fps       Int
+  latency   Int
+  temp      Int
+  power     Int
+  aiModel   String
+  memUsage  Int
+  cpuUsage  Int
+  uptime    String
+  updatedAt DateTime     @updatedAt
+  zoneId    Int?
+  createdAt DateTime     @default(now())
+  profileId String
+  profile   Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  zone      Zone?        @relation(fields: [zoneId], references: [id])
+
+  @@index([profileId])
+  @@index([status])
+  @@index([zoneId])
+  @@index([location])
+}
+
+model Staff {
+  id               Int                  @id @default(autoincrement())
+  name             String
+  role             String
+  status           StaffStatus          @default(active)
+  avatar           String
+  tasks            Int                  @default(0)
+  lastSeen         String
+  updatedAt        DateTime             @updatedAt
+  zoneId           Int
+  createdAt        DateTime             @default(now())
+  email            String?              @unique
+  userId           String?              @unique
+  profileId        String
+  password         String?
+  phone            String?
+  staffRole        StaffRole            @default(COORDINATOR)
+  channelMembers   ChannelMember[]
+  channelMessages  ChannelMessage[]
+  coordinatorTasks CoordinatorTask[]    @relation("TaskAssignee")
+  emergencyAcks    EmergencyAlert[]     @relation("EmergencyAcknowledger")
+  emergencyReports EmergencyAlert[]     @relation("EmergencyReporter")
+  locationPings    LocationPing[]
+  readReceipts     MessageReadReceipt[]
+  notifications    Notification[]
+  refreshTokens    RefreshToken[]
+  profile          Profile              @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  zone             Zone                 @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  staffTasks       StaffTask[]
+  taskUpdates      TaskUpdate[]
+
+  @@index([profileId])
+  @@index([zoneId])
+  @@index([status])
+  @@index([zoneId, status])
+  @@index([staffRole])
+}
+
+model StaffTask {
+  id        Int      @id @default(autoincrement())
+  text      String
+  assignee  String
+  priority  String
+  time      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profileId String
+  staffId   Int?
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  staff     Staff?   @relation(fields: [staffId], references: [id])
+
+  @@index([profileId])
+  @@index([staffId])
+  @@index([priority])
+  @@index([assignee])
+}
+
+model ZoneDensity {
+  id        Int           @id @default(autoincrement())
+  density   Float
+  status    DensityStatus
+  updatedAt DateTime      @updatedAt
+  zoneId    Int
+  createdAt DateTime      @default(now())
+  zone      Zone          @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([zoneId])
+  @@index([status])
+  @@index([zoneId, status])
+}
+
+model DensityThreshold {
+  id        Int      @id @default(autoincrement())
+  level     String
+  range     String
+  color     String
+  bg        String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([level])
+}
+
+model Prediction {
+  id         Int                @id @default(autoincrement())
+  prediction String
+  confidence Float
+  trend      String
+  severity   PredictionSeverity
+  eta        String
+  direction  String
+  speed      String
+  createdAt  DateTime           @default(now())
+  zoneId     Int
+  updatedAt  DateTime           @updatedAt
+  zone       Zone               @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([zoneId])
+  @@index([severity])
+  @@index([zoneId, severity])
+  @@index([createdAt(sort: Desc)])
+}
+
+model Suggestion {
+  id         Int         @id @default(autoincrement())
+  condition  String
+  action     String
+  icon       String
+  priority   String
+  confidence Float
+  zone       String
+  status     AlertStatus @default(pending)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  profileId  String
+  profile    Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([status])
+  @@index([zone])
+  @@index([priority])
+}
+
+model FlowData {
+  id        Int      @id @default(autoincrement())
+  from      String
+  to        String
+  flow      Int
+  trend     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([from])
+  @@index([to])
+  @@index([from, to])
+}
+
+model CrowdData {
+  id        Int      @id @default(autoincrement())
+  time      String
+  createdAt DateTime @default(now())
+  count     Int
+  density   Float
+  updatedAt DateTime @updatedAt
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([createdAt(sort: Desc)])
+}
+
+model PeakData {
+  id        Int      @id @default(autoincrement())
+  time      String
+  createdAt DateTime @default(now())
+  count     Int
+  updatedAt DateTime @updatedAt
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([createdAt(sort: Desc)])
+}
+
+model ZoneRanking {
+  id         Int      @id @default(autoincrement())
+  zone       String
+  avgDensity Float
+  peakCount  Int
+  alerts     Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  profileId  String
+  profile    Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([zone])
+  @@index([avgDensity(sort: Desc)])
+  @@index([alerts(sort: Desc)])
+}
+
+model FloorPlan {
+  id          String              @id @default(uuid())
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  profileId   String
+  description String?
+  name        String              @default("My Floor Plan")
+  floors      FloorLevel[]
+  profile     Profile             @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  assets      FloorPlanAsset[]
+  snapshots   FloorPlanSnapshot[]
+  users       FloorPlanUser[]
+
+  @@index([profileId])
+  @@index([createdAt(sort: Desc)])
+}
+
+model FloorLevel {
+  id               String                     @id @default(uuid())
+  name             String
+  order            Int
+  scale            Float                      @default(1)
+  backgroundImage  String?
+  floorPlanId      String
+  createdAt        DateTime                   @default(now())
+  updatedAt        DateTime                   @updatedAt
+  floorPlan        FloorPlan                  @relation(fields: [floorPlanId], references: [id], onDelete: Cascade)
+  corridors        FloorPlanCorridor[]
+  entryPoints      FloorPlanEntryPoint[]
+  evacuationRoutes FloorPlanEvacuationRoute[]
+  rooms            FloorPlanRoom[]
+
+  @@index([floorPlanId])
+  @@index([order])
+}
+
+model FloorPlanRoom {
+  id               String            @id @default(uuid())
+  name             String
+  type             FloorPlanRoomType @default(GeneralArea)
+  x                Float
+  y                Float
+  width            Float
+  height           Float
+  color            String
+  notes            String?
+  alertThreshold   Int               @default(85)
+  currentOccupancy Int               @default(0)
+  assignedUserIds  String[]
+  floorLevelId     String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  floorLevel       FloorLevel        @relation(fields: [floorLevelId], references: [id], onDelete: Cascade)
+
+  @@index([floorLevelId])
+  @@index([name])
+}
+
+model FloorPlanEntryPoint {
+  id           String     @id @default(uuid())
+  x            Float
+  y            Float
+  label        String?
+  floorLevelId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  floorLevel   FloorLevel @relation(fields: [floorLevelId], references: [id], onDelete: Cascade)
+
+  @@index([floorLevelId])
+}
+
+model FloorPlanCorridor {
+  id           String       @id @default(uuid())
+  fromRoomId   String
+  toRoomId     String
+  width        Float        @default(1)
+  type         CorridorType @default(general)
+  fromX        Float
+  fromY        Float
+  toX          Float
+  toY          Float
+  floorLevelId String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  floorLevel   FloorLevel   @relation(fields: [floorLevelId], references: [id], onDelete: Cascade)
+
+  @@index([floorLevelId])
+}
+
+model FloorPlanEvacuationRoute {
+  id           String     @id @default(uuid())
+  points       Json
+  floorLevelId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  floorLevel   FloorLevel @relation(fields: [floorLevelId], references: [id], onDelete: Cascade)
+
+  @@index([floorLevelId])
+}
+
+model FloorPlanUser {
+  id              String              @id @default(uuid())
+  name            String
+  role            FloorPlanUserRole   @default(Staff)
+  email           String?
+  status          FloorPlanUserStatus @default(available)
+  assignedRoomId  String?
+  assignedFloorId String?
+  floorPlanId     String
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  floorPlan       FloorPlan           @relation(fields: [floorPlanId], references: [id], onDelete: Cascade)
+
+  @@index([floorPlanId])
+  @@index([status])
+  @@index([name])
+}
+
+model FloorPlanAsset {
+  id            String    @id @default(uuid())
+  type          String
+  x             Float
+  y             Float
+  rotation      Float     @default(0)
+  roomId        String
+  reducesArea   Boolean   @default(false)
+  areaReduction Float     @default(0)
+  floorPlanId   String
+  floorLevelId  String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  floorPlan     FloorPlan @relation(fields: [floorPlanId], references: [id], onDelete: Cascade)
+
+  @@index([floorPlanId])
+  @@index([floorLevelId])
+}
+
+model FloorPlanSnapshot {
+  id          String    @id @default(uuid())
+  name        String
+  data        Json
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  floorPlanId String
+  floorPlan   FloorPlan @relation(fields: [floorPlanId], references: [id], onDelete: Cascade)
+
+  @@index([floorPlanId])
+  @@index([createdAt(sort: Desc)])
+}
+
+model Event {
+  id               String            @id @default(cuid())
+  name             String
+  description      String?
+  startDate        DateTime?
+  endDate          DateTime?
+  location         String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  profileId        String
+  /// When true, anonymous users may create coordinator tasks for this event via public API.
+  allowPublicTasks Boolean           @default(false)
+  channels         Channel[]
+  tasks            CoordinatorTask[]
+  emergencies      EmergencyAlert[]
+  profile          Profile           @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  locationPings    LocationPing[]
+
+  @@index([profileId])
+  @@index([allowPublicTasks])
+}
+
+model CoordinatorTask {
+  id                        String             @id @default(cuid())
+  title                     String
+  description               String?
+  priority                  TaskPriority       @default(MEDIUM)
+  status                    TaskStatus         @default(PENDING)
+  /// Staff (coordinator) responsible for the task — maps to assigned_coordinator in APIs.
+  assignedToId              Int
+  /// Dashboard profile that created the task (null for anonymous public submissions).
+  assignedById              String?
+  eventId                   String
+  locationLat               Float?
+  locationLng               Float?
+  locationLabel             String?
+  deadline                  DateTime?
+  completedAt               DateTime?
+  createdAt                 DateTime           @default(now())
+  updatedAt                 DateTime           @updatedAt
+  creationSource            TaskCreationSource @default(INTERNAL)
+  /// Display name for public submitters (no account).
+  publicCreatorName         String?
+  /// Optional contact for confirmations; stored encrypted-at-rest only via DB access controls.
+  publicCreatorEmail        String?
+  /// Scrypt-compatible hash (bcrypt) of a secret token so the creator can edit without logging in.
+  creatorEditTokenHash      String?
+  creatorEditTokenExpiresAt DateTime?
+  /// When true and publicCreatorEmail is set, coordinators’ status updates trigger an email to the creator.
+  notifyCreatorOnUpdates    Boolean            @default(false)
+  assignedBy                Profile?           @relation("TaskAssigner", fields: [assignedById], references: [id])
+  assignedTo                Staff              @relation("TaskAssignee", fields: [assignedToId], references: [id])
+  event                     Event              @relation(fields: [eventId], references: [id])
+  geoFence                  GeoFence?
+  notifications             Notification[]
+  updates                   TaskUpdate[]
+
+  @@index([assignedToId])
+  @@index([assignedById])
+  @@index([eventId])
+  @@index([status])
+  @@index([priority])
+  @@index([assignedToId, status])
+  @@index([creationSource])
+}
+
+model CoordinatorTaskAuditLog {
+  id             String             @id @default(cuid())
+  /// Immutable task id at time of event (no FK so history survives task deletion).
+  taskId         String
+  action         String
+  actorType      TaskAuditActorType
+  actorStaffId   Int?
+  actorProfileId String?
+  metadata       Json?
+  /// SHA-256 of IP + server salt for abuse review without storing raw IPs.
+  ipHash         String?
+  userAgent      String?
+  createdAt      DateTime           @default(now())
+
+  @@index([taskId])
+  @@index([createdAt(sort: Desc)])
+  @@index([actorType])
+}
+
+model TaskUpdate {
+  id        String          @id @default(cuid())
+  taskId    String
+  staffId   Int
+  status    TaskStatus
+  note      String?
+  timestamp DateTime        @default(now())
+  staff     Staff           @relation(fields: [staffId], references: [id])
+  task      CoordinatorTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([staffId])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  staffId   Int
+  type      NotificationType
+  title     String
+  body      String
+  data      Json?
+  read      Boolean          @default(false)
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+  taskId    String?
+  staff     Staff            @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  task      CoordinatorTask? @relation(fields: [taskId], references: [id])
+
+  @@index([staffId])
+  @@index([staffId, read])
+  @@index([createdAt(sort: Desc)])
+}
+
+model LocationPing {
+  id        String   @id @default(cuid())
+  staffId   Int
+  eventId   String
+  lat       Float
+  lng       Float
+  accuracy  Float
+  isOnPost  Boolean  @default(false)
+  taskId    String?
+  timestamp DateTime @default(now())
+  event     Event    @relation(fields: [eventId], references: [id])
+  staff     Staff    @relation(fields: [staffId], references: [id])
+
+  @@index([staffId])
+  @@index([eventId])
+  @@index([timestamp(sort: Desc)])
+}
+
+model GeoFence {
+  id      String          @id @default(cuid())
+  taskId  String          @unique
+  lat     Float
+  lng     Float
+  radiusM Float           @default(50)
+  task    CoordinatorTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+model EmergencyAlert {
+  id                  String          @id @default(cuid())
+  reportedById        Int
+  eventId             String
+  type                EmergencyType
+  description         String?
+  voiceNoteUrl        String?
+  lat                 Float
+  lng                 Float
+  status              EmergencyStatus @default(ACTIVE)
+  acknowledgedById    Int?
+  acknowledgedAt      DateTime?
+  resolvedAt          DateTime?
+  createdAt           DateTime        @default(now())
+  acknowledgedByStaff Staff?          @relation("EmergencyAcknowledger", fields: [acknowledgedById], references: [id])
+  event               Event           @relation(fields: [eventId], references: [id])
+  reportedBy          Staff           @relation("EmergencyReporter", fields: [reportedById], references: [id])
+
+  @@index([reportedById])
+  @@index([eventId])
+  @@index([status])
+}
+
+model Channel {
+  id        String           @id @default(cuid())
+  name      String
+  type      ChannelType
+  eventId   String
+  createdAt DateTime         @default(now())
+  event     Event            @relation(fields: [eventId], references: [id])
+  members   ChannelMember[]
+  messages  ChannelMessage[]
+
+  @@index([eventId])
+}
+
+model ChannelMember {
+  id        String     @id @default(cuid())
+  channelId String
+  staffId   Int
+  role      MemberRole @default(MEMBER)
+  joinedAt  DateTime   @default(now())
+  channel   Channel    @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  staff     Staff      @relation(fields: [staffId], references: [id])
+
+  @@unique([channelId, staffId])
+  @@index([staffId])
+}
+
+model ChannelMessage {
+  id        String               @id @default(cuid())
+  channelId String
+  senderId  Int
+  type      MessageContentType   @default(TEXT)
+  text      String?
+  mediaUrl  String?
+  duration  Int?
+  createdAt DateTime             @default(now())
+  channel   Channel              @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  sender    Staff                @relation(fields: [senderId], references: [id])
+  readBy    MessageReadReceipt[]
+
+  @@index([channelId])
+  @@index([senderId])
+  @@index([createdAt(sort: Desc)])
+}
+
+model MessageReadReceipt {
+  id        String         @id @default(cuid())
+  messageId String
+  staffId   Int
+  readAt    DateTime       @default(now())
+  message   ChannelMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  staff     Staff          @relation(fields: [staffId], references: [id])
+
+  @@unique([messageId, staffId])
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  staffId   Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  staff     Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@index([staffId])
+  @@index([expiresAt])
+}
+
+model Task {
+  id          String               @id @default(cuid())
+  title       String
+  description String?
+  dueDate     DateTime?
+  priority    InternalTaskPriority @default(MEDIUM)
+  status      InternalTaskStatus   @default(OPEN)
+  creatorId   String
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  creator     Profile              @relation("TaskCreator", fields: [creatorId], references: [id])
+  assignees   Profile[]            @relation("TaskAssignees")
+
+  @@index([creatorId])
+  @@index([status])
+  @@index([priority])
+}
+
+model Chat {
+  id              String        @id
+  isGroup         Boolean       @default(false)
+  groupName       String?
+  groupAvatar     String?
+  lastMessageId   String?
+  lastMessageText String?
+  lastMessageAt   DateTime      @default(now())
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime
+  ChatMessage     ChatMessage[]
+  ChatUser        ChatUser[]    @relation("ChatParticipants")
+
+  @@index([lastMessageAt(sort: Desc)])
+}
+
+model ChatMessage {
+  id              String            @id
+  chatId          String
+  senderId        String
+  text            String            @default("")
+  attachments     Json              @default("[]")
+  isDeleted       Boolean           @default(false)
+  deletedAt       DateTime?
+  deliveredAt     DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime
+  Chat            Chat              @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  ChatUser        ChatUser          @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  ChatReadReceipt ChatReadReceipt[]
+
+  @@index([chatId])
+  @@index([createdAt(sort: Desc)])
+  @@index([senderId])
+}
+
+model ChatReadReceipt {
+  id          String      @id
+  messageId   String
+  userId      String
+  at          DateTime    @default(now())
+  ChatMessage ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  ChatUser    ChatUser    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId])
+  @@index([userId])
+}
+
+model ChatUser {
+  id              String            @id
+  name            String
+  email           String            @unique
+  avatar          String            @default("")
+  isOnline        Boolean           @default(false)
+  lastSeen        DateTime          @default(now())
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime
+  ChatMessage     ChatMessage[]
+  ChatReadReceipt ChatReadReceipt[]
+  Chat            Chat[]            @relation("ChatParticipants")
+
+  @@index([email])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+//  KumbhRaksha — Missing-persons network (see implementation/main_plan.md)
+//  Turns every phone into a node in a living missing-persons search network.
+// ─────────────────────────────────────────────────────────────────────────
+
+/// A person who is (or could be) missing. Created from a report or a sighting.
+model MissingPerson {
+  id           String          @id @default(uuid())
+  name         String
+  age          Int?
+  gender       Gender          @default(UNKNOWN)
+  photoUrl     String?
+  description  String?
+  /// What they were wearing — critical for visual search.
+  clothing     String?
+  medicalNotes String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  reports      MissingReport[]
+
+  @@index([name])
+}
+
+/// A citizen or authority phone — a node in the network. Locations are anonymized.
+model CitizenUser {
+  id                String          @id @default(uuid())
+  phone             String?         @unique
+  name              String?
+  lastLat           Float?
+  lastLng           Float?
+  locationUpdatedAt DateTime?
+  isAuthority       Boolean         @default(false)
+  role              String?
+  createdAt         DateTime        @default(now())
+  filedReports      MissingReport[] @relation("ReporterReports")
+  sightings         Sighting[]
+
+  @@index([isAuthority])
+}
+
+/// Flow A: a reported-missing case. Drives the expanding alert cascade.
+model MissingReport {
+  id                String              @id @default(uuid())
+  personId          String
+  reporterId        String?
+  reporterName      String?
+  reporterPhone     String?
+  relationship      String?
+  lastSeenLat       Float
+  lastSeenLng       Float
+  lastSeenLabel     String?
+  lastSeenTime      DateTime
+  reportedAt        DateTime            @default(now())
+  status            MissingReportStatus @default(REPORTED)
+  alertRadiusMeters Int                 @default(500)
+  cascadeLevel      Int                 @default(0)
+  /// Authority (Staff) assigned to the case, if any.
+  assignedOfficerId Int?
+  updatedAt         DateTime            @updatedAt
+  person            MissingPerson       @relation(fields: [personId], references: [id], onDelete: Cascade)
+  reporter          CitizenUser?        @relation("ReporterReports", fields: [reporterId], references: [id])
+  sightings         Sighting[]
+  alerts            MissingAlert[]
+
+  @@index([status])
+  @@index([cascadeLevel])
+  @@index([reportedAt(sort: Desc)])
+}
+
+/// Flow B (unmatched) or Flow A (linked): a citizen-submitted sighting.
+model Sighting {
+  id                String         @id @default(uuid())
+  missingReportId   String?
+  spotterId         String?
+  spotterName       String?
+  photoUrl          String?
+  lat               Float
+  lng               Float
+  description       String?
+  spottedAt         DateTime       @default(now())
+  /// AI photo-match confidence against an existing case (0–1).
+  aiMatchConfidence Float?
+  status            SightingStatus @default(PENDING)
+  createdAt         DateTime       @default(now())
+  missingReport     MissingReport? @relation(fields: [missingReportId], references: [id])
+  spotter           CitizenUser?   @relation(fields: [spotterId], references: [id])
+
+  @@index([status])
+  @@index([missingReportId])
+  @@index([spottedAt(sort: Desc)])
+}
+
+/// CCTV camera locations from the dataset — powers coverage & blind-spot intel.
+model CctvLocation {
+  id             String   @id @default(uuid())
+  externalId     String?  @unique
+  lat            Float
+  lng            Float
+  sector         String?
+  coverageRadius Float    @default(50)
+  cameraType     String?
+  notes          String?
+  createdAt      DateTime @default(now())
+
+  @@index([sector])
+}
+
+/// One fan-out event in a case's alert cascade.
+model MissingAlert {
+  id              String           @id @default(uuid())
+  missingReportId String
+  radiusMeters    Int
+  usersNotified   Int              @default(0)
+  type            MissingAlertType @default(PUSH)
+  sentAt          DateTime         @default(now())
+  missingReport   MissingReport    @relation(fields: [missingReportId], references: [id], onDelete: Cascade)
+
+  @@index([missingReportId])
+  @@index([sentAt(sort: Desc)])
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  UNKNOWN
+}
+
+enum MissingReportStatus {
+  REPORTED
+  SEARCHING
+  SIGHTING_RECEIVED
+  VERIFICATION
+  REUNITED
+  ESCALATED
+}
+
+enum SightingStatus {
+  PENDING
+  MATCHED
+  CONFIRMED
+  DISMISSED
+}
+
+enum MissingAlertType {
+  PUSH
+  SMS
+  BROADCAST
+}
+
+enum Role {
+  ADMIN
+  STAFF
+  USER
+}
+
+enum AlertLevel {
+  danger
+  warning
+  info
+}
+
+enum ZoneLevel {
+  danger
+  warning
+  success
+}
+
+enum AlertStatus {
+  pending
+  accepted
+  ignored
+}
+
+enum DeviceStatus {
+  online
+  offline
+  degraded
+}
+
+enum StaffStatus {
+  active
+  break
+  offline
+}
+
+enum DensityStatus {
+  danger
+  warning
+  success
+}
+
+enum PredictionSeverity {
+  danger
+  warning
+  info
+  success
+}
+
+enum FloorPlanRoomType {
+  GeneralArea
+  MeetingRoom
+  Restroom
+  KitchenPantry
+  Storage
+  EmergencyExit
+  ReceptionLobby
+  ServerRoom
+  OpenWorkspace
+  AuditoriumHall
+}
+
+enum FloorPlanUserRole {
+  Coordinator
+  Security
+  Staff
+  Medical
+  Technician
+  Volunteer
+}
+
+enum FloorPlanUserStatus {
+  available
+  assigned
+  checked_in
+}
+
+enum CorridorType {
+  primary
+  emergency
+  general
+}
+
+enum StaffRole {
+  ADMIN
+  COORDINATOR
+  SECURITY
+  MEDICAL
+  VOLUNTEER
+  TECHNICIAN
+  SUPPORT
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  NEEDS_HELP
+}
+
+enum TaskCreationSource {
+  INTERNAL
+  PUBLIC
+}
+
+enum TaskAuditActorType {
+  STAFF
+  PROFILE
+  PUBLIC_TOKEN
+  SYSTEM
+}
+
+enum NotificationType {
+  TASK_ASSIGNED
+  TASK_UPDATED
+  EMERGENCY
+  MESSAGE
+  SYSTEM
+}
+
+enum EmergencyType {
+  MEDICAL
+  CROWD_SURGE
+  FIRE
+  SECURITY_THREAT
+  BACKUP_NEEDED
+  OTHER
+}
+
+enum EmergencyStatus {
+  ACTIVE
+  ACKNOWLEDGED
+  RESOLVED
+}
+
+enum ChannelType {
+  DM
+  GROUP
+}
+
+enum MemberRole {
+  CHANNEL_ADMIN
+  MEMBER
+}
+
+enum MessageContentType {
+  TEXT
+  IMAGE
+  VOICE_NOTE
+}
+
+enum InternalTaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum InternalTaskStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+}

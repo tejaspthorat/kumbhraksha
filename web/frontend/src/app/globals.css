@@ -1,0 +1,312 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+/*
+ * ─────────────────────────────────────────────────────────────────────────
+ *  KumbhRaksha — Claude editorial design system
+ *  Warm cream canvas · coral accent · slab-serif display · dark product chrome
+ *  Tokens mirror DESIGN.md. Legacy aliases retained so older pages compile.
+ * ─────────────────────────────────────────────────────────────────────────
+ */
+:root {
+  /* Brand & accent */
+  --coral: #cc785c;
+  --coral-active: #a9583e;
+  --coral-disabled: #e6dfd8;
+  --accent-teal: #5db8a6;
+  --accent-amber: #e8a55a;
+
+  /* Text */
+  --ink: #141413;
+  --body-strong: #252523;
+  --body: #3d3d3a;
+  --muted: #6c6a64;
+  --muted-soft: #8e8b82;
+  --on-primary: #ffffff;
+  --on-dark: #faf9f5;
+  --on-dark-soft: #a09d96;
+
+  /* Surfaces */
+  --canvas: #faf9f5;
+  --surface-soft: #f5f0e8;
+  --surface-card: #efe9de;
+  --surface-cream-strong: #e8e0d2;
+  --surface-dark: #181715;
+  --surface-dark-elevated: #252320;
+  --surface-dark-soft: #1f1e1b;
+  --hairline: #e6dfd8;
+  --hairline-soft: #ebe6df;
+
+  /* Semantic */
+  --success: #5db872;
+  --warning: #d4a017;
+  --error: #c64545;
+  --info: #5db8a6;
+
+  /* ── Legacy aliases (older dashboard pages reference these) ── */
+  --primary: var(--coral);
+  --primary-light: var(--coral-active);
+  --accent: var(--accent-teal);
+  --surface: var(--surface-card);
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card-bg: var(--surface-card);
+  --card-border: var(--hairline);
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: var(--hairline);
+  --danger: var(--error);
+
+  /* Radius scale */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+@theme inline {
+  /* Claude palette → Tailwind utilities (bg-coral, text-ink, border-hairline …) */
+  --color-coral: var(--coral);
+  --color-coral-active: var(--coral-active);
+  --color-coral-disabled: var(--coral-disabled);
+  --color-accent-teal: var(--accent-teal);
+  --color-accent-amber: var(--accent-amber);
+
+  --color-ink: var(--ink);
+  --color-body: var(--body);
+  --color-body-strong: var(--body-strong);
+  --color-muted: var(--muted);
+  --color-muted-soft: var(--muted-soft);
+  --color-on-primary: var(--on-primary);
+  --color-on-dark: var(--on-dark);
+  --color-on-dark-soft: var(--on-dark-soft);
+
+  --color-canvas: var(--canvas);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-card: var(--surface-card);
+  --color-surface-cream-strong: var(--surface-cream-strong);
+  --color-surface-dark: var(--surface-dark);
+  --color-surface-dark-elevated: var(--surface-dark-elevated);
+  --color-surface-dark-soft: var(--surface-dark-soft);
+  --color-hairline: var(--hairline);
+  --color-hairline-soft: var(--hairline-soft);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+
+  /* Legacy aliases */
+  --color-primary: var(--coral);
+  --color-primary-light: var(--coral-active);
+  --color-accent: var(--accent-teal);
+  --color-surface: var(--surface-card);
+  --color-background: var(--canvas);
+  --color-foreground: var(--ink);
+  --color-card-bg: var(--surface-card);
+  --color-card-border: var(--hairline);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-border: var(--hairline);
+  --color-danger: var(--error);
+
+  /* shadcn-style semantic tokens used by ui/* primitives */
+  --color-border: var(--hairline);
+  --color-input: var(--hairline);
+  --color-ring: var(--coral);
+  --color-muted-foreground: var(--muted);
+  --color-primary-foreground: var(--on-primary);
+  --color-secondary: var(--surface-card);
+  --color-secondary-foreground: var(--ink);
+  --color-destructive: var(--error);
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--hairline) transparent;
+}
+
+html,
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(204, 120, 92, 0.18);
+  color: var(--ink);
+}
+
+/* ─── Typography helpers ─────────────────────────────────────────────────── */
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.display-xl { font-family: var(--font-display); font-weight: 500; font-size: clamp(2.6rem, 6vw, 4rem); line-height: 1.05; letter-spacing: -0.03em; }
+.display-lg { font-family: var(--font-display); font-weight: 500; font-size: clamp(2.1rem, 4.4vw, 3rem); line-height: 1.1; letter-spacing: -0.025em; }
+.display-md { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.7rem, 3.2vw, 2.25rem); line-height: 1.15; letter-spacing: -0.02em; }
+.display-sm { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.45rem, 2.4vw, 1.75rem); line-height: 1.2; letter-spacing: -0.015em; }
+
+.caption-upper {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.125em;
+  text-transform: uppercase;
+}
+
+/* ─── Component utilities ────────────────────────────────────────────────── */
+.btn-coral {
+  background: var(--coral);
+  color: var(--on-primary);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 14px;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.btn-coral:hover { background: var(--coral-active); }
+.btn-coral:active { transform: translateY(1px); }
+.btn-coral:disabled { background: var(--coral-disabled); color: var(--muted); cursor: not-allowed; }
+
+.btn-secondary {
+  background: var(--canvas);
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 14px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.btn-secondary:hover { background: var(--surface-soft); border-color: var(--muted-soft); }
+
+.btn-on-dark {
+  background: var(--surface-dark-elevated);
+  color: var(--on-dark);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 14px;
+  transition: background 0.15s ease;
+}
+.btn-on-dark:hover { background: #2f2c28; }
+
+.card-cream {
+  background: var(--surface-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid transparent;
+}
+.card-canvas {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+}
+.card-dark {
+  background: var(--surface-dark);
+  color: var(--on-dark);
+  border-radius: var(--radius-lg);
+}
+
+.hairline-b { border-bottom: 1px solid var(--hairline); }
+.hairline-t { border-top: 1px solid var(--hairline); }
+
+.badge-pill {
+  background: var(--surface-card);
+  color: var(--ink);
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.badge-coral {
+  background: var(--coral);
+  color: var(--on-primary);
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.125em;
+  text-transform: uppercase;
+}
+
+.link-coral {
+  color: var(--coral);
+  text-decoration: none;
+}
+.link-coral:hover { text-decoration: underline; }
+
+/* Subtle dotted texture for cream sections */
+.dot-pattern {
+  background-image: radial-gradient(var(--hairline) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* ─── Anthropic spike mark (radial asterisk) baked as a class ───────────── */
+.spike-mark {
+  display: inline-block;
+  background: currentColor;
+  mask: var(--spike-svg) center / contain no-repeat;
+  -webkit-mask: var(--spike-svg) center / contain no-repeat;
+  --spike-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='black'%3E%3Crect x='46' y='4' width='8' height='92' rx='4'/%3E%3Crect x='46' y='4' width='8' height='92' rx='4' transform='rotate(45 50 50)'/%3E%3Crect x='46' y='4' width='8' height='92' rx='4' transform='rotate(90 50 50)'/%3E%3Crect x='46' y='4' width='8' height='92' rx='4' transform='rotate(135 50 50)'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ─── Animations (recolored, kept lean) ─────────────────────────────────── */
+@keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slide-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes ping-ring { 0% { transform: scale(0.9); opacity: 0.6; } 80%, 100% { transform: scale(2.2); opacity: 0; } }
+@keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+.animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
+.animate-slide-up { animation: slide-up 0.6s ease-out forwards; }
+
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+
+/* Pulsing alert ring used on map markers / live cases */
+.alert-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: var(--coral);
+  opacity: 0.35;
+  animation: ping-ring 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ─── Scrollbars ─────────────────────────────────────────────────────────── */
+.scrollbar-thin { scrollbar-width: thin; scrollbar-color: var(--hairline) transparent; }
+.scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 9999px; }
+.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: var(--muted-soft); }
+
+/* Glass kept as a soft cream frost for any legacy .glass usage */
+.glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--hairline);
+}
+.glass-strong {
+  background: rgba(250, 249, 245, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--hairline);
+}

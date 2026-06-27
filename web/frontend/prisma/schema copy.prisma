@@ -1,0 +1,531 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Profile {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([role])
+}
+
+model Room {
+  id        Int      @id @default(autoincrement())
+  type      String
+  x         Float
+  y         Float
+  width     Float
+  height    Float
+  name      String
+  color     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+model EntryPoint {
+  id        Int      @id @default(autoincrement())
+  x         Float
+  y         Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Suggestion {
+  id         Int         @id @default(autoincrement())
+  condition  String
+  action     String
+  icon       String
+  priority   String
+  confidence Float
+  zone       String
+  status     AlertStatus @default(pending)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@index([status])
+  @@index([zone])
+  @@index([priority])
+}
+
+model Zone {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  people      Int           @default(0)
+  area        Int
+  density     Float
+  level       ZoneLevel
+  updatedAt   DateTime      @updatedAt
+  createdAt   DateTime      @default(now())
+  alerts      Alert[]
+  log         AlertLog[]
+  cameras     Camera[]
+  devices     Device[]
+  predictions Prediction[]
+  staff       Staff[]
+  zoneDensity ZoneDensity[]
+
+  @@index([name])
+  @@index([level])
+  @@index([density])
+}
+
+model Alert {
+  id          Int        @id @default(autoincrement())
+  type        String
+  level       AlertLevel
+  title       String
+  description String
+  time        String
+  createdAt   DateTime   @default(now())
+  resolved    Boolean    @default(false)
+  resolvedAt  DateTime?
+  zoneId      Int
+  updatedAt   DateTime   @updatedAt
+  zone        Zone       @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([zoneId])
+  @@index([resolved])
+  @@index([level])
+  @@index([zoneId, resolved])
+  @@index([zoneId, level])
+  @@index([createdAt(sort: Desc)])
+}
+
+model AlertSummary {
+  id        Int      @id @default(autoincrement())
+  name      String
+  value     Int
+  color     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+model AlertLog {
+  id        Int      @id @default(autoincrement())
+  time      String
+  createdAt DateTime @default(now())
+  type      String
+  severity  String
+  resolved  Boolean
+  zoneId    Int
+  updatedAt DateTime @updatedAt
+  zone      Zone     @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([zoneId])
+  @@index([severity])
+  @@index([resolved])
+  @@index([zoneId, severity])
+  @@index([createdAt(sort: Desc)])
+}
+
+model Camera {
+  id        Int          @id @default(autoincrement())
+  name      String
+  status    DeviceStatus @default(online)
+  fps       Int
+  updatedAt DateTime     @updatedAt
+  zoneId    Int
+  createdAt DateTime     @default(now())
+  zone      Zone         @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([zoneId])
+  @@index([status])
+  @@index([zoneId, status])
+}
+
+model Device {
+  id        Int          @id @default(autoincrement())
+  name      String
+  model     String
+  location  String
+  status    DeviceStatus @default(online)
+  fps       Int
+  latency   Int
+  temp      Int
+  power     Int
+  aiModel   String
+  memUsage  Int
+  cpuUsage  Int
+  uptime    String
+  updatedAt DateTime     @updatedAt
+  zoneId    Int?
+  createdAt DateTime     @default(now())
+  zone      Zone?        @relation(fields: [zoneId], references: [id])
+
+  @@index([status])
+  @@index([zoneId])
+  @@index([location])
+}
+
+model Staff {
+  id        Int         @id @default(autoincrement())
+  name      String
+  role      String
+  status    StaffStatus @default(active)
+  avatar    String
+  tasks     Int         @default(0)
+  lastSeen  String
+  updatedAt DateTime    @updatedAt
+  zoneId    Int
+  createdAt DateTime    @default(now())
+  email     String?     @unique
+  userId    String?     @unique
+  zone      Zone        @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([zoneId])
+  @@index([status])
+  @@index([zoneId, status])
+}
+
+model StaffTask {
+  id        Int      @id @default(autoincrement())
+  text      String
+  assignee  String
+  priority  String
+  time      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([priority])
+  @@index([assignee])
+}
+
+model ZoneDensity {
+  id        Int           @id @default(autoincrement())
+  density   Float
+  status    DensityStatus
+  updatedAt DateTime      @updatedAt
+  zoneId    Int
+  createdAt DateTime      @default(now())
+  zone      Zone          @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([zoneId])
+  @@index([status])
+  @@index([zoneId, status])
+}
+
+model DensityThreshold {
+  id        Int      @id @default(autoincrement())
+  level     String
+  range     String
+  color     String
+  bg        String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([level])
+}
+
+model Prediction {
+  id         Int                @id @default(autoincrement())
+  prediction String
+  confidence Float
+  trend      String
+  severity   PredictionSeverity
+  eta        String
+  direction  String
+  speed      String
+  createdAt  DateTime           @default(now())
+  zoneId     Int
+  updatedAt  DateTime           @updatedAt
+  zone       Zone               @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([zoneId])
+  @@index([severity])
+  @@index([zoneId, severity])
+  @@index([createdAt(sort: Desc)])
+}
+
+model FlowData {
+  id        Int      @id @default(autoincrement())
+  from      String
+  to        String
+  flow      Int
+  trend     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([from])
+  @@index([to])
+  @@index([from, to])
+}
+
+model CrowdData {
+  id        Int      @id @default(autoincrement())
+  time      String
+  createdAt DateTime @default(now())
+  count     Int
+  density   Float
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt(sort: Desc)])
+}
+
+model PeakData {
+  id        Int      @id @default(autoincrement())
+  time      String
+  createdAt DateTime @default(now())
+  count     Int
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt(sort: Desc)])
+}
+
+model ZoneRanking {
+  id         Int      @id @default(autoincrement())
+  zone       String
+  avgDensity Float
+  peakCount  Int
+  alerts     Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([zone])
+  @@index([avgDensity(sort: Desc)])
+  @@index([alerts(sort: Desc)])
+}
+
+model FloorPlan {
+  id          String              @id @default(uuid())
+  name        String              @default("My Floor Plan")
+  description String?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  floors      FloorLevel[]
+  assets      FloorPlanAsset[]
+  snapshots   FloorPlanSnapshot[]
+  users       FloorPlanUser[]
+
+  @@index([createdAt(sort: Desc)])
+}
+
+model FloorLevel {
+  id               String                     @id @default(uuid())
+  name             String
+  order            Int
+  scale            Float                      @default(1)
+  backgroundImage  String?
+  floorPlanId      String
+  createdAt        DateTime                   @default(now())
+  updatedAt        DateTime                   @updatedAt
+  floorPlan        FloorPlan                  @relation(fields: [floorPlanId], references: [id], onDelete: Cascade)
+  corridors        FloorPlanCorridor[]
+  entryPoints      FloorPlanEntryPoint[]
+  evacuationRoutes FloorPlanEvacuationRoute[]
+  rooms            FloorPlanRoom[]
+
+  @@index([floorPlanId])
+  @@index([order])
+}
+
+model FloorPlanRoom {
+  id               String            @id @default(uuid())
+  name             String
+  type             FloorPlanRoomType @default(GeneralArea)
+  x                Float
+  y                Float
+  width            Float
+  height           Float
+  color            String
+  notes            String?
+  alertThreshold   Int               @default(85)
+  currentOccupancy Int               @default(0)
+  assignedUserIds  String[]
+  floorLevelId     String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  floorLevel       FloorLevel        @relation(fields: [floorLevelId], references: [id], onDelete: Cascade)
+
+  @@index([floorLevelId])
+  @@index([name])
+}
+
+model FloorPlanEntryPoint {
+  id           String     @id @default(uuid())
+  x            Float
+  y            Float
+  label        String?
+  floorLevelId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  floorLevel   FloorLevel @relation(fields: [floorLevelId], references: [id], onDelete: Cascade)
+
+  @@index([floorLevelId])
+}
+
+model FloorPlanCorridor {
+  id           String       @id @default(uuid())
+  fromRoomId   String
+  toRoomId     String
+  width        Float        @default(1)
+  type         CorridorType @default(general)
+  fromX        Float
+  fromY        Float
+  toX          Float
+  toY          Float
+  floorLevelId String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  floorLevel   FloorLevel   @relation(fields: [floorLevelId], references: [id], onDelete: Cascade)
+
+  @@index([floorLevelId])
+}
+
+model FloorPlanEvacuationRoute {
+  id           String     @id @default(uuid())
+  points       Json
+  floorLevelId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  floorLevel   FloorLevel @relation(fields: [floorLevelId], references: [id], onDelete: Cascade)
+
+  @@index([floorLevelId])
+}
+
+model FloorPlanUser {
+  id              String              @id @default(uuid())
+  name            String
+  role            FloorPlanUserRole   @default(Staff)
+  email           String?
+  status          FloorPlanUserStatus @default(available)
+  assignedRoomId  String?
+  assignedFloorId String?
+  floorPlanId     String
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  floorPlan       FloorPlan           @relation(fields: [floorPlanId], references: [id], onDelete: Cascade)
+
+  @@index([floorPlanId])
+  @@index([status])
+  @@index([name])
+}
+
+model FloorPlanAsset {
+  id            String    @id @default(uuid())
+  type          String
+  x             Float
+  y             Float
+  rotation      Float     @default(0)
+  roomId        String
+  reducesArea   Boolean   @default(false)
+  areaReduction Float     @default(0)
+  floorPlanId   String
+  floorLevelId  String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  floorPlan     FloorPlan @relation(fields: [floorPlanId], references: [id], onDelete: Cascade)
+
+  @@index([floorPlanId])
+  @@index([floorLevelId])
+}
+
+model FloorPlanSnapshot {
+  id          String    @id @default(uuid())
+  name        String
+  data        Json
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  floorPlanId String
+  floorPlan   FloorPlan @relation(fields: [floorPlanId], references: [id], onDelete: Cascade)
+
+  @@index([floorPlanId])
+  @@index([createdAt(sort: Desc)])
+}
+
+enum Role {
+  ADMIN
+  STAFF
+  USER
+}
+
+enum AlertLevel {
+  danger
+  warning
+  info
+}
+
+enum ZoneLevel {
+  danger
+  warning
+  success
+}
+
+enum AlertStatus {
+  pending
+  accepted
+  ignored
+}
+
+enum DeviceStatus {
+  online
+  offline
+  degraded
+}
+
+enum StaffStatus {
+  active
+  break
+  offline
+}
+
+enum DensityStatus {
+  danger
+  warning
+  success
+}
+
+enum PredictionSeverity {
+  danger
+  warning
+  info
+  success
+}
+
+enum FloorPlanRoomType {
+  GeneralArea
+  MeetingRoom
+  Restroom
+  KitchenPantry
+  Storage
+  EmergencyExit
+  ReceptionLobby
+  ServerRoom
+  OpenWorkspace
+  AuditoriumHall
+}
+
+enum FloorPlanUserRole {
+  Coordinator
+  Security
+  Staff
+  Medical
+  Technician
+  Volunteer
+}
+
+enum FloorPlanUserStatus {
+  available
+  assigned
+  checked_in
+}
+
+enum CorridorType {
+  primary
+  emergency
+  general
+}

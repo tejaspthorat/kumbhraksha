@@ -1,0 +1,151 @@
+
+> web@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.0.146.77:3000
+- Environments: .env
+✓ Ready in 518ms
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\claude-hackathon\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\claude-hackathon\web\package-lock.json
+
+
+○ Compiling / ...
+ GET / 200 in 3.9s (next.js: 3.2s, proxy.ts: 201ms, application-code: 538ms)
+ GET / 200 in 1205ms (next.js: 754ms, proxy.ts: 20ms, application-code: 431ms)
+[browser] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview (https://smashing-treefrog-74.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js:12:6092)
+ GET / 200 in 70ms (next.js: 5ms, proxy.ts: 9ms, application-code: 56ms)
+[browser] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview (https://smashing-treefrog-74.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js:12:6092)
+[browser] Failed to fetch RSC payload for http://localhost:3000/dashboard. Falling back to browser navigation. TypeError: Failed to fetch
+file:///C:/claude-hackathon/web/node_modules/@prisma/client/runtime/library.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: TypeError [ERR_INVALID_ARG_TYPE]: The "payload" argument must be of type object. Received null
+Error [PrismaClientInitializationError]: Unable to require(`C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node`).
+The Prisma engines do not seem to be compatible with your system. Please refer to the documentation about Prisma's system requirements: https://pris.ly/d/system-requirements
+
+Details: \\?\C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node is not a valid Win32 application.
+\\?\C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node
+    at ignore-listed frames {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+file:///C:/claude-hackathon/web/node_modules/@prisma/client/runtime/library.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: TypeError [ERR_INVALID_ARG_TYPE]: The "payload" argument must be of type object. Received null
+⨯ unhandledRejection: Error [PrismaClientInitializationError]: Unable to require(`C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node`).
+The Prisma engines do not seem to be compatible with your system. Please refer to the documentation about Prisma's system requirements: https://pris.ly/d/system-requirements
+
+Details: \\?\C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node is not a valid Win32 application.
+\\?\C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node
+    at ignore-listed frames {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+file:///C:/claude-hackathon/web/node_modules/@prisma/client/runtime/library.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: TypeError [ERR_INVALID_ARG_TYPE]: The "payload" argument must be of type object. Received null
+⨯ unhandledRejection:  Error [PrismaClientInitializationError]: Unable to require(`C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node`).
+The Prisma engines do not seem to be compatible with your system. Please refer to the documentation about Prisma's system requirements: https://pris.ly/d/system-requirements
+
+Details: \\?\C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node is not a valid Win32 application.
+\\?\C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node
+    at ignore-listed frames {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+file:///C:/claude-hackathon/web/node_modules/@prisma/client/runtime/library.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: TypeError [ERR_INVALID_ARG_TYPE]: The "payload" argument must be of type object. Received null
+⨯ Error [PrismaClientInitializationError]: 
+Invalid `{imported module ./web/src/lib/prisma.ts}["default"].profile.findUnique()` invocation in
+C:\claude-hackathon\web\.next\dev\server\chunks\ssr\[root-of-the-server]__0mbt_um._.js:123:174
+
+  120 const client = await (0, {imported module ./web/nodemodules/@clerk/nextjs/dist/esm/server/clerkClient.js}["clerkClient"])();
+  121 const user = await client.users.getUser(userId);
+  122 const email = user.emailAddresses[0].emailAddress;
+→ 123 const profile = await {imported module ./web/src/lib/prisma.ts}["default"].profile.findUnique(
+Unable to require(`C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node`).
+The Prisma engines do not seem to be compatible with your system. Please refer to the documentation about Prisma's system requirements: https://pris.ly/d/system-requirements
+
+Details: \\?\C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node is not a valid Win32 application.
+\\?\C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node
+    at <unknown> (src\app\dashboard\layout.tsx:15:42)
+    at async DashboardRootLayout (src\app\dashboard\layout.tsx:15:21)
+  13 |     const email = user.emailAddresses[0].emailAddress;
+  14 |
+> 15 |     const profile = await prisma.profile.findUnique({
+     |                                          ^
+  16 |       where: { email },
+  17 |       select: { role: true }
+  18 |     }); {
+  clientVersion: '5.22.0',
+  errorCode: undefined,
+  digest: '1504775314'
+}
+ GET /dashboard 500 in 2.6s (next.js: 1287ms, proxy.ts: 19ms, application-code: 1256ms)
+[browser] Uncaught PrismaClientInitializationError: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"].profile.findUnique()` invocation in
+C:\claude-hackathon\web\.next\dev\server\chunks\ssr\[root-of-the-server]__0mbt_um._.js:123:174
+
+  120 const client = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$web$2f$node_modules$2f40$clerk$2f$nextjs$2f$dist$2f$esm$2f$server$2f$clerkClient$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["clerkClient"])();
+  121 const user = await client.users.getUser(userId);
+  122 const email = user.emailAddresses[0].emailAddress;
+→ 123 const profile = await __TURBOPACK__imported__module__$5b$project$5d2f$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"].profile.findUnique(
+Unable to require(`C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node`).
+The Prisma engines do not seem to be compatible with your system. Please refer to the documentation about Prisma's system requirements: https://pris.ly/d/system-requirements
+
+Details: \\?\C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node is not a valid Win32 application.
+\\?\C:\claude-hackathon\web\node_modules\.prisma\client\query_engine-windows.dll.node
+    at <unknown> (src\app\dashboard\layout.tsx:15:42)
+    at  DashboardRootLayout (src\app\dashboard\layout.tsx:15:21)
+  13 |     const email = user.emailAddresses[0].emailAddress;
+  14 |
+> 15 |     const profile = await prisma.profile.findUnique({
+     |                                          ^
+  16 |       where: { email },
+  17 |       select: { role: true }
+  18 |     });
+[browser] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview (https://smashing-treefrog-74.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js:12:6092)
+⨯ ./web/src/lib/prisma.ts:1:1
+Module not found: Can't resolve '@prisma/client'
+[31m[1m>[0m [90m1 |[0m [36mimport[0m { [33mPrismaClient[0m } [36mfrom[0m [32m'@prisma/client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m
+  [90m3 |[0m [36mconst[0m prismaClientSingleton = () => {
+  [90m4 |[0m   [36mreturn[0m [36mnew[0m [33mPrismaClient[0m()
+
+
+
+Import trace:
+  Server Component:
+    ./web/src/lib/prisma.ts
+    ./web/src/app/dashboard/layout.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./web/src/lib/prisma.ts:1:1
+Module not found: Can't resolve '@prisma/client'
+[31m[1m>[0m [90m1 |[0m [36mimport[0m { [33mPrismaClient[0m } [36mfrom[0m [32m'@prisma/client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m
+  [90m3 |[0m [36mconst[0m prismaClientSingleton = () => {
+  [90m4 |[0m   [36mreturn[0m [36mnew[0m [33mPrismaClient[0m()
+
+
+
+Import trace:
+  Server Component:
+    ./web/src/lib/prisma.ts
+    ./web/src/app/dashboard/layout.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+Error: Turbopack build failed with 1 errors:
+./web
+Error: Next.js inferred your workspace root, but it may not be correct.
+    We couldn't find the Next.js package (next/package.json) from the project directory: C:\claude-hackathon\web
+     To fix this, set turbopack.root in your Next.js config, or ensure the Next.js package is resolvable from this directory.
+    Note: For security and performance reasons, files outside of the project directory will not be compiled.
+    See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+
+    at ignore-listed frames
+[?25h
