@@ -1,12 +1,14 @@
 "use server";
 
-import { clerkClient, auth } from "@clerk/nextjs/server";
 import { sendStaffWelcomeEmail } from "@/lib/sendStaffEmail";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 
 const STAFF_PASSWORD_SALT_ROUNDS = 12;
+
+// Auth removed — actions run as the shared Control Room identity.
+const CONTROL_ROOM_ID = "control-room";
 
 function generatePassword(length = 8) {
   const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -36,13 +38,10 @@ export async function createStaff(data: {
   zoneId: number;
   avatar: string;
 }) {
-  const { userId: adminId } = await auth();
-  if (!adminId) throw new Error("Unauthorized access");
-
-  const client = await clerkClient();
+  const adminId = CONTROL_ROOM_ID;
   const password = generatePassword(8);
 
-  // 1. Check if user already exists in Profile table or Clerk
+  // 1. Check if user already exists in the Profile table
   const existingProfile = await prisma.profile.findUnique({
     where: { email: data.email },
   });
@@ -51,39 +50,10 @@ export async function createStaff(data: {
     throw new Error(`Email ${data.email} is already registered in the system.`);
   }
 
-  // 2. Search Clerk for existing user directly (redundancy)
-  try {
-    const clerkResults = await client.users.getUserList({
-      emailAddress: [data.email],
-    });
-    if (clerkResults.data.length > 0) {
-      throw new Error(`A user with email ${data.email} already exists in Clerk auth.`);
-    }
-  } catch (e: any) {
-    if (e.message?.includes("already exists") || e.status === 400) throw e;
-    // Otherwise continue
-  }
+  // 2. Local user id (no external auth provider)
+  const userId = crypto.randomUUID();
 
-  // 3. Create Clerk user
-  let clerkUser;
-  try {
-    clerkUser = await client.users.createUser({
-      emailAddress: [data.email],
-      password: password,
-      publicMetadata: {
-        role: "STAFF",
-      },
-      firstName: data.name.split(' ')[0],
-      lastName: data.name.split(' ').slice(1).join(' '),
-    });
-  } catch (error: any) {
-    console.error("Clerk error:", error);
-    throw new Error(error.message || "Failed to create user in Clerk.");
-  }
-
-  const userId = clerkUser.id;
-
-  // 2. Create Profile and Staff in a transaction
+  // 3. Create Profile and Staff in a transaction
   try {
     await prisma.$transaction([
       prisma.profile.upsert({
@@ -134,7 +104,6 @@ export async function createStaff(data: {
     return { success: true };
   } catch (err: any) {
     console.error("DB error:", err);
-    try { if (userId) await client.users.deleteUser(userId); } catch (e) {}
     throw new Error("Failed to create staff record in database.");
   }
 }
@@ -171,17 +140,7 @@ export async function deleteStaff(id: number) {
     });
 
     if (staff) {
-      // 1. Delete Clerk User
-      if (staff.userId) {
-        const client = await clerkClient();
-        try {
-          await client.users.deleteUser(staff.userId);
-        } catch (e) {
-          console.warn("Clerk deletion failed:", e);
-        }
-      }
-      
-      // 2. Delete Profile
+      // 1. Delete Profile
       if (staff.email) {
         await prisma.profile.deleteMany({
           where: { email: staff.email }

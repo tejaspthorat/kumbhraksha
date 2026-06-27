@@ -2,7 +2,6 @@
 
 import { Bell, Search } from 'lucide-react';
 import { useState } from 'react';
-import { useAuth, SignInButton, UserButton } from '@clerk/nextjs';
 import { Badge } from '@/components/ui/Badge';
 
 const notifications = [
@@ -13,7 +12,6 @@ const notifications = [
 ];
 
 export default function TopBar() {
-  const { isSignedIn } = useAuth();
   const [showNotifs, setShowNotifs] = useState(false);
 
   return (
@@ -67,14 +65,14 @@ export default function TopBar() {
           )}
         </div>
 
-        <div className="flex items-center">
-          {isSignedIn ? (
-            <UserButton />
-          ) : (
-            <SignInButton mode="modal">
-              <button className="btn-coral h-10 px-5">Sign in</button>
-            </SignInButton>
-          )}
+        <div className="flex items-center gap-2.5 pl-1">
+          <div className="size-9 rounded-full bg-coral text-on-primary grid place-items-center text-[13px] font-semibold">
+            CR
+          </div>
+          <div className="hidden sm:block leading-tight">
+            <p className="text-[13px] font-medium text-ink">Control Room</p>
+            <p className="text-[11px] text-muted-soft">Authority access</p>
+          </div>
         </div>
       </div>
     </header>

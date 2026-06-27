@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth, currentUser } from '@clerk/nextjs/server';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5001';
+
+// Auth removed — the dashboard operates as a single shared "Control Room" identity.
+const CONTROL_ROOM = {
+  id: 'control-room',
+  email: 'control@kumbhraksha.local',
+  name: 'Control Room',
+};
 
 async function handleProxy(
   req: NextRequest,
@@ -19,19 +25,11 @@ async function handleProxy(
     let userEmail = '';
     let userName = '';
 
-    // 2. Perform Clerk Authentication for Admin/Dashboard routes
+    // 2. Auth removed — attach the shared Control Room identity to dashboard routes.
     if (!isPublic && !isMobile) {
-      const authSession = await auth();
-      userId = authSession.userId;
-      
-      if (!userId) {
-        return NextResponse.json({ error: 'Authentication required', code: 'UNAUTHORIZED' }, { status: 401 });
-      }
-
-      // Fetch user details for auto-onboarding / display
-      const user = await currentUser();
-      userEmail = user?.emailAddresses[0]?.emailAddress || '';
-      userName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'New User';
+      userId = CONTROL_ROOM.id;
+      userEmail = CONTROL_ROOM.email;
+      userName = CONTROL_ROOM.name;
     }
 
     // 3. Build destination URL including query parameters

@@ -44,11 +44,11 @@ export default function NotFound() {
             Home
           </Link>
           <Link
-            href="/login"
+            href="/dashboard"
             className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white px-8 py-3.5 rounded-full font-semibold border border-white/10 transition-all hover:scale-105 active:scale-95"
           >
             <ArrowLeft size={18} />
-            Login
+            Dashboard
           </Link>
         </div>
       </motion.div>

@@ -20,20 +20,31 @@ export function SpikeMark({ className }: { className?: string }) {
   );
 }
 
-/** Spike mark + "KumbhRaksha" wordmark lockup. */
+/**
+ * Spike mark + "KumbhRaksha" wordmark lockup — the single source of truth for
+ * the brand wordmark. Use this everywhere the name appears as a logotype so the
+ * font styling stays consistent across pages.
+ */
 export function Wordmark({
   className,
   markClassName,
+  labelClassName,
   label = "KumbhRaksha",
 }: {
   className?: string;
   markClassName?: string;
+  labelClassName?: string;
   label?: string;
 }) {
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
       <SpikeMark className={cn("size-5 text-coral", markClassName)} />
-      <span className="font-display text-[1.35rem] leading-none tracking-tight">
+      <span
+        className={cn(
+          "font-heading text-xl font-bold tracking-tight text-ink leading-none",
+          labelClassName
+        )}
+      >
         {label}
       </span>
     </span>
