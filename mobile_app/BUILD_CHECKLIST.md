@@ -102,6 +102,45 @@ Legend: ⬜ todo · 🔄 in progress · ✅ done
 
 ---
 
+# Phase 3 — Map + Sightings + Family (Week 3)
+
+## Sightings (proactive)
+- ✅ `sighting_repository.dart` — submit + recent (mock match confidence)
+- ✅ `sighting_provider.dart`
+- ✅ **Report Sighting screen** — photo, quick person-type selector, behaviour
+  emoji chips, age/gender, location auto-detect, notes, "I'll guide to help"
+  live-location toggle, success sheet with match likelihood
+
+## Active Alerts Map (pure-Dart interactive map)
+- ✅ `map_marker.dart` (domain), `map_provider.dart` (markers, layers, user loc)
+- ✅ **Active Alerts Map screen** — pan/zoom (InteractiveViewer), **pulsing
+  cascade rings**, missing (red) / sighting (amber) / CCTV (indigo) markers,
+  **layer toggles** + density heatmap, **user blue dot**, tap → **detail sheet**,
+  recenter + "Report sighting" FABs, stylised backdrop (grid + river)
+- ✅ `detail_sheet.dart` — marker detail bottom sheet
+- ✅ Wired as the Map tab in the nav shell (replaces placeholder)
+- ℹ️ Drop-in swap to `google_maps_flutter` once an API key is configured
+
+## Family Group Management
+- ✅ `family_repository.dart` (prefs-persisted), `family_provider.dart` (max 10)
+- ✅ **Family Group screen** — list, empty state, add/edit/delete, **quick report**
+- ✅ **Add/Edit Member screen** — photo, name, age, gender, phone
+- ✅ `family_member_card.dart`
+- ✅ Quick report pre-fills `ReportFormProvider` → opens report form seeded
+- ✅ Profile links: Family group + Report a sighting
+
+## Verification
+- ✅ `flutter analyze` — No issues found
+- ✅ Tests — 7 passing
+- ⛔ APK build — still blocked by disk space
+
+## Phase 3 out of mobile scope (separate apps)
+- ⬜ Authority Dashboard (React) — `web/` project, not `mobile_app`
+- ⬜ Attribute matching engine — backend; mobile already consumes
+  `sighting.matcherConfidence`
+
+---
+
 ## Notes / follow-ups
 - **BLE advertising**: `flutter_blue_plus` cannot act as a peripheral. To broadcast the
   rotating UUID (and to run the Day-7 Kotlin foreground service), integrate

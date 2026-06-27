@@ -61,7 +61,16 @@ class ProfileScreen extends StatelessWidget {
                   title: const Text('Family group'),
                   subtitle: const Text('Pre-register family for quick reporting'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {},
+                  onTap: () => Navigator.of(context).pushNamed('/family'),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(Icons.add_location_alt_outlined),
+                  title: const Text('Report a sighting'),
+                  subtitle: const Text('Seen someone who looks lost?'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () =>
+                      Navigator.of(context).pushNamed('/sighting/report'),
                 ),
                 const Divider(height: 1),
                 ListTile(

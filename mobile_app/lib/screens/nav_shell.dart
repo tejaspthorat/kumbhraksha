@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../features/alerts/presentation/screens/home_screen.dart';
-import '../features/map/presentation/screens/map_screen.dart';
+import '../features/map/presentation/screens/active_alerts_map_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
 import '../features/report/presentation/screens/report_missing_screen.dart';
 
@@ -17,7 +17,7 @@ class NavShell extends StatefulWidget {
 class _NavShellState extends State<NavShell> {
   int _index = 0;
 
-  static const _tabs = [HomeScreen(), MapScreen(), ProfileScreen()];
+  static const _tabs = [HomeScreen(), ActiveAlertsMapScreen(), ProfileScreen()];
 
   void _onTap(int i) {
     // Center "Report" item opens the full-screen form instead of a tab.

@@ -59,6 +59,20 @@ class ReportFormProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Pre-fills the form from a pre-registered family member for quick reporting.
+  void prefillFromFamily({
+    required String name,
+    int? age,
+    String? gender,
+    String? photoUrl,
+  }) {
+    personName = name;
+    personAge = age;
+    if (gender != null && gender.isNotEmpty) personGender = gender;
+    photoPath = photoUrl;
+    notifyListeners();
+  }
+
   Future<void> captureCurrentLocation() async {
     final pos = await _location.getCurrentLocation();
     if (pos != null) {

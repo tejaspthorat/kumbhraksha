@@ -27,6 +27,16 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
   final _features = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    // Seed from any pre-filled values (e.g. quick report from a family member).
+    final form = context.read<ReportFormProvider>();
+    _name.text = form.personName;
+    if (form.personAge != null) _age.text = form.personAge.toString();
+    _features.text = form.distinguishingFeatures;
+  }
+
+  @override
   void dispose() {
     _name.dispose();
     _age.dispose();
