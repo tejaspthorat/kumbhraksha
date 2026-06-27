@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,10 +9,11 @@ import 'package:provider/provider.dart';
 import '../../../../core/constants/dimensions.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../models/enums.dart';
+import '../../../../models/missing_report.dart';
 import '../../../../providers/auth_provider.dart';
 import '../../../../providers/report_form_provider.dart';
 
-/// Full missing-person report form.
+/// Full missing-person report form matching the white-mode design.
 class ReportMissingScreen extends StatefulWidget {
   const ReportMissingScreen({super.key});
   static const String route = '/report';
@@ -25,6 +27,17 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
   final _name = TextEditingController();
   final _age = TextEditingController();
   final _features = TextEditingController();
+  final _clothing = TextEditingController();
+  final _date = TextEditingController();
+  final _time = TextEditingController();
+  final _locationAddress = TextEditingController();
+  final _medicalConditions = TextEditingController();
+  final _reporterPhone = TextEditingController();
+
+  String? _gender;
+  String? _relationship;
+  bool _hasMedicalConditions = false;
+  DateTime _selectedDateTime = DateTime.now();
 
   @override
   void initState() {
@@ -34,6 +47,24 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
     _name.text = form.personName;
     if (form.personAge != null) _age.text = form.personAge.toString();
     _features.text = form.distinguishingFeatures;
+    _clothing.text = form.clothing.extras ?? '';
+    _medicalConditions.text = form.medicalConditions;
+    if (form.medicalConditions.isNotEmpty) {
+      _hasMedicalConditions = true;
+    }
+    _selectedDateTime = form.lastSeenTime;
+    _date.text = DateFormat('MM/dd/yyyy').format(_selectedDateTime);
+    _time.text = DateFormat('hh:mm a').format(_selectedDateTime);
+    
+    if (form.lastSeenLatitude != null && form.lastSeenLongitude != null) {
+      _locationAddress.text =
+          "${form.lastSeenLatitude!.toStringAsFixed(4)}, ${form.lastSeenLongitude!.toStringAsFixed(4)}";
+    }
+
+    // Pre-populate reporter phone number
+    final auth = context.read<AuthProvider>();
+    _reporterPhone.text = auth.user?.phoneNumber ?? '';
+    _gender = form.personGender;
   }
 
   @override
@@ -41,6 +72,12 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
     _name.dispose();
     _age.dispose();
     _features.dispose();
+    _clothing.dispose();
+    _date.dispose();
+    _time.dispose();
+    _locationAddress.dispose();
+    _medicalConditions.dispose();
+    _reporterPhone.dispose();
     super.dispose();
   }
 
@@ -51,27 +88,77 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
     if (file != null) form.update(photoPath: file.path);
   }
 
-  Future<void> _pickTime(ReportFormProvider form) async {
+  Future<void> _selectDate() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: _selectedDateTime,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+    if (date != null) {
+      setState(() {
+        _selectedDateTime = DateTime(
+          date.year,
+          date.month,
+          date.day,
+          _selectedDateTime.hour,
+          _selectedDateTime.minute,
+        );
+        _date.text = DateFormat('MM/dd/yyyy').format(_selectedDateTime);
+      });
+    }
+  }
+
+  Future<void> _selectTime() async {
     final time = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.fromDateTime(form.lastSeenTime),
+      initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
     );
     if (time != null) {
-      final now = DateTime.now();
-      form.update(
-        lastSeenTime:
-            DateTime(now.year, now.month, now.day, time.hour, time.minute),
-      );
+      setState(() {
+        _selectedDateTime = DateTime(
+          _selectedDateTime.year,
+          _selectedDateTime.month,
+          _selectedDateTime.day,
+          time.hour,
+          time.minute,
+        );
+        _time.text = DateFormat('hh:mm a').format(_selectedDateTime);
+      });
+    }
+  }
+
+  Future<void> _autoDetectLocation(ReportFormProvider form) async {
+    await form.captureCurrentLocation();
+    if (form.lastSeenLatitude != null && form.lastSeenLongitude != null) {
+      setState(() {
+        _locationAddress.text =
+            "${form.lastSeenLatitude!.toStringAsFixed(4)}, ${form.lastSeenLongitude!.toStringAsFixed(4)}";
+      });
     }
   }
 
   Future<void> _submit(ReportFormProvider form) async {
     if (!_formKey.currentState!.validate()) return;
+    
+    final address = _locationAddress.text.trim();
+    final rel = _relationship ?? 'Other';
+    final detailsList = [
+      _features.text.trim(),
+      if (address.isNotEmpty) 'Last seen location: $address',
+      'Relationship: $rel',
+    ];
+
     form.update(
       personName: _name.text,
       personAge: int.tryParse(_age.text),
-      distinguishingFeatures: _features.text,
+      personGender: _gender ?? 'M',
+      distinguishingFeatures: detailsList.join('\n'),
+      medicalConditions: _hasMedicalConditions ? _medicalConditions.text.trim() : '',
+      lastSeenTime: _selectedDateTime,
     );
+    form.updateClothing(Clothing(extras: _clothing.text.trim()));
+
     final reporterId = context.read<AuthProvider>().user?.id ?? 'anonymous';
     final ok = await form.submit(reporterId);
     if (!mounted) return;
@@ -125,6 +212,37 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
     );
   }
 
+  InputDecoration _inputDecoration({
+    String? hintText,
+    Widget? prefixIcon,
+    Color? fillColor,
+    BorderSide? borderSide,
+  }) {
+    return InputDecoration(
+      hintText: hintText,
+      prefixIcon: prefixIcon,
+      filled: true,
+      fillColor: fillColor ?? const Color(0xFFF4F4F5),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: borderSide ?? BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: borderSide ?? BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: borderSide ?? const BorderSide(color: Color(0xFF8D5332), width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Colors.redAccent, width: 1),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final form = context.watch<ReportFormProvider>();
@@ -132,100 +250,427 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
     final text = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Report missing person')),
+      backgroundColor: const Color(0xFFFAFAFA),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,
           child: ListView(
-            padding: const EdgeInsets.all(Dimens.lg),
+            padding: const EdgeInsets.symmetric(horizontal: Dimens.lg, vertical: Dimens.sm),
             children: [
-              Center(child: _PhotoPicker(form: form, onTap: () => _pickPhoto(form))),
-              const SizedBox(height: Dimens.xl),
-              Text('Who is missing?', style: text.titleMedium),
-              const SizedBox(height: Dimens.md),
-              TextFormField(
-                controller: _name,
-                textCapitalization: TextCapitalization.words,
-                validator: (v) => Validators.required(v, field: 'Name'),
-                decoration: const InputDecoration(
-                  labelText: 'Full name',
-                  prefixIcon: Icon(Icons.person_outline),
+              Text(
+                'Report Missing Person',
+                style: text.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 26,
+                  color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: Dimens.md),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _age,
-                      keyboardType: TextInputType.number,
-                      validator: Validators.age,
-                      decoration: const InputDecoration(labelText: 'Age'),
-                    ),
-                  ),
-                  const SizedBox(width: Dimens.md),
-                  Expanded(
-                    child: DropdownButtonFormField<String>(
-                      initialValue: form.personGender,
-                      decoration: const InputDecoration(labelText: 'Gender'),
-                      items: genders
-                          .map((g) => DropdownMenuItem(value: g, child: Text(g)))
-                          .toList(),
-                      onChanged: (v) => form.update(personGender: v),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: Dimens.xl),
-              Text('Appearance', style: text.titleMedium),
-              const SizedBox(height: Dimens.md),
-              _ClothingSelector(form: form),
-              const SizedBox(height: Dimens.md),
-              DropdownButtonFormField<String>(
-                initialValue: form.build,
-                decoration: const InputDecoration(labelText: 'Build'),
-                items: buildTypes
-                    .map((b) => DropdownMenuItem(value: b, child: Text(b)))
-                    .toList(),
-                onChanged: (v) => form.update(build: v),
-              ),
-              const SizedBox(height: Dimens.md),
-              TextFormField(
-                controller: _features,
-                maxLines: 2,
-                decoration: const InputDecoration(
-                  labelText: 'Distinguishing features (optional)',
-                  hintText: 'Birthmark, glasses, jewellery…',
-                ),
-              ),
-              const SizedBox(height: Dimens.xl),
-              Text('Last seen', style: text.titleMedium),
-              const SizedBox(height: Dimens.md),
-              _LocationRow(form: form),
               const SizedBox(height: Dimens.sm),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.access_time),
-                title: const Text('Time last seen'),
-                subtitle: Text(DateFormat.jm().format(form.lastSeenTime)),
-                trailing: TextButton(
-                  onPressed: () => _pickTime(form),
-                  child: const Text('Change'),
-                ),
-              ),
-              const SizedBox(height: Dimens.xl),
-              FilledButton(
-                onPressed: busy ? null : () => _submit(form),
-                child: busy
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white),
-                      )
-                    : const Text('Submit report'),
+              Text(
+                'Please provide as much accurate information as possible. Fields marked with * are required.',
+                style: text.bodyMedium?.copyWith(color: Colors.grey.shade600, fontSize: 13),
               ),
               const SizedBox(height: Dimens.lg),
+
+              // Main content card wrapper
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.grey.shade200),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.01),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Section: Recent Photo
+                    Text('Recent Photo', style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: Dimens.md),
+                    Center(
+                      child: GestureDetector(
+                        onTap: () => _pickPhoto(form),
+                        child: CustomPaint(
+                          painter: form.photoPath == null
+                              ? DashedBorderPainter(color: const Color(0xFFB06F43), strokeWidth: 1.2, gap: 8)
+                              : null,
+                          child: Container(
+                            width: double.infinity,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFAFAFA),
+                              borderRadius: BorderRadius.circular(12),
+                              image: form.photoPath != null
+                                  ? DecorationImage(
+                                      image: FileImage(File(form.photoPath!)),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : null,
+                            ),
+                            child: form.photoPath != null
+                                ? null
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(Icons.camera_alt_outlined, color: Colors.black54, size: 28),
+                                      const SizedBox(height: Dimens.sm),
+                                      Text(
+                                        'Tap to Upload Photo *',
+                                        style: text.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Clear, recent face photo preferred',
+                                        style: text.bodySmall?.copyWith(color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Divider(color: Colors.grey.shade200, height: 40),
+
+                    // Section: Basic Details
+                    Text('Basic Details', style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: Dimens.md),
+                    Text('Full Name *', style: text.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: _name,
+                      textCapitalization: TextCapitalization.words,
+                      validator: (v) => Validators.required(v, field: 'Name'),
+                      decoration: _inputDecoration(hintText: 'Jane Doe'),
+                    ),
+                    const SizedBox(height: Dimens.md),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Age *', style: text.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+                              const SizedBox(height: 6),
+                              TextFormField(
+                                controller: _age,
+                                keyboardType: TextInputType.number,
+                                validator: Validators.age,
+                                decoration: _inputDecoration(hintText: 'e.g. 34'),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: Dimens.md),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Gender *', style: text.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+                              const SizedBox(height: 6),
+                              DropdownButtonFormField<String>(
+                                value: _gender,
+                                decoration: _inputDecoration(hintText: 'Select'),
+                                items: const [
+                                  DropdownMenuItem(value: 'M', child: Text('Male')),
+                                  DropdownMenuItem(value: 'F', child: Text('Female')),
+                                  DropdownMenuItem(value: 'Other', child: Text('Other')),
+                                ],
+                                onChanged: (v) => setState(() => _gender = v),
+                                validator: (v) => Validators.required(v, field: 'Gender'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Divider(color: Colors.grey.shade200, height: 40),
+
+                    // Section: Appearance
+                    Text('Appearance', style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: Dimens.md),
+                    Text('Physical Description *', style: text.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: _features,
+                      maxLines: 3,
+                      validator: (v) => Validators.required(v, field: 'Physical description'),
+                      decoration: _inputDecoration(
+                        hintText: 'Height, weight, eye color, hair color, distinguishing marks (tattoos, scars)...',
+                      ),
+                    ),
+                    const SizedBox(height: Dimens.md),
+                    Row(
+                      children: [
+                        const Icon(Icons.check_circle_outline, color: Colors.redAccent, size: 16),
+                        const SizedBox(width: 6),
+                        Text(
+                          'Last Known Clothing *',
+                          style: text.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: _clothing,
+                      maxLines: 2,
+                      validator: (v) => Validators.required(v, field: 'Clothing description'),
+                      decoration: _inputDecoration(
+                        hintText: 'CRITICAL: Describe exactly what they were wearing...',
+                        fillColor: const Color(0xFFFFF5F5), // Light red warning bg
+                        borderSide: const BorderSide(color: Color(0xFFFFD1D1), width: 1),
+                      ),
+                    ),
+                    Divider(color: Colors.grey.shade200, height: 40),
+
+                    // Section: Last Seen Information
+                    Text('Last Seen Information', style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: Dimens.md),
+                    Text('Date *', style: text.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: _date,
+                      readOnly: true,
+                      onTap: _selectDate,
+                      validator: (v) => Validators.required(v, field: 'Date'),
+                      decoration: _inputDecoration(hintText: 'mm/dd/yyyy'),
+                    ),
+                    const SizedBox(height: Dimens.md),
+                    Text('Time *', style: text.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: _time,
+                      readOnly: true,
+                      onTap: _selectTime,
+                      validator: (v) => Validators.required(v, field: 'Time'),
+                      decoration: _inputDecoration(hintText: '--:--'),
+                    ),
+                    const SizedBox(height: Dimens.md),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Location *', style: text.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+                        GestureDetector(
+                          onTap: () => _autoDetectLocation(form),
+                          child: const Row(
+                            children: [
+                              Icon(Icons.gps_fixed, color: Color(0xFFB06F43), size: 14),
+                              SizedBox(width: 4),
+                              Text(
+                                'Auto-detect',
+                                style: TextStyle(color: Color(0xFFB06F43), fontSize: 13, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: _locationAddress,
+                      validator: (v) => Validators.required(v, field: 'Location'),
+                      decoration: _inputDecoration(
+                        hintText: 'Address, landmark, or intersection',
+                        prefixIcon: const Icon(Icons.location_on_outlined, color: Colors.black54),
+                      ),
+                    ),
+                    const SizedBox(height: Dimens.md),
+                    // Map preview visual card
+                    GestureDetector(
+                      onTap: () => _autoDetectLocation(form),
+                      child: Container(
+                        height: 120,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE2EFE9), // soft light green/teal map background
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey.shade200),
+                        ),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            const Icon(
+                              Icons.location_pin,
+                              color: Color(0xFFD27D56),
+                              size: 44,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.map_outlined, size: 16, color: Colors.black87),
+                                  SizedBox(width: 6),
+                                  Text(
+                                    'Tap to open map',
+                                    style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 13),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Divider(color: Colors.grey.shade200, height: 40),
+
+                    // Section: Additional Context
+                    Text('Additional Context', style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: Dimens.md),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFAFAFA),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade200),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Checkbox(
+                            value: _hasMedicalConditions,
+                            activeColor: const Color(0xFF8D5332),
+                            onChanged: (v) {
+                              setState(() {
+                                _hasMedicalConditions = v ?? false;
+                              });
+                            },
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Medical Conditions / Special Needs',
+                                  style: text.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Check this box if the person requires medication, has dementia, autism, or other conditions searchers should be aware of.',
+                                  style: text.bodySmall?.copyWith(color: Colors.grey.shade600, height: 1.3),
+                                ),
+                                const SizedBox(height: 10),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (_hasMedicalConditions) ...[
+                      const SizedBox(height: Dimens.md),
+                      TextFormField(
+                        controller: _medicalConditions,
+                        maxLines: 2,
+                        validator: (v) => _hasMedicalConditions
+                            ? Validators.required(v, field: 'Medical conditions')
+                            : null,
+                        decoration: _inputDecoration(
+                          hintText: 'Describe medical conditions, medications, or special needs...',
+                        ),
+                      ),
+                    ],
+                    Divider(color: Colors.grey.shade200, height: 40),
+
+                    // Section: Your Contact Info
+                    Text('Your Contact Info', style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: Dimens.md),
+                    Text('Relationship to Person *', style: text.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    DropdownButtonFormField<String>(
+                      value: _relationship,
+                      decoration: _inputDecoration(hintText: 'Select Relationship'),
+                      items: const [
+                        DropdownMenuItem(value: 'Parent', child: Text('Parent')),
+                        DropdownMenuItem(value: 'Sibling', child: Text('Sibling')),
+                        DropdownMenuItem(value: 'Spouse', child: Text('Spouse')),
+                        DropdownMenuItem(value: 'Child', child: Text('Child')),
+                        DropdownMenuItem(value: 'Friend', child: Text('Friend')),
+                        DropdownMenuItem(value: 'Guardian', child: Text('Guardian')),
+                        DropdownMenuItem(value: 'Other', child: Text('Other')),
+                      ],
+                      onChanged: (v) => setState(() => _relationship = v),
+                      validator: (v) => Validators.required(v, field: 'Relationship'),
+                    ),
+                    const SizedBox(height: Dimens.md),
+                    Text('Your Phone Number *', style: text.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: _reporterPhone,
+                      keyboardType: TextInputType.phone,
+                      validator: Validators.phone,
+                      decoration: _inputDecoration(hintText: '(555) 123-4567'),
+                    ),
+                    const SizedBox(height: Dimens.xl),
+
+                    // Submit Button: Post Alert
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: FilledButton(
+                        onPressed: busy ? null : () => _submit(form),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xFF8D5332), // Rust brown
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: busy
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                              )
+                            : const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.campaign_outlined, color: Colors.white),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Post Alert',
+                                    style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
+                    const SizedBox(height: Dimens.sm),
+                    Center(
+                      child: Text(
+                        'By posting, you confirm you have authority to share this information and have already contacted local authorities.',
+                        textAlign: TextAlign.center,
+                        style: text.bodySmall?.copyWith(color: Colors.grey.shade500, fontSize: 11, height: 1.3),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: Dimens.xl),
             ],
           ),
         ),
@@ -234,123 +679,49 @@ class _ReportMissingScreenState extends State<ReportMissingScreen> {
   }
 }
 
-class _PhotoPicker extends StatelessWidget {
-  const _PhotoPicker({required this.form, required this.onTap});
-  final ReportFormProvider form;
-  final VoidCallback onTap;
+/// Custom painter to draw a dashed border.
+class DashedBorderPainter extends CustomPainter {
+  final Color color;
+  final double strokeWidth;
+  final double gap;
+
+  DashedBorderPainter({
+    this.color = Colors.grey,
+    this.strokeWidth = 1.0,
+    this.gap = 5.0,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final hasPhoto = form.photoPath != null;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 120,
-        height: 120,
-        decoration: BoxDecoration(
-          color: scheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(Dimens.radiusCard),
-          image: hasPhoto
-              ? DecorationImage(
-                  image: FileImage(File(form.photoPath!)), fit: BoxFit.cover)
-              : null,
-        ),
-        child: hasPhoto
-            ? null
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.add_a_photo_outlined, color: scheme.primary),
-                  const SizedBox(height: Dimens.xs),
-                  Text('Add photo',
-                      style: Theme.of(context).textTheme.bodySmall),
-                ],
-              ),
-      ),
-    );
-  }
-}
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke;
 
-class _ClothingSelector extends StatelessWidget {
-  const _ClothingSelector({required this.form});
-  final ReportFormProvider form;
+    final path = Path()
+      ..addRRect(RRect.fromRectAndRadius(
+        Rect.fromLTWH(0, 0, size.width, size.height),
+        const Radius.circular(12),
+      ));
+
+    for (PathMetric pathMetric in path.computeMetrics()) {
+      double distance = 0.0;
+      while (distance < pathMetric.length) {
+        final double nextLen = distance + gap;
+        final double len = nextLen < pathMetric.length ? nextLen : pathMetric.length;
+        canvas.drawPath(
+          pathMetric.extractPath(distance, len - gap / 2),
+          paint,
+        );
+        distance = len;
+      }
+    }
+  }
 
   @override
-  Widget build(BuildContext context) {
-    final c = form.clothing;
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: _dropdown('Top colour', clothingColors, c.topColor,
-                  (v) => form.updateClothing(c.copyWith(topColor: v))),
-            ),
-            const SizedBox(width: Dimens.md),
-            Expanded(
-              child: _dropdown('Top type', topTypes, c.topType,
-                  (v) => form.updateClothing(c.copyWith(topType: v))),
-            ),
-          ],
-        ),
-        const SizedBox(height: Dimens.md),
-        Row(
-          children: [
-            Expanded(
-              child: _dropdown('Bottom colour', clothingColors, c.bottomColor,
-                  (v) => form.updateClothing(c.copyWith(bottomColor: v))),
-            ),
-            const SizedBox(width: Dimens.md),
-            Expanded(
-              child: _dropdown('Bottom type', bottomTypes, c.bottomType,
-                  (v) => form.updateClothing(c.copyWith(bottomType: v))),
-            ),
-          ],
-        ),
-        const SizedBox(height: Dimens.md),
-        _dropdown('Footwear', footwearTypes, c.footwear,
-            (v) => form.updateClothing(c.copyWith(footwear: v))),
-      ],
-    );
-  }
-
-  Widget _dropdown(String label, List<String> items, String? value,
-      ValueChanged<String?> onChanged) {
-    return DropdownButtonFormField<String>(
-      initialValue: value,
-      isExpanded: true,
-      decoration: InputDecoration(labelText: label),
-      items: items
-          .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-          .toList(),
-      onChanged: onChanged,
-    );
-  }
-}
-
-class _LocationRow extends StatelessWidget {
-  const _LocationRow({required this.form});
-  final ReportFormProvider form;
-
-  @override
-  Widget build(BuildContext context) {
-    final has = form.lastSeenLatitude != null;
-    return Card(
-      child: ListTile(
-        leading: Icon(Icons.location_on,
-            color: Theme.of(context).colorScheme.primary),
-        title: Text(has ? 'Current location captured' : 'Use current location'),
-        subtitle: has
-            ? Text(
-                '${form.lastSeenLatitude!.toStringAsFixed(4)}, '
-                '${form.lastSeenLongitude!.toStringAsFixed(4)}')
-            : const Text('Tag where they were last seen'),
-        trailing: TextButton(
-          onPressed: form.captureCurrentLocation,
-          child: Text(has ? 'Update' : 'Capture'),
-        ),
-      ),
-    );
+  bool shouldRepaint(covariant DashedBorderPainter oldDelegate) {
+    return oldDelegate.color != color ||
+        oldDelegate.strokeWidth != strokeWidth ||
+        oldDelegate.gap != gap;
   }
 }

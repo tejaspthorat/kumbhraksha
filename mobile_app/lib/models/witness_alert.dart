@@ -15,6 +15,10 @@ class WitnessAlert extends Equatable {
   // Denormalized for feed display (optional).
   final String? personName;
   final String? photoUrl;
+  final int? age;
+  final String? gender;
+  final String? distanceText;
+  final String? statusText;
 
   const WitnessAlert({
     required this.id,
@@ -29,6 +33,10 @@ class WitnessAlert extends Equatable {
     this.respondedAt,
     this.personName,
     this.photoUrl,
+    this.age,
+    this.gender,
+    this.distanceText,
+    this.statusText,
   });
 
   factory WitnessAlert.fromJson(Map<String, dynamic> json) => WitnessAlert(
@@ -48,6 +56,10 @@ class WitnessAlert extends Equatable {
             : null,
         personName: json['person_name'] as String?,
         photoUrl: json['photo_url'] as String?,
+        age: json['age'] as int?,
+        gender: json['gender'] as String?,
+        distanceText: json['distance_text'] as String?,
+        statusText: json['status_text'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -63,6 +75,10 @@ class WitnessAlert extends Equatable {
         'responded_at': respondedAt?.toIso8601String(),
         'person_name': personName,
         'photo_url': photoUrl,
+        'age': age,
+        'gender': gender,
+        'distance_text': distanceText,
+        'status_text': statusText,
       };
 
   WitnessAlert copyWith({
@@ -83,12 +99,17 @@ class WitnessAlert extends Equatable {
         respondedAt: respondedAt ?? this.respondedAt,
         personName: personName,
         photoUrl: photoUrl,
+        age: age,
+        gender: gender,
+        distanceText: distanceText,
+        statusText: statusText,
       );
 
   @override
   List<Object?> get props => [
         id, missingReportId, witnessUserId, alertType, alertText, createdAt,
         notifiedAt, userResponded, responseText, respondedAt, personName, photoUrl,
+        age, gender, distanceText, statusText,
       ];
 
   bool get isBleAlert => alertType == 'ble_witness';

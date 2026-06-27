@@ -10,6 +10,8 @@ import '../widgets/area_alert_card.dart';
 import 'confirm_sighting_screen.dart';
 import 'witness_memory_screen.dart';
 
+import '../../../../screens/nav_shell.dart';
+
 /// Home / alert feed — paginated list backed by [AlertsFeedProvider] with live
 /// WebSocket inserts and pull-to-refresh.
 class HomeScreen extends StatefulWidget {
@@ -63,56 +65,75 @@ class _HomeScreenState extends State<HomeScreen> {
     final text = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Alerts'),
-        actions: [
-          _ConnectionDot(connected: feed.alerts.isNotEmpty),
-          const SizedBox(width: Dimens.sm),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: feed.refresh,
-        child: ListView.builder(
-          controller: _scroll,
-          padding: const EdgeInsets.all(Dimens.lg),
-          itemCount: _itemCount(feed),
-          itemBuilder: (context, index) {
-            if (index == 0) return const _ProtectionBanner();
-            if (index == 1) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: Dimens.md),
-                child: Text('Nearby alerts', style: text.titleMedium),
-              );
-            }
-            final i = index - 2;
-            if (i < feed.alerts.length) {
-              final alert = feed.alerts[i];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: Dimens.md),
-                child: alert.isBleAlert
-                    ? WitnessAlertCard(
-                        alert: alert,
-                        onRespond: (r) => r == 'yes'
-                            ? _onSeeThem(alert)
-                            : _respond(alert, r),
-                      )
-                    : AreaAlertCard(
-                        alert: alert,
-                        onIWasThere: () => _onIWasThere(alert),
-                        onDismiss: () => _respond(alert, 'no'),
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: feed.refresh,
+          child: ListView.builder(
+            controller: _scroll,
+            padding: const EdgeInsets.all(Dimens.lg),
+            itemCount: _itemCount(feed),
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: Dimens.md, left: Dimens.xs, right: Dimens.xs),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Active Alerts Near You',
+                        style: text.titleLarge?.copyWith(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
                       ),
-              );
-            }
-            return _FeedFooter(feed: feed);
-          },
+                      GestureDetector(
+                        onTap: () {
+                          // Tab index 2 is Map (Home=0, Cases=1, Map=2)
+                          const TabSwitchNotification(2).dispatch(context);
+                        },
+                        child: Text(
+                          'View Map',
+                          style: text.titleSmall?.copyWith(
+                            color: const Color(0xFFB06F43),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              final i = index - 1;
+              if (i < feed.alerts.length) {
+                final alert = feed.alerts[i];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: Dimens.md),
+                  child: alert.isBleAlert
+                      ? WitnessAlertCard(
+                          alert: alert,
+                          onRespond: (r) => r == 'yes'
+                              ? _onSeeThem(alert)
+                              : _respond(alert, r),
+                        )
+                      : AreaAlertCard(
+                          alert: alert,
+                          onIWasThere: () => _onIWasThere(alert),
+                          onDismiss: () => _respond(alert, 'no'),
+                        ),
+                );
+              }
+              return _FeedFooter(feed: feed);
+            },
+          ),
         ),
       ),
     );
   }
 
   int _itemCount(AlertsFeedProvider feed) {
-    // banner + section header + alerts + footer
-    return 2 + feed.alerts.length + 1;
+    // header + alerts + footer
+    return 1 + feed.alerts.length + 1;
   }
 }
 

@@ -13,6 +13,7 @@ class MapMarkerData {
     required this.subtitle,
     this.radiusMeters,
     this.time,
+    this.photoUrl,
   });
 
   final String id;
@@ -23,6 +24,7 @@ class MapMarkerData {
   final String subtitle;
   final double? radiusMeters; // cascading alert radius (missing only)
   final DateTime? time;
+  final String? photoUrl;
 
   Color get color => switch (kind) {
         MarkerKind.missing => const Color(0xFFEF4444),

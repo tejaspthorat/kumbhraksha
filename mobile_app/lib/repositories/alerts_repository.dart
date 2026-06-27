@@ -66,11 +66,45 @@ class AlertsRepository {
   }
 
   List<WitnessAlert> _mockPage(int page, int pageSize) {
-    // Three pages of demo data, then empty (end of feed).
     if (page >= 3) return [];
     final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+
     return List.generate(pageSize, (i) {
       final n = page * pageSize + i;
+      if (n == 0) {
+        return WitnessAlert(
+          id: 'a-0',
+          missingReportId: 'r-0',
+          witnessUserId: 'me',
+          alertType: 'ble_witness',
+          alertText: 'Last seen wearing a blue windbreaker, khaki pants, and a green baseball cap. He has mild...',
+          createdAt: DateTime(today.year, today.month, today.day, 14, 30),
+          personName: 'Arthur Pendelton',
+          photoUrl: 'https://images.unsplash.com/photo-1552058544-f2b08422138a?fit=crop&w=600&h=600',
+          age: 78,
+          gender: 'Male',
+          distanceText: '2.4 km away',
+          statusText: 'Active Search',
+        );
+      } else if (n == 1) {
+        return WitnessAlert(
+          id: 'a-1',
+          missingReportId: 'r-1',
+          witnessUserId: 'me',
+          alertType: 'gps_radius',
+          alertText: 'Left school at 3 PM but didn\'t return home. Carrying a yellow backpack. Wearing a black...',
+          createdAt: DateTime(yesterday.year, yesterday.month, yesterday.day, 15, 15),
+          personName: 'Maya Lin',
+          photoUrl: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?fit=crop&w=600&h=600',
+          age: 14,
+          gender: 'Female',
+          distanceText: '5.1 km away',
+          statusText: null,
+        );
+      }
+
       final ble = n.isEven;
       return WitnessAlert(
         id: 'a-$n',
@@ -78,10 +112,17 @@ class AlertsRepository {
         witnessUserId: 'me',
         alertType: ble ? 'ble_witness' : 'gps_radius',
         alertText: ble
-            ? 'You were near this person around ${(now.hour) % 12 + 1}:${(n * 7) % 60} today.'
-            : 'Missing person last seen ${100 + n * 20}m from your location.',
-        createdAt: now.subtract(Duration(minutes: n * 6)),
-        personName: ble ? 'Witness case #$n' : 'Area case #$n',
+            ? 'Wearing a white kurta pyjama, last seen near the main entrance gate.'
+            : 'Missing person last seen near the bathing ghat. Speaks only Hindi.',
+        createdAt: now.subtract(Duration(hours: n * 2)),
+        personName: ble ? 'Rajesh Kumar' : 'Sita Devi',
+        photoUrl: ble
+            ? 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?fit=crop&w=600&h=600'
+            : 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=600',
+        age: ble ? 45 : 68,
+        gender: ble ? 'Male' : 'Female',
+        distanceText: '${1.2 + (n * 0.5)} km away',
+        statusText: ble ? 'Active Search' : null,
       );
     });
   }
