@@ -10,6 +10,7 @@ import {
 import GlassCard from '@/components/ui/GlassCard';
 import Badge from '@/components/ui/BaseBadge';
 import AnimatedCounter from '@/components/ui/AnimatedCounter';
+import { crowdCameraApi } from '@/lib/crowdCameras';
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.05 } } };
 const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
@@ -92,11 +93,8 @@ export default function HeatmapPage() {
   useEffect(() => {
     const fetchCameras = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/cameras');
-        if (res.ok) {
-          const data = await res.json();
-          setCameras(data);
-        }
+        const data = await crowdCameraApi.list();
+        setCameras(data);
       } catch (err) {
         console.error('Error fetching cameras:', err);
       }
@@ -109,7 +107,7 @@ export default function HeatmapPage() {
   // Fetch heatmap data
   const fetchHeatmap = useCallback(async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/heatmap/data');
+      const res = await fetch('/api/heatmap/data', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         setHeatmapData(data);
@@ -134,7 +132,7 @@ export default function HeatmapPage() {
       cameras.forEach(cam => {
         const img = heatmapFrameRefs.current[cam.id];
         if (img) {
-          img.src = `http://localhost:5000/api/cameras/${cam.id}/heatmap?t=${Date.now()}`;
+          img.src = crowdCameraApi.heatmapUrl(cam.id);
         }
       });
     }, 1000);
@@ -494,7 +492,7 @@ export default function HeatmapPage() {
                                 <div className="relative rounded-lg overflow-hidden border border-hairline">
                                   <img
                                     ref={el => { heatmapFrameRefs.current[parseInt(camId)] = el; }}
-                                    src={`http://localhost:5000/api/cameras/${camId}/heatmap?t=${Date.now()}`}
+                                    src={crowdCameraApi.heatmapUrl(parseInt(camId))}
                                     alt={`Heatmap ${camData.name}`}
                                     className="w-full h-auto"
                                   />
@@ -549,7 +547,7 @@ export default function HeatmapPage() {
                           <div className="relative aspect-video">
                             <img
                               ref={el => { heatmapFrameRefs.current[cam.id] = el; }}
-                              src={`http://localhost:5000/api/cameras/${cam.id}/heatmap?t=${Date.now()}`}
+                              src={crowdCameraApi.heatmapUrl(cam.id)}
                               alt={`Heatmap ${cam.name}`}
                               className="w-full h-full object-cover"
                               onError={(e) => {

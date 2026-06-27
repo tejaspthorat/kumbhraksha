@@ -130,3 +130,9 @@ ID,Type,Level,Title,Description,Zone,Time,Camera ID,Resolved
 1774766498,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 26 people detected,Zone B,2026-03-29T12:11:38.214379,4,False
 1774766506,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 27 people detected,Zone B,2026-03-29T12:11:46.879815,4,False
 1774766513,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 26 people detected,Zone A,2026-03-29T12:11:53.374139,4,False
+1782554045,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 29 people detected,Zone B,2026-06-27T15:24:05.558395,4,False
+1782554064,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 26 people detected,Zone A,2026-06-27T15:24:24.674143,4,False
+1782554110,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 26 people detected,Zone B,2026-06-27T15:25:10.944573,4,False
+1782554131,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 27 people detected,Zone B,2026-06-27T15:25:31.906015,4,False
+1782554144,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 27 people detected,Zone A,2026-06-27T15:25:44.940011,4,False
+1782554151,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 26 people detected,Zone A,2026-06-27T15:25:51.888981,4,False

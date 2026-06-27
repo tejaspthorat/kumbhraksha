@@ -78,13 +78,15 @@ async function handleProxy(
       cache: 'no-store',
     });
 
-    // 7. Get response body and return to client
-    const resBody = await backendRes.text();
+    // 7. Preserve text and binary bodies from the backend.
+    const resBody = await backendRes.arrayBuffer();
     
     // Build return headers
     const returnHeaders = new Headers();
-    const resContentType = backendRes.headers.get('content-type');
-    if (resContentType) returnHeaders.set('content-type', resContentType);
+    for (const headerName of ['content-type', 'cache-control', 'pragma', 'expires']) {
+      const value = backendRes.headers.get(headerName);
+      if (value) returnHeaders.set(headerName, value);
+    }
 
     return new NextResponse(resBody, {
       status: backendRes.status,

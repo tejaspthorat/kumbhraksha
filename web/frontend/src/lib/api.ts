@@ -1,6 +1,5 @@
 import { useStore, GroqZoneDensity } from './store'
-
-const FASTAPI_URL = process.env.FASTAPI_URL || 'http://localhost:5000'
+import { crowdCameraApi } from './crowdCameras'
 
 export async function fetchDensityData(): Promise<GroqZoneDensity[]> {
   const state = useStore.getState()
@@ -32,49 +31,39 @@ export async function fetchDensityData(): Promise<GroqZoneDensity[]> {
   })
 
   try {
-    // Attempt to fetch live data from FastAPI
-    // First, get cameras list which matches cameras.json
-    const camRes = await fetch(`${FASTAPI_URL}/api/cameras`, { signal: AbortSignal.timeout(3000) })
-    
-    if (camRes.ok) {
-      const cameras = await camRes.json()
-      
-      // For each camera, fetch its live stats
-      for (const cam of cameras) {
-        if (!cam.id) continue
-        try {
-          const statsRes = await fetch(`${FASTAPI_URL}/api/cameras/${cam.id}/stats`, { signal: AbortSignal.timeout(2000) })
-          if (statsRes.ok) {
-            const stats = await statsRes.json()
-            
-            // Map camera ID to zone. Fallback: match by index if zone ID doesn't exactly match
-            let targetZoneIdx = mappedData.findIndex(z => z.zoneId === cam.id.toString() || z.zoneId === cam.zoneId?.toString())
-            if (targetZoneIdx === -1) {
-              // Just apply to the first zone for demo purposes if unconnected
-              targetZoneIdx = Math.min(cam.id - 1, mappedData.length - 1)
-            }
-            
-            if (targetZoneIdx >= 0 && targetZoneIdx < mappedData.length) {
-              const z = mappedData[targetZoneIdx]
-              z.currentCount = stats.count || 0
-              z.fillPercent = Math.min(100, (z.currentCount / z.maxCapacity) * 100)
-              
-              if (z.fillPercent > 90) z.status = "critical"
-              else if (z.fillPercent > 75) z.status = "warning"
-              else z.status = "safe"
-              
-              // Simulate entry/exit based on recent zone flow if needed
-              z.entryRate = stats.zone_a || z.entryRate
-              z.exitRate = stats.zone_b || z.exitRate
-            }
-          }
-        } catch (err) {
-          console.warn(`Failed to fetch stats for camera ${cam.id}`, err)
+    const cameras = await crowdCameraApi.list()
+
+    for (const cam of cameras) {
+      if (!cam.id) continue
+      try {
+        const stats = await crowdCameraApi.stats(cam.id)
+
+        // Map camera ID to zone. Fallback: match by index if zone ID doesn't exactly match
+        let targetZoneIdx = mappedData.findIndex(z => z.zoneId === cam.id.toString() || z.zoneId === (cam as any).zoneId?.toString())
+        if (targetZoneIdx === -1) {
+          // Just apply to the first zone for demo purposes if unconnected
+          targetZoneIdx = Math.min(cam.id - 1, mappedData.length - 1)
         }
+
+        if (targetZoneIdx >= 0 && targetZoneIdx < mappedData.length) {
+          const z = mappedData[targetZoneIdx]
+          z.currentCount = stats.count || 0
+          z.fillPercent = Math.min(100, (z.currentCount / z.maxCapacity) * 100)
+
+          if (z.fillPercent > 90) z.status = "critical"
+          else if (z.fillPercent > 75) z.status = "warning"
+          else z.status = "safe"
+
+          // Use zone split as a lightweight flow proxy when explicit flow data is absent.
+          z.entryRate = stats.zone_a || z.entryRate
+          z.exitRate = stats.zone_b || z.exitRate
+        }
+      } catch (err) {
+        console.warn(`Failed to fetch stats for camera ${cam.id}`, err)
       }
     }
   } catch (err) {
-    console.warn("Failed to fetch from FastAPI. using Prisma/Mock fallback.", err)
+    console.warn("Failed to fetch camera density data. Using Prisma/Mock fallback.", err)
   }
 
   // Update store

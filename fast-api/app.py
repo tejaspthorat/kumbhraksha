@@ -26,6 +26,13 @@ logging.getLogger('ultralytics').setLevel(logging.WARNING)
 app = Flask(__name__)
 CORS(app)
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "yolov8n.pt")
+LOG_DIR = os.path.join(BASE_DIR, "logs")
+REPORTS_DIR = os.path.join(LOG_DIR, "reports")
+CAMERAS_FILE = os.path.join(BASE_DIR, "cameras.json")
+os.makedirs(LOG_DIR, exist_ok=True)
+
 # Store camera configurations and frames
 cameras = []
 camera_processes = {}
@@ -36,8 +43,22 @@ camera_errors = {}  # Track camera errors
 frame_queues = {}   # Frame queues for each camera
 camera_heatmap_data = {}  # Store person positions for heatmap generation
 
-# Load existing cameras from file
-CAMERAS_FILE = "cameras.json"
+def resolve_local_path(path):
+    """Resolve a user-provided local path from cwd or the fast-api directory."""
+    if not path or not isinstance(path, str):
+        return None
+
+    candidates = [path]
+    if not os.path.isabs(path):
+        candidates.extend([
+            os.path.abspath(path),
+            os.path.join(BASE_DIR, path),
+        ])
+
+    for candidate in candidates:
+        if os.path.exists(candidate):
+            return os.path.abspath(candidate)
+    return None
 
 def load_cameras():
     global cameras
@@ -54,6 +75,58 @@ def save_cameras():
     with open(CAMERAS_FILE, 'w') as f:
         json.dump(cameras, f)
 
+def read_crowd_log_dataframe(csv_file):
+    """Read old and new crowd log row shapes into one normalized dataframe."""
+    columns = ['Timestamp', 'Camera ID', 'Count', 'Density', 'Zone A', 'Zone B']
+    rows = []
+    if not os.path.exists(csv_file):
+        return pd.DataFrame(rows, columns=columns)
+
+    with open(csv_file, 'r', newline='') as f:
+        reader = csv.reader(f)
+        header = next(reader, None)
+
+        for row in reader:
+            if not row or row[0] == 'Timestamp':
+                continue
+
+            if len(row) >= 6:
+                timestamp, camera_id, count, density, zone_a, zone_b = row[:6]
+            elif len(row) >= 5:
+                timestamp, count, density, zone_a, zone_b = row[:5]
+                camera_id = ''
+            else:
+                continue
+
+            rows.append({
+                'Timestamp': timestamp,
+                'Camera ID': camera_id,
+                'Count': count,
+                'Density': density,
+                'Zone A': zone_a,
+                'Zone B': zone_b
+            })
+
+    return pd.DataFrame(rows, columns=columns)
+
+def start_camera_processing(camera, video_source=None):
+    """Start or restart the worker thread that produces frames/stats for a camera."""
+    camera_id = int(camera['id'])
+    existing = camera_processes.get(camera_id)
+    if existing and existing.is_alive():
+        return
+
+    source = video_source if video_source is not None else camera.get('video_source')
+    if source is None:
+        camera_errors[camera_id] = "Camera has no video source"
+        return
+
+    camera_active[camera_id] = True
+    thread = threading.Thread(target=process_camera_stream, args=(camera_id, source))
+    thread.daemon = True
+    thread.start()
+    camera_processes[camera_id] = thread
+
 def process_camera_stream(camera_id, video_source):
     """Optimized camera stream processing with YOLO detection"""
     try:
@@ -61,7 +134,7 @@ def process_camera_stream(camera_id, video_source):
         print(f"Video source: {video_source}")
         
         # Load YOLO model
-        model = YOLO("yolov8n.pt")
+        model = YOLO(MODEL_PATH)
         
         # Optimize YOLO for speed
         model.conf = 0.5  # Confidence threshold
@@ -75,8 +148,9 @@ def process_camera_stream(camera_id, video_source):
         
         if isinstance(source, str):
             # Check if it's a file path
-            if os.path.exists(source):
-                actual_video_path = source
+            resolved_path = resolve_local_path(source)
+            if resolved_path:
+                actual_video_path = resolved_path
                 is_video_file = True
                 print(f"Detected video file: {actual_video_path}")
             # Check if it's a number for webcam
@@ -86,12 +160,6 @@ def process_camera_stream(camera_id, video_source):
             # Check if it's a URL
             elif source.startswith(('http://', 'https://', 'rtsp://')):
                 print(f"Using IP camera stream: {source}")
-            else:
-                # Try to resolve as file path
-                if os.path.exists(os.path.join(os.getcwd(), source)):
-                    actual_video_path = os.path.join(os.getcwd(), source)
-                    is_video_file = True
-                    print(f"Detected video file from relative path: {actual_video_path}")
         
         # Open video capture
         if is_video_file:
@@ -335,8 +403,8 @@ def process_camera_stream(camera_id, video_source):
                         }
                         
                         # Save alert to CSV
-                        alert_file = "logs/alerts.csv"
-                        os.makedirs("logs", exist_ok=True)
+                        alert_file = os.path.join(LOG_DIR, "alerts.csv")
+                        os.makedirs(LOG_DIR, exist_ok=True)
                         file_exists = os.path.exists(alert_file)
                         
                         with open(alert_file, 'a', newline='') as f:
@@ -351,8 +419,8 @@ def process_camera_stream(camera_id, video_source):
                     
                     # Log to CSV every 5 seconds - FIXED: Ensure numeric values are written as numbers
                     if int(time.time()) % 5 == 0 and time.time() - last_send_time > 5:
-                        csv_file = "logs/crowd_log.csv"
-                        os.makedirs("logs", exist_ok=True)
+                        csv_file = os.path.join(LOG_DIR, "crowd_log.csv")
+                        os.makedirs(LOG_DIR, exist_ok=True)
                         file_exists = os.path.exists(csv_file)
                         
                         with open(csv_file, 'a', newline='') as f:
@@ -395,13 +463,31 @@ def process_camera_stream(camera_id, video_source):
 
 @app.route('/api/cameras', methods=['GET'])
 def get_cameras():
+    response = []
     for camera in cameras:
         camera_id = camera['id']
+        camera_view = camera.copy()
         if camera_id in camera_frames and camera_frames[camera_id] is not None:
-            camera['status'] = 'online'
+            camera_view['status'] = 'online'
+        elif camera_id in camera_errors:
+            camera_view['status'] = 'error'
+            camera_view['error'] = camera_errors[camera_id]
+        elif camera_active.get(camera_id):
+            camera_view['status'] = 'connecting'
         else:
-            camera['status'] = 'connecting'
-    return jsonify(cameras)
+            camera_view['status'] = camera.get('status', 'offline')
+
+        stats = camera_stats.get(camera_id)
+        if stats:
+            camera_view['count'] = stats.get('count', camera_view.get('count', 0))
+            camera_view['density'] = stats.get('density', camera_view.get('density', 'Low'))
+            camera_view['fps'] = stats.get('fps', camera_view.get('fps', 0))
+            camera_view['zone_a'] = stats.get('zone_a', 0)
+            camera_view['zone_b'] = stats.get('zone_b', 0)
+            camera_view['last_seen_at'] = stats.get('timestamp')
+
+        response.append(camera_view)
+    return jsonify(response)
 
 @app.route('/api/cameras', methods=['POST'])
 def add_camera():
@@ -417,11 +503,8 @@ def add_camera():
     # Construct video source
     if video_path:
         # Resolve video path to absolute path
-        if os.path.exists(video_path):
-            video_source = video_path
-        elif os.path.exists(os.path.join(os.getcwd(), video_path)):
-            video_source = os.path.join(os.getcwd(), video_path)
-        else:
+        video_source = resolve_local_path(video_path)
+        if not video_source:
             return jsonify({'success': False, 'error': f'Video file not found: {video_path}'}), 400
         
         display_name = camera_name or f"Video: {os.path.basename(video_source)}"
@@ -464,10 +547,7 @@ def add_camera():
         time.sleep(0.5)
     
     # Start camera processing in a separate thread
-    thread = threading.Thread(target=process_camera_stream, args=(camera['id'], video_source))
-    thread.daemon = True
-    thread.start()
-    camera_processes[camera['id']] = thread
+    start_camera_processing(camera, video_source)
     
     return jsonify({'success': True, 'camera': camera}), 201
 
@@ -522,7 +602,7 @@ def get_camera_stats(camera_id):
 def get_alerts():
     """Get all alerts from CSV"""
     alerts = []
-    alert_file = "logs/alerts.csv"
+    alert_file = os.path.join(LOG_DIR, "alerts.csv")
     
     if os.path.exists(alert_file):
         try:
@@ -559,8 +639,8 @@ def get_alerts():
 def create_alert():
     """Create a new alert"""
     data = request.json
-    alert_file = "logs/alerts.csv"
-    os.makedirs("logs", exist_ok=True)
+    alert_file = os.path.join(LOG_DIR, "alerts.csv")
+    os.makedirs(LOG_DIR, exist_ok=True)
     
     alert_data = {
         'id': int(time.time()),
@@ -589,8 +669,8 @@ def create_alert():
 @app.route('/api/alerts/<int:alert_id>/resolve', methods=['PUT'])
 def resolve_alert(alert_id):
     """Resolve an alert"""
-    alert_file = "logs/alerts.csv"
-    temp_file = "logs/alerts_temp.csv"
+    alert_file = os.path.join(LOG_DIR, "alerts.csv")
+    temp_file = os.path.join(LOG_DIR, "alerts_temp.csv")
     
     if not os.path.exists(alert_file):
         return jsonify({'error': 'Alert not found'}), 404
@@ -620,7 +700,7 @@ def resolve_alert(alert_id):
 @app.route('/api/alerts/stats', methods=['GET'])
 def get_alert_stats():
     """Get alert statistics"""
-    alert_file = "logs/alerts.csv"
+    alert_file = os.path.join(LOG_DIR, "alerts.csv")
     stats = {
         'total': 0,
         'active': 0,
@@ -896,8 +976,8 @@ def get_daily_report():
             start_date = end_date - timedelta(days=days)
         
         # Read logs
-        csv_file = "logs/crowd_log.csv"
-        alert_file = "logs/alerts.csv"
+        csv_file = os.path.join(LOG_DIR, "crowd_log.csv")
+        alert_file = os.path.join(LOG_DIR, "alerts.csv")
         
         daily_data = []
         daily_alerts = []
@@ -906,7 +986,7 @@ def get_daily_report():
         # Parse crowd data
         if os.path.exists(csv_file):
             try:
-                df = pd.read_csv(csv_file)
+                df = read_crowd_log_dataframe(csv_file)
                 
                 # Ensure proper data types
                 df['Timestamp'] = pd.to_datetime(df['Timestamp'])
@@ -1006,7 +1086,7 @@ def get_daily_report():
         # Calculate zone rankings from recent data
         if os.path.exists(csv_file):
             try:
-                df = pd.read_csv(csv_file)
+                df = read_crowd_log_dataframe(csv_file)
                 df['Timestamp'] = pd.to_datetime(df['Timestamp'])
                 df['Zone A'] = pd.to_numeric(df['Zone A'], errors='coerce')
                 df['Zone B'] = pd.to_numeric(df['Zone B'], errors='coerce')
@@ -1127,8 +1207,8 @@ def save_daily_report():
             report_data = response.get_json()
             
             # Save to file
-            report_file = f"logs/reports/{yesterday}.json"
-            os.makedirs("logs/reports", exist_ok=True)
+            report_file = os.path.join(REPORTS_DIR, f"{yesterday}.json")
+            os.makedirs(REPORTS_DIR, exist_ok=True)
             with open(report_file, 'w') as f:
                 json.dump(report_data, f, indent=2)
             
@@ -1138,7 +1218,10 @@ if __name__ == '__main__':
     load_cameras()
     
     # Load existing reports
-    os.makedirs("logs/reports", exist_ok=True)
+    os.makedirs(REPORTS_DIR, exist_ok=True)
+
+    for camera in cameras:
+        start_camera_processing(camera)
     
     print("Starting Flask server on http://localhost:5000")
     print("\nTo add a video file, use the full path or relative path:")

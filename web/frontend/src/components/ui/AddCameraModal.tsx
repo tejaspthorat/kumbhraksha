@@ -6,11 +6,12 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Camera, Wifi, Server, AlertCircle, CheckCircle, Webcam, Video } from 'lucide-react';
 import GlassCard from './GlassCard';
+import { crowdCameraApi, type CameraCreatePayload, type CrowdCamera } from '@/lib/crowdCameras';
 
 interface AddCameraModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (camera: any) => void;
+  onAdd: (camera: CrowdCamera) => void;
 }
 
 export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModalProps) {
@@ -28,7 +29,7 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
     setLoading(true);
     setError('');
 
-    let cameraData;
+    let cameraData: CameraCreatePayload;
     
     if (cameraType === 'webcam') {
       cameraData = {
@@ -65,31 +66,18 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/cameras', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(cameraData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        onAdd(data.camera);
-        onClose();
-        // Reset form
-        setName('');
-        setIp('');
-        setPort('8080');
-        setProtocol('http');
-        setVideoPath('');
-        setCameraType('webcam');
-      } else {
-        setError(data.error || 'Failed to add camera');
-      }
+      const data = await crowdCameraApi.create(cameraData);
+      onAdd(data.camera);
+      onClose();
+      // Reset form
+      setName('');
+      setIp('');
+      setPort('8080');
+      setProtocol('http');
+      setVideoPath('');
+      setCameraType('webcam');
     } catch (err) {
-      setError('Network error. Make sure the backend server is running on port 5000');
+      setError(err instanceof Error ? err.message : 'Network error. Make sure the backend is running');
       console.error('Error adding camera:', err);
     } finally {
       setLoading(false);
@@ -115,12 +103,12 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
           >
             <GlassCard className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-white">Add Camera</h2>
+                <h2 className="text-xl font-bold text-ink">Add Camera</h2>
                 <button
                   onClick={onClose}
-                  className="p-1 rounded-lg hover:bg-white/10 transition-colors"
+                  className="p-1 rounded-lg hover:bg-surface-soft transition-colors"
                 >
-                  <X size={20} className="text-white/60" />
+                  <X size={20} className="text-muted" />
                 </button>
               </div>
 
@@ -131,8 +119,8 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
                   onClick={() => setCameraType('webcam')}
                   className={`p-3 rounded-xl border transition-all ${
                     cameraType === 'webcam'
-                      ? 'border-accent bg-accent/10 text-accent'
-                      : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10'
+                      ? 'border-coral bg-coral/10 text-coral'
+                      : 'border-hairline bg-surface-soft text-muted hover:bg-surface-card'
                   }`}
                 >
                   <Webcam size={20} className="mx-auto mb-2" />
@@ -143,8 +131,8 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
                   onClick={() => setCameraType('ip')}
                   className={`p-3 rounded-xl border transition-all ${
                     cameraType === 'ip'
-                      ? 'border-accent bg-accent/10 text-accent'
-                      : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10'
+                      ? 'border-coral bg-coral/10 text-coral'
+                      : 'border-hairline bg-surface-soft text-muted hover:bg-surface-card'
                   }`}
                 >
                   <Wifi size={20} className="mx-auto mb-2" />
@@ -155,8 +143,8 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
                   onClick={() => setCameraType('video')}
                   className={`p-3 rounded-xl border transition-all ${
                     cameraType === 'video'
-                      ? 'border-accent bg-accent/10 text-accent'
-                      : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10'
+                      ? 'border-coral bg-coral/10 text-coral'
+                      : 'border-hairline bg-surface-soft text-muted hover:bg-surface-card'
                   }`}
                 >
                   <Video size={20} className="mx-auto mb-2" />
@@ -166,7 +154,7 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">
+                  <label className="block text-sm font-medium text-muted mb-2">
                     Camera Name (Optional)
                   </label>
                   <input
@@ -174,14 +162,14 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={cameraType === 'webcam' ? "Webcam" : cameraType === 'video' ? "Video File" : "e.g., Gate A Camera"}
-                    className="w-full px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors"
+                    className="w-full px-4 py-2 rounded-xl bg-canvas border border-hairline text-ink placeholder-muted-soft focus:outline-none focus:border-coral transition-colors"
                   />
                 </div>
 
                 {cameraType === 'ip' && (
                   <>
                     <div>
-                      <label className="block text-sm font-medium text-white/70 mb-2">
+                      <label className="block text-sm font-medium text-muted mb-2">
                         IP Address *
                       </label>
                       <input
@@ -189,13 +177,13 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
                         value={ip}
                         onChange={(e) => setIp(e.target.value)}
                         placeholder="192.168.1.100"
-                        className="w-full px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors"
+                        className="w-full px-4 py-2 rounded-xl bg-canvas border border-hairline text-ink placeholder-muted-soft focus:outline-none focus:border-coral transition-colors"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-white/70 mb-2">
+                      <label className="block text-sm font-medium text-muted mb-2">
                         Port
                       </label>
                       <input
@@ -203,12 +191,12 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
                         value={port}
                         onChange={(e) => setPort(e.target.value)}
                         placeholder="8080"
-                        className="w-full px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors"
+                        className="w-full px-4 py-2 rounded-xl bg-canvas border border-hairline text-ink placeholder-muted-soft focus:outline-none focus:border-coral transition-colors"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-white/70 mb-2">
+                      <label className="block text-sm font-medium text-muted mb-2">
                         Protocol
                       </label>
                       <div className="grid grid-cols-2 gap-3">
@@ -219,8 +207,8 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
                             onClick={() => setProtocol(proto)}
                             className={`px-4 py-2 rounded-xl border transition-all ${
                               protocol === proto
-                                ? 'border-accent bg-accent/10 text-accent'
-                                : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10'
+                                ? 'border-coral bg-coral/10 text-coral'
+                                : 'border-hairline bg-surface-soft text-muted hover:bg-surface-card'
                             }`}
                           >
                             {proto.toUpperCase()}
@@ -234,7 +222,7 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
                 {cameraType === 'video' && (
                   <>
                     <div>
-                      <label className="block text-sm font-medium text-white/70 mb-2">
+                      <label className="block text-sm font-medium text-muted mb-2">
                         Video File Path *
                       </label>
                       <input
@@ -242,16 +230,16 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
                         value={videoPath}
                         onChange={(e) => setVideoPath(e.target.value)}
                         placeholder="crowd.mp4 or /path/to/video.mp4"
-                        className="w-full px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors"
+                        className="w-full px-4 py-2 rounded-xl bg-canvas border border-hairline text-ink placeholder-muted-soft focus:outline-none focus:border-coral transition-colors"
                         required
                       />
-                      <p className="text-xs text-white/30 mt-2">
+                      <p className="text-xs text-muted-soft mt-2">
                         Enter the path to your video file (e.g., crowd.mp4, ./videos/test.mp4)
                       </p>
                     </div>
 
                     <div className="p-3 rounded-xl bg-accent/5 border border-accent/20">
-                      <p className="text-xs text-accent/80 text-center">
+                      <p className="text-xs text-coral text-center">
                         Video files will loop automatically for continuous monitoring
                       </p>
                     </div>
@@ -260,7 +248,7 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
 
                 {cameraType === 'webcam' && (
                   <div className="p-3 rounded-xl bg-accent/5 border border-accent/20">
-                    <p className="text-xs text-accent/80 text-center">
+                    <p className="text-xs text-coral text-center">
                       Your default webcam (camera 0) will be used for monitoring
                     </p>
                   </div>
@@ -276,12 +264,12 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 rounded-xl bg-linear-to-r from-accent to-accent-light text-white font-medium hover:shadow-lg transition-all disabled:opacity-50"
+                  className="w-full py-3 rounded-xl bg-coral text-on-primary font-medium hover:bg-coral-active transition-all disabled:opacity-50"
                 >
                   {loading ? 'Connecting...' : 'Add Camera'}
                 </button>
 
-                <p className="text-xs text-center text-white/30 mt-4">
+                <p className="text-xs text-center text-muted-soft mt-4">
                   {cameraType === 'webcam' 
                     ? "Your computer's webcam will be used for crowd detection"
                     : cameraType === 'video'
