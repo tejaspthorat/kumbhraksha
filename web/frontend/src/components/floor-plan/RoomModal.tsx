@@ -82,7 +82,7 @@ export default function RoomModal({ x, y, width, height, onConfirmAction, onCanc
             autoFocus
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Main Hall"
+            placeholder="e.g. Ramkund Holding Area"
             style={{
               width: '100%',
               fontSize: 12,

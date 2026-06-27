@@ -38,7 +38,7 @@ export function CardTitle({
 }: React.ComponentProps<"h3">) {
   return (
     <h3
-      className={cn("text-lg font-medium tracking-tight", className)}
+      className={cn("text-lg font-medium", className)}
       {...props}
     >
       {children}

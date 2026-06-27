@@ -155,7 +155,7 @@ export default function CreateTaskForm({ onCreated, onClose }: CreateTaskFormPro
             <input
               value={form.title}
               onChange={e => updateField('title', e.target.value)}
-              placeholder="e.g. Set up crowd barrier at Gate A"
+              placeholder="e.g. Set up crowd barrier at Ramkund Ghat"
               required
               maxLength={200}
               className="w-full px-3 py-2.5 rounded-xl bg-surface-soft border border-hairline text-ink text-sm placeholder-muted-soft focus:outline-none focus:border-accent/50 transition-colors"
@@ -264,7 +264,7 @@ export default function CreateTaskForm({ onCreated, onClose }: CreateTaskFormPro
               <input
                 value={form.locationLabel}
                 onChange={e => updateField('locationLabel', e.target.value)}
-                placeholder="e.g. Gate A, Section B"
+                placeholder="e.g. Ramkund Ghat, east barricade"
                 className="w-full px-3 py-2.5 rounded-xl bg-surface-soft border border-hairline text-ink text-sm placeholder-muted-soft focus:outline-none focus:border-accent/50 transition-colors"
               />
             </div>

@@ -4,7 +4,8 @@
  * The API routes prefer Prisma (real backend), and fall back to this store when
  * the database is unreachable — mirroring the app's existing mock-fallback
  * pattern (see src/app/api/alerts/route.ts). It seeds realistic data around the
- * Prayagraj Sangam so both the citizen app and dashboard are demoable instantly.
+ * Nashik Kumbh (Panchavati / Ramkund) so both the citizen app and dashboard are
+ * demoable instantly.
  */
 import { randomUUID } from 'crypto';
 import type {
@@ -48,7 +49,7 @@ function seed(): Store {
       relationship: 'Mother',
       lastSeenLat: jitter(CENTER.lat, 0.004),
       lastSeenLng: jitter(CENTER.lng, 0.004),
-      lastSeenLabel: 'Near Sangam Nose, Sector 4',
+      lastSeenLabel: 'Near Ramkund, Panchavati',
       lastSeenTime: minsAgo(18),
       reportedAt: minsAgo(16),
       status: 'SIGHTING_RECEIVED',
@@ -75,7 +76,7 @@ function seed(): Store {
       relationship: 'Son',
       lastSeenLat: jitter(CENTER.lat, 0.006),
       lastSeenLng: jitter(CENTER.lng, 0.006),
-      lastSeenLabel: 'Ram Ghat, Sector 7',
+      lastSeenLabel: 'Gandhi Talav, Panchavati',
       lastSeenTime: minsAgo(42),
       reportedAt: minsAgo(38),
       status: 'SEARCHING',
@@ -102,7 +103,7 @@ function seed(): Store {
       relationship: 'Mother',
       lastSeenLat: jitter(CENTER.lat, 0.003),
       lastSeenLng: jitter(CENTER.lng, 0.003),
-      lastSeenLabel: 'Food Court, Sector 2',
+      lastSeenLabel: 'Kapaleshwar Mandir gate',
       lastSeenTime: minsAgo(6),
       reportedAt: minsAgo(4),
       status: 'REPORTED',
@@ -118,7 +119,7 @@ function seed(): Store {
     {
       id: 's-1',
       missingReportId: 'case-1247',
-      spotterName: 'Volunteer · Sector 4',
+      spotterName: 'Volunteer · Ramkund Sector',
       photoUrl: null,
       lat: jitter(CENTER.lat, 0.003),
       lng: jitter(CENTER.lng, 0.003),
@@ -146,18 +147,29 @@ function seed(): Store {
       photoUrl: null,
       lat: jitter(CENTER.lat, 0.007),
       lng: jitter(CENTER.lng, 0.007),
-      description: 'Young child wandering near Gate 3, no adult nearby',
+      description: 'Young child wandering near Tapovan shuttle gate, no adult nearby',
       spottedAt: minsAgo(2),
       aiMatchConfidence: null,
       status: 'PENDING',
     },
   ];
 
+  const sectors = [
+    'Ramkund Sector',
+    'Panchavati Bazaar',
+    'Godavari Bridge',
+    'Tapovan Camp',
+    'Trimbak Road',
+    'Sadhugram',
+    'Nashik Road Transit',
+    'Medical Base',
+  ];
+
   const cctv: CctvLocation[] = Array.from({ length: 42 }).map((_, i) => ({
     id: `cam-${i + 1}`,
     lat: jitter(CENTER.lat, 0.02),
     lng: jitter(CENTER.lng, 0.02),
-    sector: `Sector ${(i % 8) + 1}`,
+    sector: sectors[i % sectors.length],
     coverageRadius: 50 + (i % 3) * 25,
     cameraType: i % 4 === 0 ? 'PTZ' : 'Fixed',
   }));

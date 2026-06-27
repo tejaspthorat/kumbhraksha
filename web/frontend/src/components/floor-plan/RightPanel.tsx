@@ -333,7 +333,7 @@ export default function RightPanel() {
                 </div>
               ))}
               {filteredAvailable.length === 0 && (
-                <div className="text-[9px] text-white/30 p-1 text-center italic">No results</div>
+                <div className="text-[9px] text-white/30 p-1 text-center">No results</div>
               )}
             </div>
           </div>

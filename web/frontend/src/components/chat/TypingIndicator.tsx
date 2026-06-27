@@ -50,7 +50,7 @@ export default function TypingIndicator({
         <span className="typing-dot" style={{ animationDelay: "200ms" }} />
         <span className="typing-dot" style={{ animationDelay: "400ms" }} />
       </div>
-      <span className="text-xs text-muted italic">{text}…</span>
+      <span className="text-xs text-muted">{text}…</span>
     </div>
   );
 }

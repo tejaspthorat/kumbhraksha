@@ -19,7 +19,7 @@ import { trendUp } from '@/lib/demoSeries';
 
 const SCENARIOS = [
   { id: 'peak-snan', label: 'Peak Snan', seed: 201 },
-  { id: 'gate-surge', label: 'Gate surge', seed: 202 },
+  { id: 'entry-surge', label: 'Trimbak entry surge', seed: 202 },
   { id: 'rain-evac', label: 'Rain evacuation', seed: 203 },
 ];
 
@@ -37,7 +37,7 @@ function projection(seed: number, crowd: number, exitCap: number) {
 }
 
 const bottlenecks = (seed: number) =>
-  ['Gate 1', 'Gate 2', 'Gate 3', 'Gate 4', 'Ghat exit', 'Ramp'].map((g, i) => ({
+  ['Ramkund', 'Trimbak Entry', 'Godavari Ghat', 'Tapovan Exit', 'Sadhugram', 'Bridge Ramp'].map((g, i) => ({
     x: g,
     load: trendUp(seed + i, 6, 30, 90)[i],
   }));
@@ -198,7 +198,7 @@ export default function SimulationPage() {
                   </span>
                 </div>
                 <div className="mt-3 flex items-baseline gap-1">
-                  <span className="tnum text-2xl font-semibold tracking-tight text-ink">{r.value}</span>
+                  <span className="tnum text-2xl font-semibold text-ink">{r.value}</span>
                   <span className="text-xs text-muted">{r.unit}</span>
                 </div>
               </motion.div>

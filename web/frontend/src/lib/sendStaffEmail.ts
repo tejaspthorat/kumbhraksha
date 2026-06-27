@@ -45,7 +45,7 @@ export async function sendStaffWelcomeEmail({ email, password, role, zone }: Sta
           .content { padding: 40px 30px; text-align: left; }
           .title { 
             font-size: 28px; font-weight: 800; color: #ffffff; 
-            margin: 0 0 10px 0; letter-spacing: -0.5px;
+            margin: 0 0 10px 0; letter-spacing: 0;
           }
           .subtitle { font-size: 16px; color: rgba(255,255,255,0.5); margin-bottom: 30px; }
           .card { 

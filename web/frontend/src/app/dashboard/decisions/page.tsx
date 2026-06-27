@@ -117,7 +117,7 @@ export default function DecisionsPage() {
                       </Badge>
                       <span className="text-sm font-semibold text-ink">{suggestion.action}</span>
                     </div>
-                    <div className="text-xs text-muted mt-2 italic">"{suggestion.reason}"</div>
+                    <div className="text-xs text-muted mt-2">"{suggestion.reason}"</div>
                     <div className="flex items-center gap-2 mt-2">
                       {suggestion.affectedZones.map(z => (
                         <span key={z} className="text-[10px] text-muted-soft bg-primary-dark rounded-md px-2 py-0.5 border border-hairline">

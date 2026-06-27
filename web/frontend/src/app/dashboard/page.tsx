@@ -40,9 +40,9 @@ const OpsMap = dynamic(() => import('@/components/missing/OpsMap'), {
 });
 
 const AI_INSIGHTS = [
-  { level: 'high' as const, title: 'Zone B density rising', body: 'Projected to breach warning threshold in ~12 min. Pre-position 2 units.' },
+  { level: 'high' as const, title: 'Godavari Ghat density rising', body: 'Projected to breach warning threshold in ~12 min. Pre-position 2 units.' },
   { level: 'medium' as const, title: 'Sighting cluster near Ramkund', body: '3 unverified sightings within 200m of Case #1247 — likely match.' },
-  { level: 'low' as const, title: 'Gate 4 flow nominal', body: 'Entry/exit balanced; no action required.' },
+  { level: 'low' as const, title: 'Tapovan Exit flow nominal', body: 'Entry/exit balanced; no action required.' },
 ];
 
 const crowdTrend = trendUp(7, 24, 40, 92).map((y, i) => ({ x: `${i}:00`.padStart(5, '0'), crowd: y * 1200 }));
@@ -121,7 +121,7 @@ export default function OverviewPage() {
               <span>
                 <span className="text-muted">AI summary · </span>
                 {stats.active} active case{stats.active === 1 ? '' : 's'} ({stats.children} child{stats.children === 1 ? '' : 'ren'} prioritised),
-                {' '}{stats.pending} sighting{stats.pending === 1 ? '' : 's'} awaiting triage. Crowd stable network-wide; Zone B trending toward warning.
+                {' '}{stats.pending} sighting{stats.pending === 1 ? '' : 's'} awaiting triage. Crowd stable network-wide; Godavari Ghat trending toward warning.
                 {' '}{stats.notified.toLocaleString('en-IN')} phones inside active alert radii.
               </span>
             </p>

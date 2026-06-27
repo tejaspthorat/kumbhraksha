@@ -14,7 +14,7 @@ export default function OnboardingOverlay() {
     const exampleRooms: FloorRoom[] = [
       {
         id: uid(),
-        name: 'Main Hall',
+        name: 'Ramkund Holding Area',
         type: 'Auditorium / Hall',
         x: 60,
         y: 40,
@@ -30,7 +30,7 @@ export default function OnboardingOverlay() {
       },
       {
         id: uid(),
-        name: 'Meeting Room A',
+        name: 'Police Briefing Room',
         type: 'Meeting Room',
         x: 340,
         y: 40,
@@ -46,7 +46,7 @@ export default function OnboardingOverlay() {
       },
       {
         id: uid(),
-        name: 'Reception',
+        name: 'Lost & Found Desk',
         type: 'Reception / Lobby',
         x: 340,
         y: 160,
@@ -62,7 +62,7 @@ export default function OnboardingOverlay() {
       },
       {
         id: uid(),
-        name: 'Storage',
+        name: 'Medical Store',
         type: 'Storage',
         x: 60,
         y: 220,
@@ -78,7 +78,7 @@ export default function OnboardingOverlay() {
       },
       {
         id: uid(),
-        name: 'Pantry',
+        name: 'Annadan Kshetra',
         type: 'Kitchen / Pantry',
         x: 540,
         y: 40,
@@ -94,7 +94,7 @@ export default function OnboardingOverlay() {
       },
       {
         id: uid(),
-        name: 'Server Room',
+        name: 'CCTV Control Room',
         type: 'Server Room',
         x: 540,
         y: 160,

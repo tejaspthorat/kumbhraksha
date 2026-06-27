@@ -19,7 +19,7 @@ type Msg = { id: number; role: 'user' | 'ai'; text: string };
 const SUGGESTIONS = [
   'Summarise current crowd risk',
   'Which zones need responders?',
-  'Draft an evacuation advisory for Zone B',
+  'Draft an evacuation advisory for Ramkund',
   'Analyse the latest CCTV sighting',
 ];
 
@@ -58,7 +58,7 @@ export default function AIAssistant() {
         {
           id: Date.now() + 1,
           role: 'ai',
-          text: 'Analysing live telemetry… Zone B is trending toward its warning threshold (density 3.8/m²). I recommend rerouting two responder units from Gate 4 and issuing a soft advisory. Want me to draft the broadcast?',
+          text: 'Analysing live telemetry... Ramkund Ghat is trending toward its warning threshold (density 3.8/m2). I recommend rerouting two responder units from Tapovan Exit and issuing a soft advisory. Want me to draft the broadcast?',
         },
       ]);
     }, 650);

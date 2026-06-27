@@ -41,7 +41,7 @@ export function Wordmark({
       <SpikeMark className={cn("size-5 text-coral", markClassName)} />
       <span
         className={cn(
-          "font-heading text-xl font-bold tracking-tight text-ink leading-none",
+          "font-heading text-xl font-bold text-ink leading-none",
           labelClassName
         )}
       >

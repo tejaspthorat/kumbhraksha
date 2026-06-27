@@ -28,11 +28,11 @@ const flow = series(102, 24, 60, 26).map((entry, i) => {
 
 const incidentsByZone = [
   { x: 'Ramkund', incidents: 18 },
-  { x: 'Gate 2', incidents: 11 },
-  { x: 'Zone B', incidents: 27 },
+  { x: 'Trimbak Entry', incidents: 11 },
+  { x: 'Godavari Ghat', incidents: 27 },
   { x: 'Sadhugram', incidents: 9 },
   { x: 'Trimbak', incidents: 14 },
-  { x: 'Gate 4', incidents: 7 },
+  { x: 'Tapovan Exit', incidents: 7 },
 ];
 
 const forecast = trendUp(105, 24, 40, 96).map((y, i) => ({ x: HOURS[i], density: y }));
@@ -44,11 +44,11 @@ const ZONES: {
   level: 'critical' | 'high' | 'medium' | 'low';
 }[] = [
   { zone: 'Ramkund Ghat', density: '4.2', spark: trendUp(111, 16, 30, 85), level: 'critical' },
-  { zone: 'Zone B Corridor', density: '3.6', spark: trendUp(112, 16, 35, 78), level: 'high' },
+  { zone: 'Godavari Aarti Ghat', density: '3.6', spark: trendUp(112, 16, 35, 78), level: 'high' },
   { zone: 'Trimbak Road', density: '2.4', spark: series(113, 16, 50, 18), level: 'medium' },
-  { zone: 'Gate 2 Plaza', density: '2.1', spark: series(114, 16, 45, 16), level: 'medium' },
+  { zone: 'Panchavati Bazaar', density: '2.1', spark: series(114, 16, 45, 16), level: 'medium' },
   { zone: 'Sadhugram', density: '1.3', spark: series(115, 16, 40, 12), level: 'low' },
-  { zone: 'Gate 4 Approach', density: '0.9', spark: series(116, 16, 35, 10), level: 'low' },
+  { zone: 'Tapovan Exit', density: '0.9', spark: series(116, 16, 35, 10), level: 'low' },
 ];
 
 const densityTone: Record<string, string> = {

@@ -260,7 +260,7 @@ export default function CctvIntelligencePage() {
         <section className="card-canvas p-5">
           <div className="flex items-center gap-2 mb-4">
             <Camera className="size-4 text-muted" />
-            <h2 className="text-lg font-medium tracking-tight">Coverage map</h2>
+            <h2 className="text-lg font-medium">Coverage map</h2>
           </div>
           <OpsMap
             className="aspect-[16/10] w-full"

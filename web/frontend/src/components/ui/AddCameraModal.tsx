@@ -218,7 +218,7 @@ export default function AddCameraModal({ isOpen, onClose, onAdd }: AddCameraModa
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder={cameraType === 'webcam' ? "Webcam" : cameraType === 'video' ? "Video File" : "e.g., Gate A Camera"}
+                    placeholder={cameraType === 'webcam' ? "Webcam" : cameraType === 'video' ? "Video File" : "e.g., Ramkund Ghat Camera"}
                     className="w-full px-4 py-2 rounded-xl bg-canvas border border-hairline text-ink placeholder-muted-soft focus:outline-none focus:border-coral transition-colors"
                   />
                 </div>

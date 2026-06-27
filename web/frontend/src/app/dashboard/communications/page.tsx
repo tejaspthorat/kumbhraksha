@@ -40,8 +40,8 @@ type Message = {
 const CHANNELS: Channel[] = [
   { id: 'all', name: 'All Units', icon: Radio, tone: 'orange', unread: 3 },
   { id: 'medical', name: 'Medical', icon: Stethoscope, tone: 'green', unread: 0 },
-  { id: 'police-a', name: 'Police Zone A', icon: Shield, tone: 'blue', unread: 5 },
-  { id: 'police-b', name: 'Police Zone B', icon: Shield, tone: 'blue', unread: 0 },
+  { id: 'police-a', name: 'Police Ramkund', icon: Shield, tone: 'blue', unread: 5 },
+  { id: 'police-b', name: 'Police Godavari Ghat', icon: Shield, tone: 'blue', unread: 0 },
   { id: 'volunteers', name: 'Volunteers', icon: Users, tone: 'yellow', unread: 1 },
   { id: 'citizen', name: 'Citizen Broadcast', icon: Megaphone, tone: 'red', unread: 0 },
 ];
@@ -49,26 +49,26 @@ const CHANNELS: Channel[] = [
 const SEED: Record<string, Message[]> = {
   all: [
     { id: 1, sender: 'Control Room', role: 'Command', time: '09:42', body: 'All units, holding pattern at Ramkund. Crowd index climbing — stay alert.' },
-    { id: 2, sender: 'POL-04', role: 'Police', time: '09:43', body: 'Copy. Gate 2 secured, two channels open for outflow.' },
+    { id: 2, sender: 'POL-04', role: 'Police', time: '09:43', body: 'Copy. Trimbak Road Entry secured, two channels open for outflow.' },
     { id: 3, sender: 'MED-01', role: 'Medical', time: '09:45', body: 'Medical staged at Ramkund. Ready for dispatch.', self: true },
     { id: 4, sender: 'Control Room', role: 'Command', time: '09:47', body: 'Acknowledged MED-01. Forecast shows surge in 12 min near Trimbak Rd.' },
   ],
   medical: [
     { id: 1, sender: 'MED-03', role: 'Medical', time: '09:30', body: 'Sadhugram post fully stocked. Two stretchers free.' },
-    { id: 2, sender: 'Control Room', role: 'Command', time: '09:38', body: 'Good. Keep one ambulance on standby for Zone B.' },
+    { id: 2, sender: 'Control Room', role: 'Command', time: '09:38', body: 'Good. Keep one ambulance on standby for Godavari Ghat.' },
     { id: 3, sender: 'MED-01', role: 'Medical', time: '09:41', body: 'Standby confirmed.', self: true },
   ],
   'police-a': [
-    { id: 1, sender: 'POL-04', role: 'Police', time: '09:20', body: 'Zone A barricades in place. Foot traffic nominal.' },
-    { id: 2, sender: 'POL-07', role: 'Police', time: '09:33', body: 'Minor bottleneck at Gate 2, deploying two officers.' },
+    { id: 1, sender: 'POL-04', role: 'Police', time: '09:20', body: 'Ramkund barricades in place. Foot traffic nominal.' },
+    { id: 2, sender: 'POL-07', role: 'Police', time: '09:33', body: 'Minor bottleneck at Trimbak Road Entry, deploying two officers.' },
     { id: 3, sender: 'Control Room', role: 'Command', time: '09:35', body: 'Copy POL-07. Camera CAM-02 watching the lane.' },
   ],
   'police-b': [
-    { id: 1, sender: 'Control Room', role: 'Command', time: '09:15', body: 'Zone B quiet. Maintain current posture.' },
-    { id: 2, sender: 'RES-11', role: 'Rescue', time: '09:29', body: 'Rescue enroute Zone B, ETA 2 min.', self: true },
+    { id: 1, sender: 'Control Room', role: 'Command', time: '09:15', body: 'Godavari Ghat quiet. Maintain current posture.' },
+    { id: 2, sender: 'RES-11', role: 'Rescue', time: '09:29', body: 'Rescue enroute Godavari Ghat, ETA 2 min.', self: true },
   ],
   volunteers: [
-    { id: 1, sender: 'VOL-22', role: 'Volunteer', time: '09:10', body: 'Water distribution underway at Gate 4.' },
+    { id: 1, sender: 'VOL-22', role: 'Volunteer', time: '09:10', body: 'Water distribution underway at Tapovan Exit.' },
     { id: 2, sender: 'Control Room', role: 'Command', time: '09:12', body: 'Thanks VOL-22. Direct lost pilgrims to the help desk.' },
   ],
   citizen: [

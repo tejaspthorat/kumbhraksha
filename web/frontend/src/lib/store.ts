@@ -250,7 +250,7 @@ export interface GroqPrediction {
 export interface GroqSuggestion {
   id: string
   zoneId: string
-  action: string             // e.g. "Redirect members to Zone C"
+  action: string             // e.g. "Redirect pilgrims to Tapovan Exit"
   priority: "critical" | "high" | "medium" | "low"
   reason: string
   affectedZones: string[]

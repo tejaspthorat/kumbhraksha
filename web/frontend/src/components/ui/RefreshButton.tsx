@@ -32,7 +32,7 @@ export default function RefreshButton({ onRefresh, status = 'disconnected', clas
     <div className={clsx("flex items-center gap-3", className)}>
       <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/3 border border-white/6">
         <div className={clsx("w-1.5 h-1.5 rounded-full", statusColors[status])} />
-        <span className="text-[10px] text-white/40 font-medium uppercase tracking-tight">
+        <span className="text-[10px] text-white/40 font-medium uppercase">
           {status}
         </span>
       </div>

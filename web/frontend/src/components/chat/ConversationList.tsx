@@ -206,7 +206,7 @@ export default function ConversationList({
                 <div className="flex items-center justify-between mt-0.5">
                   <p className="text-xs text-muted truncate max-w-36">
                     {hasTyping ? (
-                      <span className="text-accent italic">typing…</span>
+                      <span className="text-accent">typing…</span>
                     ) : (
                       conv.lastMessageText || "No messages yet"
                     )}

@@ -40,17 +40,17 @@ type Notification = {
 
 const SEED: Notification[] = [
   { id: 1, type: 'crowd', icon: Users, accent: 'var(--accent-red)', title: 'Density warning · Ramkund', body: 'Crowd index breached 2.4/m² near the ghat. Surge forecast in 12 minutes.', time: '2m ago', group: 'today', severity: 'critical', unread: true },
-  { id: 2, type: 'cases', icon: ScanFace, accent: 'var(--accent-orange)', title: 'Sighting matched · MP-2291', body: 'Face match 94% on CAM-04, Gate 2. Awaiting responder confirmation.', time: '8m ago', group: 'today', severity: 'high', unread: true },
+  { id: 2, type: 'cases', icon: ScanFace, accent: 'var(--accent-orange)', title: 'Sighting matched · MP-2291', body: 'Face match 94% on CAM-04, Trimbak Road Entry. Awaiting responder confirmation.', time: '8m ago', group: 'today', severity: 'high', unread: true },
   { id: 3, type: 'critical', icon: CameraOff, accent: 'var(--accent-red)', title: 'Camera offline · CAM-07', body: 'Feed lost on Trimbak Rd. Switched to adjacent CAM-06 coverage.', time: '15m ago', group: 'today', severity: 'critical', unread: true },
   { id: 4, type: 'cases', icon: FolderOpen, accent: 'var(--accent-orange)', title: 'New case opened · #4821', body: 'Missing child reported at Sadhugram help desk. Profile attached.', time: '21m ago', group: 'today', severity: 'high', unread: true },
-  { id: 5, type: 'crowd', icon: Ambulance, accent: 'var(--accent-blue)', title: 'Responder dispatched · MED-01', body: 'Medical unit enroute to Zone B for minor injury. ETA 2 minutes.', time: '34m ago', group: 'today', severity: 'medium', unread: false },
+  { id: 5, type: 'crowd', icon: Ambulance, accent: 'var(--accent-blue)', title: 'Responder dispatched · MED-01', body: 'Medical unit enroute to Godavari Ghat for minor injury. ETA 2 minutes.', time: '34m ago', group: 'today', severity: 'medium', unread: false },
   { id: 6, type: 'system', icon: RefreshCw, accent: 'var(--accent-green)', title: 'System sync complete', body: 'All 248 camera nodes synced with the edge inference cluster.', time: '52m ago', group: 'today', severity: 'info', unread: false },
-  { id: 7, type: 'cases', icon: CheckCircle2, accent: 'var(--accent-green)', title: 'Case resolved · #4790', body: 'Lost pilgrim reunited at Gate 4. Case closed by VOL-22.', time: '1h ago', group: 'today', severity: 'low', unread: false },
-  { id: 8, type: 'crowd', icon: Users, accent: 'var(--accent-yellow)', title: 'Crowd flow normalised · Gate 2', body: 'Bottleneck cleared after two officers redirected outflow.', time: '2h ago', group: 'earlier', severity: 'medium', unread: false },
+  { id: 7, type: 'cases', icon: CheckCircle2, accent: 'var(--accent-green)', title: 'Case resolved · #4790', body: 'Lost pilgrim reunited at Tapovan Exit. Case closed by VOL-22.', time: '1h ago', group: 'today', severity: 'low', unread: false },
+  { id: 8, type: 'crowd', icon: Users, accent: 'var(--accent-yellow)', title: 'Crowd flow normalised · Trimbak Entry', body: 'Bottleneck cleared after two officers redirected outflow.', time: '2h ago', group: 'earlier', severity: 'medium', unread: false },
   { id: 9, type: 'critical', icon: ShieldAlert, accent: 'var(--accent-red)', title: 'DEFCON raised to level 3', body: 'Elevated alert posture across all zones for the evening aarti window.', time: '3h ago', group: 'earlier', severity: 'critical', unread: false },
-  { id: 10, type: 'cases', icon: ScanFace, accent: 'var(--accent-orange)', title: 'Sighting matched · MP-2188', body: 'Face match 88% on CAM-11, Gate 4. Marked false positive on review.', time: '4h ago', group: 'earlier', severity: 'medium', unread: false },
+  { id: 10, type: 'cases', icon: ScanFace, accent: 'var(--accent-orange)', title: 'Sighting matched · MP-2188', body: 'Face match 88% on CAM-11, Tapovan Exit. Marked false positive on review.', time: '4h ago', group: 'earlier', severity: 'medium', unread: false },
   { id: 11, type: 'system', icon: RefreshCw, accent: 'var(--accent-green)', title: 'Edge model updated', body: 'Detection model v3.2 deployed to all inference nodes successfully.', time: '5h ago', group: 'earlier', severity: 'info', unread: false },
-  { id: 12, type: 'crowd', icon: Ambulance, accent: 'var(--accent-blue)', title: 'Responder cleared · RES-11', body: 'Rescue unit returned to standby at Zone B staging point.', time: '6h ago', group: 'earlier', severity: 'low', unread: false },
+  { id: 12, type: 'crowd', icon: Ambulance, accent: 'var(--accent-blue)', title: 'Responder cleared · RES-11', body: 'Rescue unit returned to standby at Godavari Ghat staging point.', time: '6h ago', group: 'earlier', severity: 'low', unread: false },
 ];
 
 const TABS: { id: 'all' | NotifType; label: string }[] = [

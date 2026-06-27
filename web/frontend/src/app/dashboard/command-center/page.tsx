@@ -22,16 +22,16 @@ import { series, trendUp } from '@/lib/demoSeries';
 
 const UNITS = [
   { id: 'MED-01', type: 'Medical', zone: 'Ramkund', status: 'available', eta: '—' },
-  { id: 'POL-04', type: 'Police', zone: 'Gate 2', status: 'engaged', eta: '4m' },
-  { id: 'RES-11', type: 'Rescue', zone: 'Zone B', status: 'enroute', eta: '2m' },
+  { id: 'POL-04', type: 'Police', zone: 'Trimbak Entry', status: 'engaged', eta: '4m' },
+  { id: 'RES-11', type: 'Rescue', zone: 'Godavari Ghat', status: 'enroute', eta: '2m' },
   { id: 'MED-03', type: 'Medical', zone: 'Sadhugram', status: 'available', eta: '—' },
   { id: 'POL-07', type: 'Police', zone: 'Trimbak Rd', status: 'engaged', eta: '7m' },
-  { id: 'VOL-22', type: 'Volunteer', zone: 'Gate 4', status: 'available', eta: '—' },
+  { id: 'VOL-22', type: 'Volunteer', zone: 'Tapovan Exit', status: 'available', eta: '—' },
 ];
 
 const CAMERAS = Array.from({ length: 6 }, (_, i) => ({
   id: `CAM-${(i + 1).toString().padStart(2, '0')}`,
-  zone: ['Ramkund', 'Gate 2', 'Zone B', 'Sadhugram', 'Trimbak Rd', 'Gate 4'][i],
+  zone: ['Ramkund', 'Trimbak Entry', 'Godavari Ghat', 'Sadhugram', 'Trimbak Rd', 'Tapovan Exit'][i],
   fps: 24 + (i % 3) * 6,
   latency: 40 + i * 7,
   detections: (i * 3) % 5,

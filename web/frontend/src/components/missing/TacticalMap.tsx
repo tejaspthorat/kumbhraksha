@@ -91,7 +91,7 @@ export default function TacticalMap({
         className
       )}
     >
-      {/* river band — a soft diagonal motif (the Sangam) */}
+      {/* river band — a soft diagonal motif for the Godavari */}
       <div
         className="absolute inset-0 opacity-60 pointer-events-none"
         style={{

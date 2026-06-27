@@ -213,7 +213,7 @@ export default function LandingPage() {
                 <div className="size-11 rounded-lg bg-canvas grid place-items-center mb-5">
                   <f.icon className="size-5 text-coral" />
                 </div>
-                <h3 className="text-lg font-medium tracking-tight">{f.title}</h3>
+                <h3 className="text-lg font-medium">{f.title}</h3>
                 <p className="text-body text-[15px] leading-relaxed mt-2">{f.body}</p>
               </div>
             ))}

@@ -28,7 +28,7 @@ type Protocol = {
 };
 
 const INITIAL_PROTOCOLS: Protocol[] = [
-  { id: 'p1', label: 'Lock down Gate 2', detail: 'Seal inbound flow, hold crowd at perimeter', level: 'critical', done: true },
+  { id: 'p1', label: 'Lock down Trimbak Road Entry', detail: 'Seal inbound flow, hold crowd at perimeter', level: 'critical', done: true },
   { id: 'p2', label: 'Open evac corridor A', detail: 'Clear Ramkund → Trimbak Rd corridor', level: 'critical', done: false },
   { id: 'p3', label: 'Dispatch all medical', detail: 'Mobilise MED-01/03 + standby reserves', level: 'high', done: false },
   { id: 'p4', label: 'Broadcast advisory', detail: 'Push citizen + responder mass alert', level: 'high', done: false },
@@ -46,8 +46,8 @@ type RouteRow = {
 
 const ROUTES: RouteRow[] = [
   { id: 'r1', name: 'Corridor A · Ramkund → Trimbak Rd', status: 'open', capacity: 38, eta: '6m' },
-  { id: 'r2', name: 'Corridor B · Gate 4 → Sadhugram', status: 'congested', capacity: 82, eta: '14m' },
-  { id: 'r3', name: 'Corridor C · Zone B → North lot', status: 'closed', capacity: 100, eta: '—' },
+  { id: 'r2', name: 'Corridor B · Tapovan Exit → Sadhugram', status: 'congested', capacity: 82, eta: '14m' },
+  { id: 'r3', name: 'Corridor C · Godavari Ghat → Nashik Road transit', status: 'closed', capacity: 100, eta: '—' },
 ];
 
 const routeTone: Record<RouteRow['status'], 'green' | 'orange' | 'red'> = {
@@ -105,7 +105,7 @@ export default function EmergencyPage() {
             </span>
             <div className="min-w-0">
               <p className="caption-upper text-[10px] text-muted-soft">System state</p>
-              <h2 className="font-heading text-2xl font-semibold tracking-tight text-ink">
+              <h2 className="font-heading text-2xl font-semibold text-ink">
                 {emergencyMode ? 'Emergency mode ACTIVE' : 'Emergency mode standby'}
               </h2>
               <p className="mt-1 text-[13px] text-muted">

@@ -31,8 +31,8 @@ const CONTACT = [
 ];
 
 const RECENT = [
-  { action: 'Acknowledged incident #4821 at Gate 2', when: '4m ago' },
-  { action: 'Dispatched RES-11 to Zone B', when: '22m ago' },
+  { action: 'Acknowledged incident #4821 at Trimbak Road Entry', when: '4m ago' },
+  { action: 'Dispatched RES-11 to Godavari Ghat', when: '22m ago' },
   { action: 'Broadcast advisory to all citizen channels', when: '1h ago' },
   { action: 'Closed evacuation corridor C', when: '2h ago' },
 ];
@@ -68,10 +68,10 @@ export default function ProfilePage() {
         {/* Identity */}
         <Panel className="p-5">
           <div className="flex flex-col items-center text-center">
-            <div className="grid place-items-center size-24 rounded-2xl bg-coral text-on-primary font-heading text-3xl font-semibold tracking-tight">
+            <div className="grid place-items-center size-24 rounded-2xl bg-coral text-on-primary font-heading text-3xl font-semibold">
               CR
             </div>
-            <h2 className="mt-4 font-heading text-xl font-semibold tracking-tight text-ink">Control Room</h2>
+            <h2 className="mt-4 font-heading text-xl font-semibold text-ink">Control Room</h2>
             <p className="mt-0.5 text-[13px] text-muted">Authority Access · Nashik ICCC</p>
           </div>
 

@@ -118,7 +118,7 @@ function seed(): Store {
     {
       id: 's-1',
       missingReportId: 'case-1247',
-      spotterName: 'Volunteer · Sector 4',
+      spotterName: 'Volunteer · Ramkund Sector',
       photoUrl: null,
       lat: jitter(CENTER.lat, 0.003),
       lng: jitter(CENTER.lng, 0.003),
@@ -146,18 +146,29 @@ function seed(): Store {
       photoUrl: null,
       lat: jitter(CENTER.lat, 0.007),
       lng: jitter(CENTER.lng, 0.007),
-      description: 'Young child wandering near Gate 3, no adult nearby',
+      description: 'Young child wandering near Tapovan shuttle gate, no adult nearby',
       spottedAt: minsAgo(2),
       aiMatchConfidence: null,
       status: 'PENDING',
     },
   ];
 
+  const sectors = [
+    'Ramkund Sector',
+    'Panchavati Bazaar',
+    'Godavari Bridge',
+    'Tapovan Camp',
+    'Trimbak Road',
+    'Sadhugram',
+    'Nashik Road Transit',
+    'Medical Base',
+  ];
+
   const cctv: CctvLocation[] = Array.from({ length: 42 }).map((_, i) => ({
     id: `cam-${i + 1}`,
     lat: jitter(CENTER.lat, 0.02),
     lng: jitter(CENTER.lng, 0.02),
-    sector: `Sector ${(i % 8) + 1}`,
+    sector: sectors[i % sectors.length],
     coverageRadius: 50 + (i % 3) * 25,
     cameraType: i % 4 === 0 ? 'PTZ' : 'Fixed',
   }));

@@ -28,7 +28,7 @@ export interface GroqPrediction {
 export interface GroqSuggestion {
   id: string;
   zoneId: string;
-  action: string;             // e.g. "Redirect members to Zone C"
+  action: string;             // e.g. "Redirect pilgrims to Tapovan Exit"
   priority: "critical" | "high" | "medium" | "low";
   reason: string;
   affectedZones: string[];
@@ -71,7 +71,7 @@ async function callGroq(messages: { role: string; content: string }[]) {
 }
 
 export async function generatePredictions(densityData: GroqZoneDensity[]): Promise<{ predictions: GroqPrediction[] }> {
-  const systemPrompt = `You are an AI crowd safety analyst for a live event venue. 
+  const systemPrompt = `You are an AI crowd safety analyst for Nashik Kumbh public-safety operations.
 You receive real-time zone density data captured by YOLOv8 cameras.
 Your job: predict which zones will overcrowd in the next 15-30 minutes.
 
@@ -104,14 +104,14 @@ Response format:
 }
 
 export async function generateSuggestions(densityData: GroqZoneDensity[], predictions: GroqPrediction[]): Promise<{ suggestions: GroqSuggestion[] }> {
-  const systemPrompt = `You are an AI crowd flow manager at a public safety event.
+  const systemPrompt = `You are an AI crowd flow manager at Nashik Kumbh.
 You have real-time density data and AI predictions for each zone.
 Your job: generate specific, actionable crowd management suggestions.
 
 Possible actions you can suggest:
 - "Stop entry at [gate/zone]"
 - "Limit entry to [zone] to [N] persons per minute"  
-- "Redirect attendees from [Zone A] to [Zone B]"
+- "Redirect pilgrims from [Ramkund Ghat] to [Tapovan Exit]"
 - "Open overflow zone [X]"
 - "Deploy staff to [zone] for crowd control"
 - "Announce via PA to move to [zone]"

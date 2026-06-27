@@ -78,7 +78,7 @@ export function PanelHeader({
           </span>
         )}
         <div className="min-w-0">
-          <h2 className="font-heading text-[15px] font-semibold tracking-tight text-ink truncate">
+          <h2 className="font-heading text-[15px] font-semibold text-ink truncate">
             {title}
           </h2>
           {subtitle && <p className="text-[12px] text-muted truncate mt-0.5">{subtitle}</p>}

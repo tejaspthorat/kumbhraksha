@@ -85,7 +85,7 @@ export function KpiTile({
       <div className="relative mt-3 flex items-end justify-between gap-2">
         <div>
           <div className="flex items-baseline gap-1">
-            <span className="tnum text-2xl font-semibold tracking-tight text-ink">{value}</span>
+            <span className="tnum text-2xl font-semibold text-ink">{value}</span>
             {unit && <span className="text-xs text-muted">{unit}</span>}
           </div>
           {hasDelta && (
