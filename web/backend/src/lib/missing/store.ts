@@ -277,4 +277,11 @@ export const memStore = {
   listCctv(): CctvLocation[] {
     return store.cctv;
   },
+
+  reset() {
+    const s = seed();
+    store.reports = s.reports;
+    store.sightings = s.sightings;
+    store.cctv = s.cctv;
+  },
 };

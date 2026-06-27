@@ -10,7 +10,7 @@ import {
   triageSighting,
   networkCenter 
 } from '../lib/missing/data';
-import { withLiveCascade } from '../lib/missing/store';
+import { withLiveCascade, memStore } from '../lib/missing/store';
 import { distanceMeters } from '../lib/geo';
 import type { MissingReportStatus } from '../lib/missing/types';
 import { missingBus } from '../lib/missing/bus';
@@ -176,6 +176,16 @@ router.get('/stats', async (_req: Request, res: Response) => {
     cctvCount: cctv.length,
     escalated: active.filter((r) => r.cascadeLevel >= 3).length,
   });
+});
+
+// ── POST /api/missing/reset ──
+router.post('/reset', async (_req: Request, res: Response) => {
+  try {
+    memStore.reset();
+    return res.json({ success: true, message: 'In-memory store reset successfully.' });
+  } catch (error: any) {
+    return res.status(500).json({ error: 'Failed to reset store', details: error.message });
+  }
 });
 
 export default router;
