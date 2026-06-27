@@ -1,8 +1,10 @@
 import 'package:uuid/uuid.dart';
 
+import '../core/constants/api_constants.dart';
 import '../core/utils/app_logger.dart';
 import '../models/sighting.dart';
 import '../services/api_service.dart';
+import 'missing_api_mapper.dart';
 
 /// Submits proactive sightings ("someone looks lost") and lists recent ones for
 /// the map. Defaults to [mockMode] so it works without the backend.
@@ -19,8 +21,11 @@ class SightingRepository {
       // Simulate a match confidence from the backend matcher.
       return sighting;
     }
-    final res = await _api.post('/sightings', data: sighting.toJson());
-    return Sighting.fromJson(res.data as Map<String, dynamic>);
+    final res = await _api.post(
+      ApiConstants.sightings,
+      data: MissingApiMapper.sightingToBackend(sighting),
+    );
+    return MissingApiMapper.sightingFromBackend(res.data as Map<String, dynamic>);
   }
 
   Future<List<Sighting>> recent({double? lat, double? lng}) async {
@@ -40,10 +45,11 @@ class SightingRepository {
         );
       });
     }
-    final res = await _api.get('/sightings/recent',
-        query: {'lat': lat, 'lng': lng});
-    return (res.data['sightings'] as List<dynamic>)
-        .map((e) => Sighting.fromJson(e as Map<String, dynamic>))
+    // Backend returns a flat array of sightings (newest-first). It has no
+    // geo-filter, so lat/lng are accepted for API symmetry but not sent.
+    final res = await _api.get(ApiConstants.sightings);
+    return (res.data as List<dynamic>)
+        .map((e) => MissingApiMapper.sightingFromBackend(e as Map<String, dynamic>))
         .toList();
   }
 
