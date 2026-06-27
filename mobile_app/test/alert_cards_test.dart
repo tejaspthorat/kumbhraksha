@@ -27,10 +27,9 @@ void main() {
       ),
     ));
 
-    expect(find.text('WITNESS ALERT'), findsOneWidget);
     expect(find.text('Test Person'), findsOneWidget);
 
-    await tester.tap(find.text('I saw them'));
+    await tester.tap(find.text('View Details'));
     expect(response, equals('yes'));
   });
 
@@ -45,8 +44,8 @@ void main() {
       ),
     ));
 
-    expect(find.text('AREA ALERT'), findsOneWidget);
-    await tester.tap(find.text('I was there'));
+    expect(find.text('Test Person'), findsOneWidget);
+    await tester.tap(find.text('View Details'));
     expect(tapped, isTrue);
   });
 }

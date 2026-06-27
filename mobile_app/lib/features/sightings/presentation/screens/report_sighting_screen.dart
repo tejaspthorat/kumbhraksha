@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/constants/dimensions.dart';
 import '../../../../providers/sighting_provider.dart';
 
-/// Proactive "Report a sighting" — citizen reports someone who looks lost.
+/// Redesigned citizen sighting report form screen matching the white-mode design.
 class ReportSightingScreen extends StatefulWidget {
   const ReportSightingScreen({super.key});
   static const String route = '/sighting/report';
@@ -18,20 +18,6 @@ class ReportSightingScreen extends StatefulWidget {
 
 class _ReportSightingScreenState extends State<ReportSightingScreen> {
   final _notes = TextEditingController();
-  final _age = TextEditingController();
-
-  static const _types = [
-    ('child', Icons.child_care, 'Child'),
-    ('adult', Icons.person, 'Adult'),
-    ('elderly', Icons.elderly, 'Elderly'),
-  ];
-  static const _behaviors = [
-    ('crying', '😢', 'Crying'),
-    ('confused', '😕', 'Confused'),
-    ('wandering', '🚶', 'Wandering'),
-    ('sitting', '🧎', 'Sitting alone'),
-    ('with someone', '👥', 'With someone'),
-  ];
 
   @override
   void initState() {
@@ -43,7 +29,6 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
   @override
   void dispose() {
     _notes.dispose();
-    _age.dispose();
     super.dispose();
   }
 
@@ -56,7 +41,8 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
   Future<void> _submit(SightingProvider p) async {
     p.update(
       notes: _notes.text,
-      approxAge: int.tryParse(_age.text),
+      personType: 'adult',
+      behavior: 'wandering',
     );
     final ok = await p.submit();
     if (!mounted) return;
@@ -75,8 +61,7 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
       context: context,
       isDismissible: false,
       shape: const RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.vertical(top: Radius.circular(Dimens.radiusSheet)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(Dimens.radiusSheet)),
       ),
       builder: (sheet) => SafeArea(
         child: Padding(
@@ -112,142 +97,271 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
     );
   }
 
+  InputDecoration _inputDecoration({
+    String? hintText,
+  }) {
+    return InputDecoration(
+      hintText: hintText,
+      hintStyle: const TextStyle(color: Colors.black38),
+      filled: true,
+      fillColor: const Color(0xFFF2F2F2),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFF8D5332), width: 1.5),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final p = context.watch<SightingProvider>();
-    final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
     final busy = p.state == SightingSubmitState.submitting;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Report a sighting')),
+      backgroundColor: const Color(0xFFFAFAFA),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(Dimens.lg),
+          padding: const EdgeInsets.symmetric(horizontal: Dimens.lg, vertical: Dimens.sm),
           children: [
-            Text('Someone who looks lost?', style: text.titleMedium),
-            const SizedBox(height: Dimens.xs),
-            Text('A quick report can reunite a family.', style: text.bodySmall),
-            const SizedBox(height: Dimens.lg),
-            Center(
-              child: GestureDetector(
-                onTap: () => _pickPhoto(p),
-                child: Container(
-                  width: 130,
-                  height: 130,
-                  decoration: BoxDecoration(
-                    color: scheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(Dimens.radiusCard),
-                    image: p.photoPath != null
-                        ? DecorationImage(
-                            image: FileImage(File(p.photoPath!)),
-                            fit: BoxFit.cover)
-                        : null,
-                  ),
-                  child: p.photoPath != null
-                      ? null
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+            Text(
+              'Report a Sighting',
+              style: text.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 26,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Section 1: Smartphone view camera viewfinder frame
+            GestureDetector(
+              onTap: () => _pickPhoto(p),
+              child: Container(
+                height: 380,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2C2C2C), // Dark smartphone screen color
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.15),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Subtly simulated smartphone screen background
+                      if (p.photoPath != null)
+                        Positioned.fill(
+                          child: Image.file(
+                            File(p.photoPath!),
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      else ...[
+                        // Viewport inner simulated phone outline
+                        Container(
+                          width: 220,
+                          height: 340,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white24, width: 2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        // Inner camera grid/circle overlay
+                        Container(
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white.withOpacity(0.08), width: 1.5),
+                          ),
+                        ),
+                      ],
+
+                      // White corner crop marks
+                      Positioned.fill(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: CustomPaint(
+                            painter: BracketPainter(),
+                          ),
+                        ),
+                      ),
+
+                      // Glossy white camera shutter button & prompt text at bottom
+                      Positioned(
+                        bottom: 24,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.add_a_photo_outlined,
-                                color: scheme.primary),
-                            const SizedBox(height: Dimens.xs),
-                            Text('Add photo', style: text.bodySmall),
+                            // White shutter button
+                            Container(
+                              width: 64,
+                              height: 64,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white, width: 4),
+                              ),
+                              padding: const EdgeInsets.all(4),
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Tap to capture photo',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: Dimens.xl),
-            Text('Who is it?', style: text.titleSmall),
-            const SizedBox(height: Dimens.sm),
-            Row(
-              children: _types.map((t) {
-                final selected = p.personType == t.$1;
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: Dimens.sm),
-                    child: _ChoiceTile(
-                      icon: t.$2,
-                      label: t.$3,
-                      selected: selected,
-                      onTap: () => p.update(personType: t.$1),
+            const SizedBox(height: 20),
+
+            // Section 2: GPS Location Bar
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFFECECEC),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.location_on,
+                    color: Color(0xFF8D5332),
+                    size: 24,
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'GPS Location Captured',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          p.latitude != null && p.longitude != null
+                              ? 'Lat: ${p.latitude!.toStringAsFixed(4)}, Long: ${p.longitude!.toStringAsFixed(4)}'
+                              : 'Detecting GPS location...',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: Dimens.lg),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _age,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'Approx age'),
-                  ),
-                ),
-                const SizedBox(width: Dimens.md),
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    initialValue: p.gender,
-                    decoration: const InputDecoration(labelText: 'Gender'),
-                    items: const ['M', 'F', 'Other']
-                        .map((e) =>
-                            DropdownMenuItem(value: e, child: Text(e)))
-                        .toList(),
-                    onChanged: (v) => p.update(gender: v),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: Dimens.lg),
-            Text('How are they behaving?', style: text.titleSmall),
-            const SizedBox(height: Dimens.sm),
-            Wrap(
-              spacing: Dimens.sm,
-              runSpacing: Dimens.sm,
-              children: _behaviors.map((b) {
-                final selected = p.behavior == b.$1;
-                return ChoiceChip(
-                  label: Text('${b.$2}  ${b.$3}'),
-                  selected: selected,
-                  onSelected: (_) => p.update(behavior: b.$1),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: Dimens.lg),
-            _LocationTile(provider: p),
-            const SizedBox(height: Dimens.md),
-            TextField(
-              controller: _notes,
-              maxLines: 2,
-              decoration: const InputDecoration(
-                labelText: 'Notes (optional)',
-                hintText: 'Landmarks, who they are with…',
+                ],
               ),
             ),
-            const SizedBox(height: Dimens.md),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              secondary: const Icon(Icons.share_location),
-              title: const Text("I'll guide them to help"),
-              subtitle: const Text('Share my live location with authorities'),
-              value: p.guideToHelp,
-              onChanged: (v) => p.update(guideToHelp: v),
+            const SizedBox(height: 24),
+
+            // Section 3: Additional Details
+            Text(
+              'Additional Details',
+              style: text.titleMedium?.copyWith(
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            const SizedBox(height: Dimens.xl),
-            FilledButton(
-              onPressed: busy ? null : () => _submit(p),
-              child: busy
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                          strokeWidth: 2, color: Colors.white))
-                  : const Text('Submit sighting'),
+            const SizedBox(height: 10),
+            TextFormField(
+              controller: _notes,
+              maxLines: 4,
+              decoration: _inputDecoration(
+                hintText: 'e.g., sitting alone on the bench, wearing a bright red jacket, seems disoriented...',
+              ),
             ),
-            const SizedBox(height: Dimens.lg),
+            const SizedBox(height: 24),
+
+            // Section 4: Submit Sighting button
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: FilledButton(
+                onPressed: busy ? null : () => _submit(p),
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFF8D5332), // Rust brown
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: busy
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.send_outlined, color: Colors.white, size: 20),
+                          SizedBox(width: 8),
+                          Text(
+                            'Submit Sighting',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+              ),
+            ),
+            const SizedBox(height: Dimens.sm),
+            const Center(
+              child: Text(
+                'Authorities will be notified immediately.',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
           ],
         ),
       ),
@@ -255,68 +369,27 @@ class _ReportSightingScreenState extends State<ReportSightingScreen> {
   }
 }
 
-class _ChoiceTile extends StatelessWidget {
-  const _ChoiceTile({
-    required this.icon,
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
+/// Custom painter to draw white bracket marks at four corners.
+class BracketPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.85)
+      ..strokeWidth = 3.5
+      ..style = PaintingStyle.stroke;
 
-  final IconData icon;
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
+    const len = 22.0;
+
+    // Top left
+    canvas.drawPath(Path()..moveTo(0, len)..lineTo(0, 0)..lineTo(len, 0), paint);
+    // Top right
+    canvas.drawPath(Path()..moveTo(size.width - len, 0)..lineTo(size.width, 0)..lineTo(size.width, len), paint);
+    // Bottom left
+    canvas.drawPath(Path()..moveTo(0, size.height - len)..lineTo(0, size.height)..lineTo(len, size.height), paint);
+    // Bottom right
+    canvas.drawPath(Path()..moveTo(size.width - len, size.height)..lineTo(size.width, size.height)..lineTo(size.width, size.height - len), paint);
+  }
 
   @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimens.radiusCard),
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: Dimens.lg),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Dimens.radiusCard),
-          border: Border.all(
-            color: selected ? scheme.primary : scheme.outlineVariant,
-            width: selected ? 2 : 1,
-          ),
-          color: selected ? scheme.primary.withValues(alpha: 0.06) : null,
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: selected ? scheme.primary : scheme.outline),
-            const SizedBox(height: Dimens.xs),
-            Text(label, style: Theme.of(context).textTheme.labelMedium),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _LocationTile extends StatelessWidget {
-  const _LocationTile({required this.provider});
-  final SightingProvider provider;
-
-  @override
-  Widget build(BuildContext context) {
-    final has = provider.latitude != null;
-    return Card(
-      child: ListTile(
-        leading: Icon(Icons.my_location,
-            color: Theme.of(context).colorScheme.primary),
-        title: Text(has ? 'Location detected' : 'Detecting location…'),
-        subtitle: has
-            ? Text('${provider.latitude!.toStringAsFixed(4)}, '
-                '${provider.longitude!.toStringAsFixed(4)}')
-            : const Text('Tap refresh if it does not appear'),
-        trailing: IconButton(
-          icon: const Icon(Icons.refresh),
-          onPressed: provider.captureLocation,
-        ),
-      ),
-    );
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

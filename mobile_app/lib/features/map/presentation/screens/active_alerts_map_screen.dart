@@ -7,9 +7,7 @@ import '../../domain/map_marker.dart';
 import '../providers/map_provider.dart';
 import '../widgets/detail_sheet.dart';
 
-/// Active alerts map. A pure-Dart interactive map (pan/zoom via InteractiveViewer)
-/// with pulsing cascade rings, layer toggles, user location and tap-to-detail.
-/// Drop-in replaceable with `google_maps_flutter` once an API key is configured.
+/// Redesigned active alerts map screen matching the custom bottom card docked layout.
 class ActiveAlertsMapScreen extends StatefulWidget {
   const ActiveAlertsMapScreen({super.key});
 
@@ -23,6 +21,7 @@ class _ActiveAlertsMapScreenState extends State<ActiveAlertsMapScreen>
   static const double _pxPerDegree = 90000; // visual zoom
   late final AnimationController _pulse;
   final _viewer = TransformationController();
+  MapMarkerData? _selectedMarker;
 
   @override
   void initState() {
@@ -61,11 +60,21 @@ class _ActiveAlertsMapScreenState extends State<ActiveAlertsMapScreen>
   @override
   Widget build(BuildContext context) {
     final p = context.watch<MapProvider>();
+    final text = Theme.of(context).textTheme;
+
+    // Auto-select first missing alert if none is selected yet
+    final visible = p.visibleMarkers;
+    if (_selectedMarker == null && visible.isNotEmpty) {
+      _selectedMarker = visible.firstWhere(
+        (m) => m.kind == MarkerKind.missing,
+        orElse: () => visible.first,
+      );
+    }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Active alerts')),
       body: Stack(
         children: [
+          // 1. Zoomable Abstract Vector Map Canvas
           InteractiveViewer(
             transformationController: _viewer,
             minScale: 0.5,
@@ -77,7 +86,7 @@ class _ActiveAlertsMapScreenState extends State<ActiveAlertsMapScreen>
               height: _canvas,
               child: Stack(
                 children: [
-                  // Map backdrop.
+                  // Stylized Map streets and river backdrop
                   Positioned.fill(
                     child: CustomPaint(painter: _MapBackdropPainter()),
                   ),
@@ -103,37 +112,16 @@ class _ActiveAlertsMapScreenState extends State<ActiveAlertsMapScreen>
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: m.color.withValues(alpha: 1 - t),
+                                color: const Color(0xFFEF4444).withOpacity(1 - t),
                                 width: 2,
                               ),
-                              color: m.color.withValues(alpha: (1 - t) * 0.08),
+                              color: const Color(0xFFEF4444).withOpacity((1 - t) * 0.08),
                             ),
                           ),
                         );
                       },
                     );
                   }),
-
-                  // Density heatmap blobs (optional layer).
-                  if (p.showDensity)
-                    ...p.visibleMarkers.map((m) {
-                      final c = _project(p, m.latitude, m.longitude);
-                      return Positioned(
-                        left: c.dx - 50,
-                        top: c.dy - 50,
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: RadialGradient(colors: [
-                              m.color.withValues(alpha: 0.25),
-                              m.color.withValues(alpha: 0),
-                            ]),
-                          ),
-                        ),
-                      );
-                    }),
 
                   // User location (blue dot).
                   if (p.userLat != null)
@@ -146,15 +134,19 @@ class _ActiveAlertsMapScreenState extends State<ActiveAlertsMapScreen>
                       );
                     }),
 
-                  // Markers.
+                  // Map Pins
                   ...p.visibleMarkers.map((m) {
                     final c = _project(p, m.latitude, m.longitude);
                     return Positioned(
                       left: c.dx - 22,
                       top: c.dy - 44,
                       child: GestureDetector(
-                        onTap: () => MarkerDetailSheet.show(context, m),
-                        child: _Pin(marker: m),
+                        onTap: () {
+                          setState(() {
+                            _selectedMarker = m;
+                          });
+                        },
+                        child: _Pin(marker: m, isSelected: _selectedMarker?.id == m.id),
                       ),
                     );
                   }),
@@ -163,13 +155,292 @@ class _ActiveAlertsMapScreenState extends State<ActiveAlertsMapScreen>
             ),
           ),
 
-          // Layer toggles.
+          // 2. Floating Search Bar & Layers Toggle Row
           Positioned(
-            top: Dimens.md,
-            left: Dimens.md,
-            right: Dimens.md,
-            child: _LayerBar(provider: p),
+            top: 24,
+            left: 16,
+            right: 16,
+            child: SafeArea(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.search, color: Colors.black54),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                hintText: 'Search areas or alerts...',
+                                hintStyle: TextStyle(color: Colors.black38, fontSize: 14),
+                                border: InputBorder.none,
+                                isDense: true,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: () => p.toggleLayer(MarkerKind.cctv),
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        Icons.layers_outlined,
+                        color: p.layers[MarkerKind.cctv] == true ? const Color(0xFF8D5332) : Colors.black87,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
+
+          // 3. Floating Recenter GPS Target Button
+          Positioned(
+            top: 96,
+            right: 16,
+            child: SafeArea(
+              child: GestureDetector(
+                onTap: () {
+                  p.recenterOnUser();
+                  _centerViewport();
+                },
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(Icons.gps_fixed, color: Colors.black87),
+                ),
+              ),
+            ),
+          ),
+
+          // 4. Selected Alert Details Floating Card (Docked at Bottom)
+          if (_selectedMarker != null)
+            Positioned(
+              bottom: 16,
+              left: 16,
+              right: 16,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.12),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Grey indicator line
+                    Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Profile photo with red dot badge
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                image: _selectedMarker!.photoUrl != null
+                                    ? DecorationImage(
+                                        image: NetworkImage(_selectedMarker!.photoUrl!),
+                                        fit: BoxFit.cover,
+                                      )
+                                    : null,
+                                color: Colors.grey.shade200,
+                              ),
+                              child: _selectedMarker!.photoUrl == null
+                                  ? const Icon(Icons.person, color: Colors.grey)
+                                  : null,
+                            ),
+                            Positioned(
+                              top: -2,
+                              right: -2,
+                              child: Container(
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFEF4444),
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white, width: 2),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _selectedMarker!.title,
+                                      style: text.titleMedium?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.black87,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  if (_selectedMarker!.kind == MarkerKind.missing)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFEE2E2),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: const Text(
+                                        'CRITICAL',
+                                        style: TextStyle(
+                                          color: Color(0xFFEF4444),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                _selectedMarker!.kind == MarkerKind.missing
+                                    ? 'Missing • 2 hours ago'
+                                    : _selectedMarker!.label,
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 13,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                _selectedMarker!.subtitle,
+                                style: text.bodyMedium?.copyWith(
+                                  color: Colors.grey.shade700,
+                                  fontSize: 13,
+                                  height: 1.3,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 46,
+                            child: FilledButton.icon(
+                              icon: const Icon(Icons.info_outline, size: 18),
+                              label: const Text('Details'),
+                              style: FilledButton.styleFrom(
+                                backgroundColor: const Color(0xFF8D5332), // Rust brown
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              onPressed: () => MarkerDetailSheet.show(context, _selectedMarker!),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: SizedBox(
+                            height: 46,
+                            child: OutlinedButton.icon(
+                              icon: const Icon(Icons.directions, size: 18, color: Colors.black87),
+                              label: const Text(
+                                'Navigate',
+                                style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+                              ),
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFF9F9F9),
+                                  side: BorderSide(color: Colors.grey.shade300),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              onPressed: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Navigating to ${_selectedMarker!.title}...'),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
           if (p.loading)
             const Positioned.fill(
@@ -180,101 +451,41 @@ class _ActiveAlertsMapScreenState extends State<ActiveAlertsMapScreen>
             ),
         ],
       ),
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton.small(
-            heroTag: 'recenter',
-            onPressed: () {
-              p.recenterOnUser();
-              _centerViewport();
-            },
-            child: const Icon(Icons.my_location),
-          ),
-          const SizedBox(height: Dimens.sm),
-          FloatingActionButton.extended(
-            heroTag: 'sighting',
-            onPressed: () =>
-                Navigator.of(context).pushNamed(ReportSightingScreen.route),
-            icon: const Icon(Icons.add_location_alt),
-            label: const Text('Report sighting'),
-          ),
-        ],
-      ),
     );
   }
-}
-
-class _LayerBar extends StatelessWidget {
-  const _LayerBar({required this.provider});
-  final MapProvider provider;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: Dimens.sm, vertical: Dimens.xs),
-        child: Wrap(
-          spacing: Dimens.sm,
-          children: [
-            for (final kind in MarkerKind.values)
-              FilterChip(
-                label: Text(_label(kind)),
-                avatar: Icon(_icon(kind), size: 18, color: _color(kind)),
-                selected: provider.layers[kind] ?? false,
-                onSelected: (_) => provider.toggleLayer(kind),
-              ),
-            FilterChip(
-              label: const Text('Density'),
-              avatar: const Icon(Icons.blur_on, size: 18),
-              selected: provider.showDensity,
-              onSelected: (_) => provider.toggleDensity(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  String _label(MarkerKind k) => switch (k) {
-        MarkerKind.missing => 'Missing',
-        MarkerKind.sighting => 'Sightings',
-        MarkerKind.cctv => 'CCTV',
-      };
-  IconData _icon(MarkerKind k) => switch (k) {
-        MarkerKind.missing => Icons.person_pin_circle,
-        MarkerKind.sighting => Icons.visibility,
-        MarkerKind.cctv => Icons.videocam,
-      };
-  Color _color(MarkerKind k) => switch (k) {
-        MarkerKind.missing => const Color(0xFFEF4444),
-        MarkerKind.sighting => const Color(0xFFF59E0B),
-        MarkerKind.cctv => const Color(0xFF6366F1),
-      };
 }
 
 class _Pin extends StatelessWidget {
-  const _Pin({required this.marker});
+  const _Pin({required this.marker, required this.isSelected});
   final MapMarkerData marker;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
+    final pinColor = marker.color;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          padding: const EdgeInsets.all(6),
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: EdgeInsets.all(isSelected ? 8 : 6),
           decoration: BoxDecoration(
-            color: marker.color,
+            color: isSelected ? Colors.black87 : pinColor,
             shape: BoxShape.circle,
             boxShadow: const [
               BoxShadow(color: Color(0x33000000), blurRadius: 4, offset: Offset(0, 2)),
             ],
           ),
-          child: Icon(marker.icon, color: Colors.white, size: 20),
+          child: Icon(
+            marker.kind == MarkerKind.missing ? Icons.location_on : marker.icon,
+            color: Colors.white,
+            size: isSelected ? 22 : 20,
+          ),
         ),
-        CustomPaint(size: const Size(12, 8), painter: _PinTailPainter(marker.color)),
+        CustomPaint(
+          size: const Size(12, 8),
+          painter: _PinTailPainter(isSelected ? Colors.black87 : pinColor),
+        ),
       ],
     );
   }
@@ -322,34 +533,57 @@ class _UserDot extends StatelessWidget {
 class _MapBackdropPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
+    // Draw background: light cream-grey
     canvas.drawRect(
-        Offset.zero & size, Paint()..color = const Color(0xFFE8EDF2));
+        Offset.zero & size, Paint()..color = const Color(0xFFF3F5F2));
 
-    // Grid lines for a map-like feel.
-    final grid = Paint()
-      ..color = const Color(0xFFD3DBE3)
-      ..strokeWidth = 1;
-    const step = 80.0;
-    for (double x = 0; x < size.width; x += step) {
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), grid);
-    }
-    for (double y = 0; y < size.height; y += step) {
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), grid);
-    }
-
-    // A stylised river band crossing the area.
-    final river = Paint()
-      ..color = const Color(0xFFBFE0F2)
+    // Draw grid roads/lines for a premium map-like feel.
+    final roadPaint = Paint()
+      ..color = Colors.white
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 46
+      ..strokeWidth = 14
       ..strokeCap = StrokeCap.round;
-    final path = Path()
-      ..moveTo(0, size.height * 0.35)
-      ..cubicTo(size.width * 0.3, size.height * 0.25, size.width * 0.55,
-          size.height * 0.6, size.width, size.height * 0.5);
-    canvas.drawPath(path, river);
+
+    final roadBorderPaint = Paint()
+      ..color = const Color(0xFFE4E6E3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 16
+      ..strokeCap = StrokeCap.round;
+
+    // Draw winding roads
+    final roadPaths = [
+      Path()..moveTo(0, size.height * 0.2)..lineTo(size.width, size.height * 0.8),
+      Path()..moveTo(0, size.height * 0.8)..lineTo(size.width, size.height * 0.2),
+      Path()..moveTo(size.width * 0.3, 0)..lineTo(size.width * 0.3, size.height),
+      Path()..moveTo(size.width * 0.7, 0)..lineTo(size.width * 0.7, size.height),
+      Path()
+        ..moveTo(0, size.height * 0.5)
+        ..quadraticBezierTo(size.width * 0.5, size.height * 0.3, size.width, size.height * 0.5),
+    ];
+
+    // Draw road borders first
+    for (final path in roadPaths) {
+      canvas.drawPath(path, roadBorderPaint);
+    }
+    // Draw road fills next
+    for (final path in roadPaths) {
+      canvas.drawPath(path, roadPaint);
+    }
+
+    // Draw water body (river) crossing
+    final water = Paint()
+      ..color = const Color(0xFFD4E8F2)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 32
+      ..strokeCap = StrokeCap.round;
+
+    final waterPath = Path()
+      ..moveTo(0, size.height * 0.1)
+      ..cubicTo(size.width * 0.4, size.height * 0.15, size.width * 0.6,
+          size.height * 0.4, size.width, size.height * 0.4);
+    canvas.drawPath(waterPath, water);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _MapBackdropPainter oldDelegate) => false;
 }
