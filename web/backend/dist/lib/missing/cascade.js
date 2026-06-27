@@ -4,8 +4,11 @@ exports.CASCADE_STAGES = exports.NETWORK_CENTER = void 0;
 exports.stageForLevel = stageForLevel;
 exports.expectedLevel = expectedLevel;
 exports.withLiveCascade = withLiveCascade;
-/** Sangam Nose, Prayagraj — the network's reference center. */
-exports.NETWORK_CENTER = { lat: 25.4225, lng: 81.8848 };
+/**
+ * Nashik Kumbh (Sinhastha) reference center — centroid of the CCTV grid
+ * around Panchavati / Ramkund on the Godavari.
+ */
+exports.NETWORK_CENTER = { lat: 19.995845, lng: 73.797309 };
 exports.CASCADE_STAGES = [
     {
         level: 0,

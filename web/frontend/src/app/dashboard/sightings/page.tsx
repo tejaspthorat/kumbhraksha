@@ -188,7 +188,7 @@ export default function SightingTriagePage() {
               </div>
               <h2 className="display-sm">Triage queue is clear</h2>
               <p className="text-[14px] text-muted mt-1">
-                New Flow B sightings will appear here for review.
+                New sightings will appear here for review.
               </p>
             </div>
           </section>

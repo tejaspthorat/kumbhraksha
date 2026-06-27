@@ -4,7 +4,19 @@ const express_1 = require("express");
 const data_1 = require("../lib/missing/data");
 const store_1 = require("../lib/missing/store");
 const geo_1 = require("../lib/geo");
+const bus_1 = require("../lib/missing/bus");
 const router = (0, express_1.Router)();
+// ── GET /api/missing/stream ── (Server-Sent Events for live dashboard alerts)
+router.get('/stream', (req, res) => {
+    res.set({
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache, no-transform',
+        Connection: 'keep-alive',
+    });
+    res.flushHeaders?.();
+    const unsubscribe = bus_1.missingBus.subscribe(res);
+    req.on('close', unsubscribe);
+});
 // ── GET /api/missing/cctv ──
 router.get('/cctv', async (_req, res) => {
     const cctv = await (0, data_1.getCctv)();
@@ -58,6 +70,11 @@ router.post('/reports', async (req, res) => {
             lastSeenLabel: body.lastSeenLabel,
             lastSeenTime: body.lastSeenTime,
         });
+        // Real-time alert to the control-room dashboard.
+        bus_1.missingBus.publish('report:new', {
+            ...(0, store_1.withLiveCascade)(report),
+            source: body.source ?? 'mobile',
+        });
         return res.status(201).json(report);
     }
     catch (e) {
@@ -105,6 +122,7 @@ router.post('/sightings', async (req, res) => {
             lng: body.lng,
             description: body.description,
         });
+        bus_1.missingBus.publish('sighting:new', sighting);
         return res.status(201).json(sighting);
     }
     catch {
@@ -141,5 +159,15 @@ router.get('/stats', async (_req, res) => {
         cctvCount: cctv.length,
         escalated: active.filter((r) => r.cascadeLevel >= 3).length,
     });
+});
+// ── POST /api/missing/reset ──
+router.post('/reset', async (_req, res) => {
+    try {
+        store_1.memStore.reset();
+        return res.json({ success: true, message: 'In-memory store reset successfully.' });
+    }
+    catch (error) {
+        return res.status(500).json({ error: 'Failed to reset store', details: error.message });
+    }
 });
 exports.default = router;

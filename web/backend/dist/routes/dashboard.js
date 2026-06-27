@@ -46,10 +46,10 @@ router.get('/', auth_1.requireAdminAuth, async (req, res) => {
             console.log(`[Dashboard] Seeding default zones for user ${userId}`);
             await prisma_1.default.zone.createMany({
                 data: [
-                    { name: 'Main Entrance', profileId: userId, area: 120, density: 0, level: 'success', people: 0 },
-                    { name: 'Food Court', profileId: userId, area: 450, density: 0, level: 'success', people: 0 },
-                    { name: 'Exhibition Hall', profileId: userId, area: 800, density: 0, level: 'success', people: 0 },
-                    { name: 'Emergency Exit A', profileId: userId, area: 50, density: 0, level: 'success', people: 0 },
+                    { name: 'Ramkund Ghat', profileId: userId, area: 290, density: 0, level: 'success', people: 0 },
+                    { name: 'Panchavati Annadan Kshetra', profileId: userId, area: 160, density: 0, level: 'success', people: 0 },
+                    { name: 'Sadhugram Camp', profileId: userId, area: 280, density: 0, level: 'success', people: 0 },
+                    { name: 'Tapovan Exit', profileId: userId, area: 140, density: 0, level: 'success', people: 0 },
                 ]
             });
         }
