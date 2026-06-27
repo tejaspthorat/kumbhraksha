@@ -7,8 +7,11 @@
  */
 import type { MissingReport } from './types';
 
-/** Sangam Nose, Prayagraj — the network's reference center. */
-export const NETWORK_CENTER = { lat: 25.4225, lng: 81.8848 };
+/**
+ * Nashik Kumbh (Sinhastha) reference center — centroid of the real CCTV grid
+ * around Panchavati / Ramkund on the Godavari. Matches public/nashik/meta.json.
+ */
+export const NETWORK_CENTER = { lat: 19.995845, lng: 73.797309 };
 
 export interface CascadeStage {
   level: number;

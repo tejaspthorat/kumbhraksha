@@ -6,7 +6,7 @@ import { useAuth, SignInButton, UserButton } from '@clerk/nextjs';
 import { Badge } from '@/components/ui/Badge';
 
 const notifications = [
-  { id: 1, text: 'New missing-person case opened near Sangam Nose', type: 'danger' as const, time: '2 min ago' },
+  { id: 1, text: 'New missing-person case opened near Ramkund, Panchavati', type: 'danger' as const, time: '2 min ago' },
   { id: 2, text: 'Sighting matched to Case #1247 (84% confidence)', type: 'info' as const, time: '5 min ago' },
   { id: 3, text: 'Zone B density crossed warning threshold', type: 'warning' as const, time: '8 min ago' },
   { id: 4, text: 'Field team reassigned to Gate 2 blind spot', type: 'success' as const, time: '12 min ago' },

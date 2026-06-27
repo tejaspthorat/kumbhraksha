@@ -2,11 +2,12 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Camera, MapPin, Radio, ScanEye } from 'lucide-react';
+import { ArrowUpRight, Camera, MapPin, Radio, ScanEye, Shield, TriangleAlert } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { krApi } from '@/lib/missing/client';
-import type { MissingReport, Sighting, CctvLocation } from '@/lib/missing/types';
+import type { MissingReport, Sighting } from '@/lib/missing/types';
 import { NETWORK_CENTER as networkCenter, withLiveCascade } from '@/lib/missing/cascade';
+import { geo, type PoliceStation, type Chokepoint, type CctvCamera, type CctvZone } from '@/lib/nashik/geo';
 
 const OpsMap = dynamic(() => import('@/components/missing/OpsMap'), {
   ssr: false,
@@ -27,27 +28,45 @@ import { Badge } from '@/components/ui/Badge';
 export default function LiveOperationsPage() {
   const [reports, setReports] = useState<MissingReport[]>([]);
   const [sightings, setSightings] = useState<Sighting[]>([]);
-  const [cctv, setCctv] = useState<CctvLocation[]>([]);
   const [center] = useState(networkCenter);
   const [selected, setSelected] = useState<string | null>(null);
-  const [layers, setLayers] = useState({ cctv: true, sightings: true, rings: true });
+  const [layers, setLayers] = useState({
+    sightings: true,
+    rings: true,
+    cctv: false,
+    police: true,
+    chokepoints: true,
+  });
   const [loading, setLoading] = useState(true);
 
+  // Real Nashik reference geography (loaded once).
+  const [police, setPolice] = useState<PoliceStation[]>([]);
+  const [chokepoints, setChokepoints] = useState<Chokepoint[]>([]);
+  const [zones, setZones] = useState<CctvZone[]>([]);
+  const [cameras, setCameras] = useState<CctvCamera[]>([]);
+
   async function load() {
-    const [rs, ss, cs] = await Promise.all([
+    const [rs, ss] = await Promise.all([
       krApi.reports().catch(() => [] as MissingReport[]),
       krApi.sightings().catch(() => [] as Sighting[]),
-      krApi.cctv().catch(() => [] as CctvLocation[]),
     ]);
     setReports(rs.map(withLiveCascade));
     setSightings(ss);
-    setCctv(cs);
     setLoading(false);
   }
 
   useEffect(() => {
     load();
     const id = setInterval(load, 15000);
+    // Real reference layers — fetched once (static JSON, cached).
+    geo.layers()
+      .then(({ police, chokepoints, zones }) => {
+        setPolice(police);
+        setChokepoints(chokepoints);
+        setZones(zones);
+      })
+      .catch(() => {});
+    geo.cameras().then(setCameras).catch(() => {});
     return () => clearInterval(id);
   }, []);
 
@@ -90,12 +109,14 @@ export default function LiveOperationsPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-lg font-medium tracking-tight">Operations map</h2>
-              <p className="text-[13px] text-muted">Cases, sightings & CCTV coverage near the Sangam</p>
+              <p className="text-[13px] text-muted">Cases, sightings, CCTV, police & chokepoints — Nashik Kumbh</p>
             </div>
             <div className="flex items-center gap-1.5">
               {(
                 [
                   { key: 'cctv', label: 'CCTV', icon: Camera },
+                  { key: 'police', label: 'Police', icon: Shield },
+                  { key: 'chokepoints', label: 'Chokepoints', icon: TriangleAlert },
                   { key: 'sightings', label: 'Sightings', icon: ScanEye },
                   { key: 'rings', label: 'Radii', icon: Radio },
                 ] as const
@@ -121,9 +142,11 @@ export default function LiveOperationsPage() {
             className="aspect-[16/10] w-full"
             center={center}
             spanMeters={3000}
-            showCoverage={layers.cctv}
             showRings={layers.rings}
-            cctv={layers.cctv ? cctv : []}
+            cameraPoints={layers.cctv ? cameras : []}
+            zones={layers.cctv ? zones : []}
+            police={layers.police ? police : []}
+            chokepoints={layers.chokepoints ? chokepoints : []}
             sightings={
               layers.sightings
                 ? sightings.map((s) => ({
@@ -146,12 +169,17 @@ export default function LiveOperationsPage() {
             onSelect={setSelected}
           />
 
-          <div className="flex flex-wrap items-center gap-4 mt-4 text-[12px] text-muted">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4 text-[12px] text-muted">
             <Legend color="bg-coral" label="Active case + alert radius" />
             <Legend color="bg-accent-amber" label="Unverified sighting" />
-            <Legend color="bg-accent-teal" label="Matched sighting" />
-            <Legend color="bg-surface-dark/60" label="CCTV camera" />
+            <Legend color="bg-accent-teal" label="CCTV camera / coverage" />
+            <Legend color="bg-[#3b4a8c]" label="Police station" />
+            <Legend color="bg-error" label="Chokepoint (very high risk)" />
           </div>
+          <p className="mt-3 text-[11px] text-muted-soft font-mono">
+            Live reference data · {cameras.length.toLocaleString('en-IN')} cameras ·{' '}
+            {police.length} police stations · {chokepoints.length} chokepoints — Nashik Kumbh
+          </p>
         </section>
 
         {/* Active cases list */}

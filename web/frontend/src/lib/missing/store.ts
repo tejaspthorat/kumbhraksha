@@ -4,7 +4,7 @@
  * The API routes prefer Prisma (real backend), and fall back to this store when
  * the database is unreachable — mirroring the app's existing mock-fallback
  * pattern (see src/app/api/alerts/route.ts). It seeds realistic data around the
- * Prayagraj Sangam so both the citizen app and dashboard are demoable instantly.
+ * Nashik Kumbh (Panchavati / Ramkund) so the dashboard is demoable instantly.
  */
 import { randomUUID } from 'crypto';
 import type {
@@ -48,7 +48,7 @@ function seed(): Store {
       relationship: 'Mother',
       lastSeenLat: jitter(CENTER.lat, 0.004),
       lastSeenLng: jitter(CENTER.lng, 0.004),
-      lastSeenLabel: 'Near Sangam Nose, Sector 4',
+      lastSeenLabel: 'Near Ramkund, Panchavati',
       lastSeenTime: minsAgo(18),
       reportedAt: minsAgo(16),
       status: 'SIGHTING_RECEIVED',
@@ -75,7 +75,7 @@ function seed(): Store {
       relationship: 'Son',
       lastSeenLat: jitter(CENTER.lat, 0.006),
       lastSeenLng: jitter(CENTER.lng, 0.006),
-      lastSeenLabel: 'Ram Ghat, Sector 7',
+      lastSeenLabel: 'Gandhi Talav, Panchavati',
       lastSeenTime: minsAgo(42),
       reportedAt: minsAgo(38),
       status: 'SEARCHING',
@@ -102,7 +102,7 @@ function seed(): Store {
       relationship: 'Mother',
       lastSeenLat: jitter(CENTER.lat, 0.003),
       lastSeenLng: jitter(CENTER.lng, 0.003),
-      lastSeenLabel: 'Food Court, Sector 2',
+      lastSeenLabel: 'Kapaleshwar Mandir gate',
       lastSeenTime: minsAgo(6),
       reportedAt: minsAgo(4),
       status: 'REPORTED',

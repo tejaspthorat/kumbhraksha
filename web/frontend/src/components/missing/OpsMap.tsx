@@ -17,15 +17,18 @@ import {
   TileLayer,
   Circle,
   CircleMarker,
+  Polygon,
   Tooltip,
   useMap,
 } from 'react-leaflet';
+import { riskColor } from '@/lib/nashik/geo';
 
 const COLORS = {
   coral: '#cc785c',
   coralActive: '#a9583e',
   teal: '#5db8a6',
   amber: '#e8a55a',
+  navy: '#3b4a8c',
   dark: '#181715',
   canvas: '#faf9f5',
 };
@@ -50,6 +53,21 @@ export interface MapCctv {
   lng: number;
   coverageRadius?: number;
 }
+export interface MapPoint {
+  id: string;
+  name?: string;
+  lat: number;
+  lng: number;
+}
+export interface MapChokepoint extends MapPoint {
+  risk?: string;
+  category?: string;
+}
+export interface MapZone {
+  id: string;
+  name?: string;
+  ring: [number, number][];
+}
 
 interface Props {
   center: { lat: number; lng: number };
@@ -57,6 +75,11 @@ interface Props {
   cases?: MapCase[];
   sightings?: MapSighting[];
   cctv?: MapCctv[];
+  /** Real Nashik reference layers. */
+  cameraPoints?: MapPoint[];
+  zones?: MapZone[];
+  police?: MapPoint[];
+  chokepoints?: MapChokepoint[];
   showCoverage?: boolean;
   showRings?: boolean;
   selectedId?: string | null;
@@ -90,6 +113,10 @@ export default function OpsMap({
   cases = [],
   sightings = [],
   cctv = [],
+  cameraPoints = [],
+  zones = [],
+  police = [],
+  chokepoints = [],
   showCoverage = false,
   showRings = true,
   selectedId,
@@ -106,6 +133,7 @@ export default function OpsMap({
       )}
     >
       <MapContainer
+        preferCanvas
         center={[center.lat, center.lng]}
         zoom={zoom}
         scrollWheelZoom
@@ -118,7 +146,70 @@ export default function OpsMap({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
 
-        {/* CCTV coverage rings */}
+        {/* Real CCTV coverage-zone polygons */}
+        {zones.map((z) => (
+          <Polygon
+            key={z.id}
+            positions={z.ring}
+            pathOptions={{ color: COLORS.teal, weight: 1, opacity: 0.45, fillOpacity: 0.07 }}
+          >
+            <Tooltip>{z.name ?? 'Coverage zone'}</Tooltip>
+          </Polygon>
+        ))}
+
+        {/* Real CCTV camera points (thousands → canvas-rendered dots) */}
+        {cameraPoints.map((c) => (
+          <CircleMarker
+            key={c.id}
+            center={[c.lat, c.lng]}
+            radius={2}
+            pathOptions={{
+              stroke: false,
+              fillColor: COLORS.teal,
+              fillOpacity: 0.65,
+            }}
+          />
+        ))}
+
+        {/* Police stations */}
+        {police.map((p) => (
+          <CircleMarker
+            key={p.id}
+            center={[p.lat, p.lng]}
+            radius={6}
+            pathOptions={{
+              color: COLORS.canvas,
+              weight: 2,
+              fillColor: COLORS.navy,
+              fillOpacity: 1,
+            }}
+          >
+            <Tooltip>{p.name ?? 'Police station'}</Tooltip>
+          </CircleMarker>
+        ))}
+
+        {/* Kumbh chokepoints / parking — colored by risk */}
+        {chokepoints.map((cp) => (
+          <CircleMarker
+            key={cp.id}
+            center={[cp.lat, cp.lng]}
+            radius={cp.risk === 'very high' ? 8 : 6}
+            pathOptions={{
+              color: COLORS.canvas,
+              weight: 1.5,
+              fillColor: riskColor(cp.risk ?? 'medium'),
+              fillOpacity: 0.9,
+            }}
+          >
+            <Tooltip>
+              {cp.name}
+              {cp.category ? ` · ${cp.category}` : ''}
+              {cp.risk ? ` · risk: ${cp.risk}` : ''}
+            </Tooltip>
+          </CircleMarker>
+        ))}
+
+        {/* Operational CCTV coverage rings (demo seed) */}
         {showCoverage &&
           cctv.map((c) => (
             <Circle

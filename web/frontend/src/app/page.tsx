@@ -133,9 +133,9 @@ export default function LandingPage() {
           </div>
           <div className="mt-4 rounded-lg bg-surface-dark-soft p-4 space-y-3">
             {[
-              ['Aarav Sharma · 6', 'Sangam Nose · L2', 'bg-coral'],
-              ['Kamla Devi · 72', 'Ram Ghat · L3', 'bg-coral'],
-              ['Imran Khan · 9', 'Food Court · L0', 'bg-accent-amber'],
+              ['Aarav Sharma · 6', 'Ramkund · L2', 'bg-coral'],
+              ['Kamla Devi · 72', 'Panchavati · L3', 'bg-coral'],
+              ['Imran Khan · 9', 'Kapaleshwar · L0', 'bg-accent-amber'],
             ].map(([name, loc, dot]) => (
               <div key={name} className="flex items-center gap-3">
                 <span className={`size-2.5 rounded-full ${dot}`} />
