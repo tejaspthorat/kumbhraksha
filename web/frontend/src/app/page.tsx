@@ -77,14 +77,15 @@ export default function LandingPage() {
       <section className="max-w-[1200px] mx-auto px-6 pt-20 pb-24 grid lg:grid-cols-2 gap-12 items-center">
         <div>
           <span className="badge-pill inline-flex items-center gap-2">
-            <span className="size-1.5 rounded-full bg-success" /> No hardware · works on any phone
+            <span className="size-1.5 rounded-full bg-success" /> Nashik Kumbh Mela · crowd safety + missing persons
           </span>
           <h1 className="display-xl mt-6">
-            Turn every phone into the largest search network in history.
+            Manage the crowd. Turn every phone into the largest search network in history.
           </h1>
           <p className="text-[18px] leading-relaxed text-body mt-6 max-w-xl">
-            At 17 million pilgrims a day, even a fraction with smartphones becomes a living
-            missing-persons network. KumbhRaksha connects the people who are lost with the
+            At 17 million pilgrims a day on the banks of the Godavari, KumbhRaksha gives the
+            Nashik Kumbh Mela command center live crowd density to prevent stampedes — and turns
+            every smartphone into a missing-persons network that connects the lost with the
             people standing right next to them.
           </p>
           <div className="flex flex-wrap items-center gap-3 mt-8">
@@ -229,7 +230,8 @@ export default function LandingPage() {
             Bring every phone into the search.
           </h2>
           <p className="text-on-primary/85 text-[17px] mt-4 max-w-xl mx-auto">
-            Stand up the authority dashboard and the citizen network for the next gathering.
+            Stand up the ICCC dashboard and the citizen network for the Nashik Kumbh Mela — and
+            every mass gathering after it.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
             <Link
@@ -252,14 +254,14 @@ export default function LandingPage() {
             <div>
               <Wordmark labelClassName="text-on-dark" />
               <p className="text-[14px] mt-3 max-w-xs">
-                A living missing-persons network for mass gatherings. No hardware — just the phones
-                people already carry.
+                Crowd management and a living missing-persons network for the Nashik Kumbh Mela.
+                No hardware — just the phones people already carry.
               </p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 text-[14px]">
               <FooterCol title="Product" links={['Live Operations', 'Command Center', 'Sighting Triage', 'CCTV Intel']} />
               <FooterCol title="Flows" links={['Report missing', 'Report sighting', 'Alert cascade', 'I found them']} />
-              <FooterCol title="About" links={['Kumbh Mela', 'ICCC', 'Privacy', 'Contact']} />
+              <FooterCol title="About" links={['Nashik Kumbh Mela', 'ICCC', 'Privacy', 'Contact']} />
             </div>
           </div>
           <p className="text-[13px] mt-12 pt-8 border-t border-white/10">

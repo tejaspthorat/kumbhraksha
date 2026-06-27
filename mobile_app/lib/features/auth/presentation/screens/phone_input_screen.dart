@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/dimensions.dart';
+import '../../../../core/utils/app_translations.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../providers/auth_provider.dart';
 import 'otp_verification_screen.dart';
@@ -60,7 +61,7 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
               children: [
                 const SizedBox(height: Dimens.md),
                 Text(
-                  'Your phone number',
+                  context.tr('phone_title'),
                   style: text.headlineMedium?.copyWith(
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.5,
@@ -68,7 +69,7 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                 ),
                 const SizedBox(height: Dimens.xs),
                 Text(
-                  'We will send a one-time code to verify it.',
+                  context.tr('phone_desc'),
                   style: text.bodyLarge?.copyWith(
                     color: scheme.onSurface.withOpacity(0.6),
                   ),
@@ -91,7 +92,7 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                       fontWeight: FontWeight.bold,
                       color: scheme.onSurface.withOpacity(0.4),
                     ),
-                    labelText: 'Mobile number',
+                    labelText: context.tr('phone_label'),
                     hintText: '98765 43210',
                     prefixIcon: Icon(Icons.phone_iphone_outlined, color: scheme.primary),
                     counterText: '',
@@ -109,7 +110,7 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                             color: Colors.white,
                           ),
                         )
-                      : const Text('Send verification code'),
+                      : Text(context.tr('send_otp')),
                 ),
                 const SizedBox(height: Dimens.md),
               ],

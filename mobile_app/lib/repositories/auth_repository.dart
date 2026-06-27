@@ -12,6 +12,10 @@ import '../services/storage_service.dart';
 /// When [mockMode] is true (default until the backend is live) the OTP `123456`
 /// is accepted locally so the full onboarding flow is demoable offline.
 class AuthRepository {
+  // NOTE: stays in mock mode — the Express backend has no citizen OTP auth
+  // (/auth/register, /auth/verify-otp, /auth/refresh). Its only mobile auth is
+  // coordinator email/password at /api/mobile/login. Wire this once citizen
+  // auth endpoints exist on the backend.
   AuthRepository(this._api, this._storage, {this.mockMode = true});
 
   final ApiService _api;

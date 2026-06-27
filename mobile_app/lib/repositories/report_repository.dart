@@ -12,7 +12,7 @@ import 'missing_api_mapper.dart';
 /// Submits missing-person reports. Falls back to a local pending queue when the
 /// network/backend is unavailable so reports are never lost.
 class ReportRepository {
-  ReportRepository(this._api, this._db, {this.mockMode = true});
+  ReportRepository(this._api, this._db, {this.mockMode = false});
 
   final ApiService _api;
   final DatabaseService _db;

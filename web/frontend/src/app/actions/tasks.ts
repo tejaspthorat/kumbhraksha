@@ -1,10 +1,41 @@
 'use server';
 
-import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
-// Auth removed — actions run as the shared Control Room identity.
+/**
+ * Task actions now delegate to the centralized Express backend (single source of
+ * truth). These thin wrappers preserve the original signatures/return shapes so
+ * call sites stay unchanged; the StaffTask + alert business logic lives in the
+ * backend at /api/staff-tasks.
+ */
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5001';
+
+// Auth removed — backend runs as the shared "Control Room" identity.
 const CONTROL_ROOM_ID = 'control-room';
+
+async function backend(path: string, init: RequestInit & { method: string }) {
+  const res = await fetch(`${BACKEND_URL}/api${path}`, {
+    ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      'x-user-id': CONTROL_ROOM_ID,
+      ...(init.headers || {}),
+    },
+    cache: 'no-store',
+  });
+
+  let body: any = null;
+  try {
+    body = await res.json();
+  } catch {
+    // non-JSON / empty response
+  }
+
+  if (!res.ok) {
+    throw new Error(body?.error || `Request failed (${res.status})`);
+  }
+  return body;
+}
 
 export async function assignTask(data: {
   text: string;
@@ -13,76 +44,13 @@ export async function assignTask(data: {
   priority: 'low' | 'medium' | 'high';
   time: string;
 }) {
-  try {
-    const { text, assignee, staffId, priority, time } = data;
-
-    // Get staff record to find zoneId
-    const staff = await prisma.staff.findUnique({
-      where: { id: staffId },
-      select: { zoneId: true }
-    });
-
-    if (!staff) throw new Error('Staff not found');
-
-    const userId = CONTROL_ROOM_ID;
-
-    // userId maps directly to Profile.id in the schema
-    const result = await prisma.$transaction([
-      // 1. Create the task
-      prisma.staffTask.create({
-        data: {
-          text,
-          assignee,
-          priority,
-          time,
-          staffId,
-          profileId: userId,
-        }
-      }),
-      // 2. Increment staff task count
-      prisma.staff.update({
-        where: { id: staffId },
-        data: { tasks: { increment: 1 } }
-      }),
-      // 3. Create an alert for the task assignment
-      prisma.alert.create({
-        data: {
-          type: 'task_assignment',
-          level: 'info',
-          title: 'New Task Assigned',
-          description: `${assignee}: ${text}`,
-          time: new Date().toISOString(),
-          zoneId: staff.zoneId
-        }
-      })
-    ]);
-
-    revalidatePath('/dashboard/staff');
-    return { success: true, data: result[0] };
-  } catch (error: any) {
-    console.error('Task assignment error:', error);
-    throw new Error(error.message || 'Failed to assign task');
-  }
+  const body = await backend('/staff-tasks', { method: 'POST', body: JSON.stringify(data) });
+  revalidatePath('/dashboard/staff');
+  return { success: true, data: body?.data };
 }
 
 export async function deleteTask(id: number) {
-  try {
-    const task = await prisma.staffTask.delete({
-      where: { id }
-    });
-
-    // Decrement staff task count
-    if (task.assignee) {
-      await prisma.staff.updateMany({
-        where: { name: task.assignee },
-        data: { tasks: { decrement: 1 } }
-      });
-    }
-
-    revalidatePath('/dashboard/staff');
-    return { success: true };
-  } catch (error: any) {
-    console.error('Delete task error:', error);
-    throw new Error('Failed to delete task');
-  }
+  await backend(`/staff-tasks/${id}`, { method: 'DELETE' });
+  revalidatePath('/dashboard/staff');
+  return { success: true };
 }

@@ -352,3 +352,17 @@ ID,Type,Level,Title,Description,Zone,Time,Camera ID,Resolved
 1782557622,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 29 people detected,Zone B,2026-06-27T16:23:42.684362,4,False
 1782557636,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 26 people detected,Zone B,2026-06-27T16:23:56.965403,4,False
 1782557644,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 27 people detected,Zone A,2026-06-27T16:24:04.170675,4,False
+1782559379,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 29 people detected,Godavari Bank,2026-06-27T16:52:59.407608,4,False
+1782559387,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 26 people detected,Ramkund Bank,2026-06-27T16:53:07.626328,4,False
+1782559413,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 26 people detected,Godavari Bank,2026-06-27T16:53:33.208241,4,False
+1782559423,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 27 people detected,Godavari Bank,2026-06-27T16:53:43.775103,4,False
+1782559429,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 27 people detected,Ramkund Bank,2026-06-27T16:53:49.257868,4,False
+1782559456,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 29 people detected,Godavari Bank,2026-06-27T16:54:16.842370,4,False
+1782559470,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 26 people detected,Ramkund Bank,2026-06-27T16:54:30.573893,4,False
+1782559494,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 26 people detected,Godavari Bank,2026-06-27T16:54:54.475456,4,False
+1782559499,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 29 people detected,Godavari Bank,2026-06-27T16:54:59.532047,4,False
+1782559519,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 29 people detected,Godavari Bank,2026-06-27T16:55:19.403981,4,False
+1782559525,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 26 people detected,Ramkund Bank,2026-06-27T16:55:25.516733,4,False
+1782559536,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 26 people detected,Godavari Bank,2026-06-27T16:55:36.769515,4,False
+1782559547,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 27 people detected,Godavari Bank,2026-06-27T16:55:47.868862,4,False
+1782559552,overcrowding,danger,Critical Overcrowding Detected,Density level: HIGH with 27 people detected,Ramkund Bank,2026-06-27T16:55:52.872371,4,False

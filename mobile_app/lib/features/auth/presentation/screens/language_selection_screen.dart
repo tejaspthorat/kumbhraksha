@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/dimensions.dart';
+import '../../../../core/utils/app_translations.dart';
 import '../../../../models/enums.dart';
 import '../../../../providers/auth_provider.dart';
 import 'permissions_screen.dart';
@@ -27,7 +28,7 @@ class LanguageSelectionScreen extends StatelessWidget {
             children: [
               const SizedBox(height: Dimens.xl),
               Text(
-                'Choose your language',
+                context.tr('choose_language'),
                 style: text.headlineMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.5,
@@ -71,7 +72,7 @@ class LanguageSelectionScreen extends StatelessWidget {
               const SizedBox(height: Dimens.lg),
               FilledButton(
                 onPressed: () => Navigator.of(context).pushNamed(PermissionsScreen.route),
-                child: const Text('Continue'),
+                child: Text(context.tr('continue')),
               ),
               const SizedBox(height: Dimens.sm),
             ],

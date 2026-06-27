@@ -19,6 +19,7 @@ import mobileRouter from './routes/mobile';
 import publicRouter from './routes/public';
 import reportsRouter from './routes/reports';
 import staffRouter from './routes/staff';
+import staffTasksRouter from './routes/staffTasks';
 import tasksRouter from './routes/tasks';
 
 const app = express();
@@ -57,6 +58,7 @@ app.use('/api/mobile', mobileRouter);
 app.use('/api/public', publicRouter);
 app.use('/api/reports', reportsRouter);
 app.use('/api/staff', staffRouter);
+app.use('/api/staff-tasks', staffTasksRouter);
 app.use('/api/tasks', tasksRouter);
 
 // Global Error Handler

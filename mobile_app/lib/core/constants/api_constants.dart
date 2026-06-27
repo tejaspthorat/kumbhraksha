@@ -22,6 +22,8 @@ class ApiConstants {
   // Missing-person reports (web backend: /api/missing/*)
   static const String reports = '/missing/reports';
   static const String sightings = '/missing/sightings';
+  // Geo-sorted feed of active reports near a coordinate.
+  static const String missingFeed = '/missing/feed';
 
   // Encounters / witness matching
   static const String encounters = '/encounters';
