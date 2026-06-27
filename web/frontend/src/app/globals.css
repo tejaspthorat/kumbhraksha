@@ -1,5 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 /*
  * ─────────────────────────────────────────────────────────────────────────
@@ -43,6 +45,21 @@
   --error: #c64545;
   --info: #5db8a6;
 
+  /* ── Mission-command accents (mode-independent — DESIGN.md §3) ── */
+  --accent-orange: #ff801f;
+  --accent-orange-glow: rgba(255, 89, 0, 0.22);
+  --accent-blue: #3b9eff;
+  --accent-blue-glow: rgba(0, 117, 255, 0.34);
+  --accent-green: #11ff99;
+  --accent-green-glow: rgba(34, 255, 153, 0.18);
+  --accent-yellow: #ffc53d;
+  --accent-yellow-glow: rgba(255, 197, 61, 0.15);
+  --accent-red: #ff2047;
+  --accent-red-glow: rgba(255, 32, 71, 0.34);
+  /* Structural extras used by tactical surfaces */
+  --hairline-strong: rgba(0, 0, 0, 0.12);
+  --surface-elevated: var(--surface-soft);
+
   /* ── Legacy aliases (older dashboard pages reference these) ── */
   --primary: var(--coral);
   --primary-light: var(--coral-active);
@@ -62,6 +79,60 @@
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;
+}
+
+/*
+ * ─────────────────────────────────────────────────────────────────────────
+ *  DARK — Mission Command (redesign.md + DESIGN.md §3)
+ *  Black canvas · 95% monochrome · functional orange/blue/green/yellow/red.
+ *  Re-maps every existing token so the whole token-driven app re-skins at once.
+ *  `--coral` (the app's primary accent) becomes tactical orange in the dark.
+ * ─────────────────────────────────────────────────────────────────────────
+ */
+.dark {
+  /* Brand & accent — coral collapses onto tactical orange */
+  --coral: #ff801f;
+  --coral-active: #ff9a4d;
+  --coral-disabled: #2a2a2e;
+  --accent-teal: #3b9eff;
+  --accent-amber: #ffc53d;
+
+  /* Text */
+  --ink: #fcfdff;
+  --body-strong: #f3f4f7;
+  --body: rgba(252, 253, 255, 0.86);
+  --muted: #a1a4a5;
+  --muted-soft: #888e90;
+  --on-primary: #0a0a0c;
+  --on-dark: #fcfdff;
+  --on-dark-soft: #a1a4a5;
+
+  /* Surfaces */
+  --canvas: #000000;
+  --surface-soft: #0d0d10;
+  --surface-card: #0a0a0c;
+  --surface-cream-strong: #18181b;
+  --surface-elevated: #101012;
+  --surface-dark: #0a0a0c;
+  --surface-dark-elevated: #16161a;
+  --surface-dark-soft: #060608;
+  --hairline: rgba(255, 255, 255, 0.06);
+  --hairline-soft: rgba(255, 255, 255, 0.04);
+  --hairline-strong: rgba(255, 255, 255, 0.14);
+
+  /* Semantic — align with tactical accents */
+  --success: #11ff99;
+  --warning: #ffc53d;
+  --error: #ff2047;
+  --info: #3b9eff;
+
+  /* Legacy aliases that referenced light-only surfaces */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card-bg: var(--surface-card);
+  --card-border: var(--hairline);
 }
 
 @theme inline {
@@ -96,6 +167,15 @@
   --color-error: var(--error);
   --color-info: var(--info);
 
+  /* Mission-command accents */
+  --color-accent-orange: var(--accent-orange);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-green: var(--accent-green);
+  --color-accent-yellow: var(--accent-yellow);
+  --color-accent-red: var(--accent-red);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-surface-elevated: var(--surface-elevated);
+
   /* Legacy aliases */
   --color-primary: var(--coral);
   --color-primary-light: var(--coral-active);
@@ -120,10 +200,11 @@
   --color-destructive: var(--error);
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  /* Brand logotype / nav wordmark — humanist sans per DESIGN.md (nav = StyreneB/Inter). */
-  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* Display = Instrument Serif (mission-command editorial headings). */
+  --font-display: 'Instrument Serif', 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
+  /* Headings / nav wordmark = Inter Tight (tight kerning, DESIGN.md §2). */
+  --font-heading: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   --radius-sm: 6px;
   --radius-md: 8px;
@@ -153,17 +234,18 @@ body {
 /* ─── Typography helpers ─────────────────────────────────────────────────── */
 .font-display {
   font-family: var(--font-display);
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 .font-mono {
   font-family: var(--font-mono);
+  font-feature-settings: "tnum" 1;
 }
 
-.display-xl { font-family: var(--font-display); font-weight: 500; font-size: clamp(2.6rem, 6vw, 4rem); line-height: 1.05; letter-spacing: -0.03em; }
-.display-lg { font-family: var(--font-display); font-weight: 500; font-size: clamp(2.1rem, 4.4vw, 3rem); line-height: 1.1; letter-spacing: -0.025em; }
-.display-md { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.7rem, 3.2vw, 2.25rem); line-height: 1.15; letter-spacing: -0.02em; }
-.display-sm { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.45rem, 2.4vw, 1.75rem); line-height: 1.2; letter-spacing: -0.015em; }
+.display-xl { font-family: var(--font-display); font-weight: 400; font-size: clamp(2.75rem, 6vw, 4.5rem); line-height: 1.0; letter-spacing: -0.02em; }
+.display-lg { font-family: var(--font-display); font-weight: 400; font-size: clamp(2.1rem, 4.4vw, 3.25rem); line-height: 1.02; letter-spacing: -0.015em; }
+.display-md { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.7rem, 3.2vw, 2.4rem); line-height: 1.1; letter-spacing: -0.01em; }
+.display-sm { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.45rem, 2.4vw, 1.85rem); line-height: 1.15; letter-spacing: -0.01em; }
 
 .caption-upper {
   font-size: 12px;
@@ -311,4 +393,74 @@ body {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--hairline);
+}
+.dark .glass {
+  background: rgba(16, 16, 18, 0.55);
+  border: 1px solid var(--hairline);
+}
+.dark .glass-strong {
+  background: rgba(10, 10, 12, 0.78);
+  border: 1px solid var(--hairline);
+}
+
+/* ─── Mission-command atmospherics ───────────────────────────────────────── */
+/* Radial accent glows seated behind data sections (DESIGN.md §5). */
+.glow-orange { background: radial-gradient(circle at top, var(--accent-orange-glow), transparent 600px); }
+.glow-blue   { background: radial-gradient(circle at top, var(--accent-blue-glow), transparent 600px); }
+.glow-green  { background: radial-gradient(circle at top, var(--accent-green-glow), transparent 600px); }
+.glow-red    { background: radial-gradient(circle at top, var(--accent-red-glow), transparent 600px); }
+.glow-yellow { background: radial-gradient(circle at top, var(--accent-yellow-glow), transparent 600px); }
+
+/* Tactical panel — hairline framed surface with optional accent glow on hover. */
+.panel {
+  position: relative;
+  background: var(--surface-card);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-xl);
+}
+.panel-elevated { background: var(--surface-elevated); }
+.panel-glow::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--coral) 30%, transparent), transparent 60%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.panel-glow:hover::after { opacity: 1; }
+
+/* Faint tactical grid overlay for hero / map chrome. */
+.grid-texture {
+  background-image:
+    linear-gradient(to right, var(--hairline) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hairline) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Numeric / telemetry readout. */
+.tnum { font-variant-numeric: tabular-nums; font-family: var(--font-mono); }
+
+/* Loading shimmer for skeletons. */
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+.shimmer { position: relative; overflow: hidden; }
+.shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--hairline), transparent);
+  animation: shimmer 1.6s infinite;
+}
+
+@keyframes scan-line { 0% { top: 0; opacity: 0; } 50% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+
+/* Theme transition smoothing (only on color-bearing props, not transforms). */
+html.theme-anim, html.theme-anim * {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
