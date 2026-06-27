@@ -42,33 +42,33 @@ export default function CoordinatorNotificationsPage() {
   return (
     <div className="space-y-6 px-4 py-6">
       <div className="flex items-center justify-between gap-2">
-        <h1 className="text-xl font-semibold text-zinc-100">Notifications</h1>
-        <Link href="/dashboard/coordinator-tasks" className="text-sm text-emerald-400 hover:underline">
+        <h1 className="text-xl font-semibold text-ink">Notifications</h1>
+        <Link href="/dashboard/coordinator-tasks" className="text-sm link-coral hover:underline">
           Tasks
         </Link>
       </div>
-      {error ? <p className="text-sm text-red-400">{error}</p> : null}
+      {error ? <p className="text-sm text-red-600">{error}</p> : null}
       <ul className="space-y-2">
         {items.length === 0 ? (
-          <li className="text-zinc-500">No notifications.</li>
+          <li className="text-muted-soft">No notifications.</li>
         ) : (
           items.map((n) => (
             <li
               key={n.id}
               className={`flex flex-col gap-1 rounded-lg border px-3 py-2 sm:flex-row sm:items-center sm:justify-between ${
-                n.read ? "border-zinc-800 bg-zinc-950/30" : "border-emerald-900/50 bg-emerald-950/20"
+                n.read ? "border-hairline bg-surface-soft" : "border-coral/30 bg-coral/5"
               }`}
             >
               <div>
-                <p className="font-medium text-zinc-100">{n.title}</p>
-                <p className="text-sm text-zinc-400">{n.body}</p>
-                <p className="text-xs text-zinc-500">{new Date(n.createdAt).toLocaleString()}</p>
+                <p className="font-medium text-ink">{n.title}</p>
+                <p className="text-sm text-muted">{n.body}</p>
+                <p className="text-xs text-muted-soft">{new Date(n.createdAt).toLocaleString()}</p>
               </div>
               {!n.read ? (
                 <button
                   type="button"
                   onClick={() => markRead([n.id])}
-                  className="mt-2 shrink-0 rounded border border-zinc-600 px-2 py-1 text-xs text-zinc-200 hover:bg-zinc-800 sm:mt-0"
+                  className="mt-2 shrink-0 rounded border border-hairline px-2 py-1 text-xs text-body hover:bg-surface-card sm:mt-0"
                 >
                   Mark read
                 </button>

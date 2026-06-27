@@ -27,10 +27,10 @@ export default function CreateCoordinatorTaskPage() {
       className="mx-auto max-w-2xl space-y-6 px-4 py-6"
     >
       <motion.div variants={item} className="flex items-center justify-between gap-2">
-        <h1 className="text-xl font-bold text-white">Create Task</h1>
+        <h1 className="text-xl font-bold text-ink">Create Task</h1>
         <Link
           href="/dashboard/coordinator-tasks"
-          className="flex items-center gap-1.5 text-sm text-accent hover:text-accent/80 transition-colors"
+          className="flex items-center gap-1.5 text-sm text-coral hover:text-coral/80 transition-colors"
         >
           <ArrowLeft size={14} />
           Back to board

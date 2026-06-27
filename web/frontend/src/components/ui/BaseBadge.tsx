@@ -10,11 +10,11 @@ interface BadgeProps {
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  success: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25',
-  warning: 'bg-amber-500/15 text-amber-400 border-amber-500/25',
-  danger: 'bg-red-500/15 text-red-400 border-red-500/25',
-  info: 'bg-blue-500/15 text-blue-400 border-blue-500/25',
-  default: 'bg-accent/10 text-accent border-accent/20',
+  success: 'bg-emerald-500/12 text-emerald-700 border-emerald-600/25',
+  warning: 'bg-amber-500/12 text-amber-700 border-amber-600/25',
+  danger: 'bg-red-500/12 text-red-700 border-red-600/25',
+  info: 'bg-accent-teal/12 text-accent-teal border-accent-teal/30',
+  default: 'bg-coral/10 text-coral border-coral/25',
 };
 
 export default function BaseBadge({ children, variant = 'default', pulse = false, className }: BadgeProps) {

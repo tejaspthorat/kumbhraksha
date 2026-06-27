@@ -23,10 +23,10 @@ export default function GlassCard({ children, className, hover = true, glow = fa
       whileHover={hover ? { scale: 1.02, y: -2 } : undefined}
       className={clsx(
         'rounded-2xl p-6',
-        'bg-white/[0.04] backdrop-blur-xl',
-        'border border-white/[0.08]',
+        'bg-canvas',
+        'border border-hairline',
         'transition-all duration-300',
-        hover && 'hover:border-accent/30 hover:bg-white/[0.07]',
+        hover && 'hover:border-coral/30 hover:shadow-[0_2px_16px_rgba(20,20,19,0.05)]',
         glow && 'animate-pulse-glow',
         className
       )}

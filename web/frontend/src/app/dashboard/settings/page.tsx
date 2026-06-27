@@ -51,45 +51,45 @@ export default function SettingsPage() {
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="text-sm text-white/40 mt-1">Configure system preferences and behavior</p>
+        <h1 className="text-2xl font-bold text-ink">Settings</h1>
+        <p className="text-sm text-muted mt-1">Configure system preferences and behavior</p>
       </div>
 
       {/* System info */}
       <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <GlassCard>
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-accent/15"><Globe size={20} className="text-accent" /></div>
+            <div className="p-3 rounded-xl bg-accent/15"><Globe size={20} className="text-coral" /></div>
             <div>
-              <p className="text-xs text-white/40">Version</p>
-              <span className="text-sm font-bold text-white">v2.0.0</span>
+              <p className="text-xs text-muted">Version</p>
+              <span className="text-sm font-bold text-ink">v2.0.0</span>
             </div>
           </div>
         </GlassCard>
         <GlassCard>
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-emerald-500/15"><Database size={20} className="text-emerald-400" /></div>
+            <div className="p-3 rounded-xl bg-emerald-500/15"><Database size={20} className="text-emerald-600" /></div>
             <div>
-              <p className="text-xs text-white/40">Database</p>
+              <p className="text-xs text-muted">Database</p>
               <Badge variant="success">Connected</Badge>
             </div>
           </div>
         </GlassCard>
         <GlassCard>
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-blue-500/15"><Cpu size={20} className="text-blue-400" /></div>
+            <div className="p-3 rounded-xl bg-blue-500/15"><Cpu size={20} className="text-blue-600" /></div>
             <div>
-              <p className="text-xs text-white/40">AI Engine</p>
+              <p className="text-xs text-muted">AI Engine</p>
               <Badge variant="success">Active</Badge>
             </div>
           </div>
         </GlassCard>
         <GlassCard>
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-purple-500/15"><Palette size={20} className="text-purple-400" /></div>
+            <div className="p-3 rounded-xl bg-purple-500/15"><Palette size={20} className="text-purple-600" /></div>
             <div>
-              <p className="text-xs text-white/40">Theme</p>
-              <span className="text-sm font-bold text-white">Dark</span>
+              <p className="text-xs text-muted">Theme</p>
+              <span className="text-sm font-bold text-ink">Dark</span>
             </div>
           </div>
         </GlassCard>
@@ -100,20 +100,20 @@ export default function SettingsPage() {
         <motion.div key={section.title} variants={item}>
           <GlassCard hover={false}>
             <div className="flex items-center gap-3 mb-5">
-              <div className="p-2.5 rounded-xl bg-white/[0.04]">
-                <section.icon size={18} className="text-accent" />
+              <div className="p-2.5 rounded-xl bg-surface-card">
+                <section.icon size={18} className="text-coral" />
               </div>
-              <h3 className="text-sm font-semibold text-white">{section.title}</h3>
+              <h3 className="text-sm font-semibold text-ink">{section.title}</h3>
             </div>
             <div className="space-y-4">
               {section.settings.map(s => (
-                <div key={s.name} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.03] transition-colors">
+                <div key={s.name} className="flex items-center justify-between p-3 rounded-xl bg-surface-soft hover:bg-surface-soft transition-colors">
                   <div>
-                    <p className="text-sm font-medium text-white/80">{s.name}</p>
-                    <p className="text-xs text-white/30 mt-0.5">{s.description}</p>
+                    <p className="text-sm font-medium text-body-strong">{s.name}</p>
+                    <p className="text-xs text-muted-soft mt-0.5">{s.description}</p>
                   </div>
-                  <div className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${s.enabled ? 'bg-accent' : 'bg-white/10'}`}>
-                    <span className={`inline-block h-4 w-4 rounded-full bg-white transition-transform ${s.enabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                  <div className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${s.enabled ? 'bg-accent' : 'bg-surface-cream-strong'}`}>
+                    <span className={`inline-block h-4 w-4 rounded-full bg-canvas transition-transform ${s.enabled ? 'translate-x-6' : 'translate-x-1'}`} />
                   </div>
                 </div>
               ))}

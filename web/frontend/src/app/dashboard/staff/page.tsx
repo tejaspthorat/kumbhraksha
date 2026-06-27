@@ -166,14 +166,14 @@ export default function StaffPage() {
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Staff Management</h1>
-          <p className="text-sm text-white/40 mt-1">Coordinate, assign, and track field personnel in real-time</p>
+          <h1 className="text-2xl font-bold text-ink">Staff Management</h1>
+          <p className="text-sm text-muted mt-1">Coordinate, assign, and track field personnel in real-time</p>
         </div>
         <div className="flex items-center gap-4">
           <RefreshButton onRefresh={fetchDashboardData} status={status} />
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-linear-to-r from-accent to-accent-light text-white font-medium hover:shadow-lg transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-linear-to-r from-coral to-accent-light text-ink font-medium hover:shadow-lg transition-all"
           >
             <Plus size={16} />
             Add Staff
@@ -190,20 +190,20 @@ export default function StaffPage() {
       {/* Stats */}
       <motion.div variants={item} className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <GlassCard>
-          <p className="text-xs text-white/40 uppercase tracking-wider">Total Staff</p>
-          <span className="text-2xl font-bold text-white">{staff.length}</span>
+          <p className="text-xs text-muted uppercase tracking-wider">Total Staff</p>
+          <span className="text-2xl font-bold text-ink">{staff.length}</span>
         </GlassCard>
         <GlassCard>
-          <p className="text-xs text-white/40 uppercase tracking-wider">On Duty</p>
-          <span className="text-2xl font-bold text-emerald-400">{staff.filter(s => s.status === 'active').length}</span>
+          <p className="text-xs text-muted uppercase tracking-wider">On Duty</p>
+          <span className="text-2xl font-bold text-emerald-600">{staff.filter(s => s.status === 'active').length}</span>
         </GlassCard>
         <GlassCard>
-          <p className="text-xs text-white/40 uppercase tracking-wider">On Break</p>
-          <span className="text-2xl font-bold text-amber-400">{staff.filter(s => s.status === 'break').length}</span>
+          <p className="text-xs text-muted uppercase tracking-wider">On Break</p>
+          <span className="text-2xl font-bold text-amber-600">{staff.filter(s => s.status === 'break').length}</span>
         </GlassCard>
         <GlassCard>
-          <p className="text-xs text-white/40 uppercase tracking-wider">Active Tasks</p>
-          <span className="text-2xl font-bold text-accent">{tasks.length}</span>
+          <p className="text-xs text-muted uppercase tracking-wider">Active Tasks</p>
+          <span className="text-2xl font-bold text-coral">{tasks.length}</span>
         </GlassCard>
       </motion.div>
 
@@ -211,23 +211,23 @@ export default function StaffPage() {
         {/* Staff Visualizer */}
         <motion.div variants={item} className="xl:col-span-3">
           <GlassCard hover={false} className="h-[600px] flex flex-col p-0 overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-white/6 bg-white/[0.01]">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-hairline bg-surface-soft">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent">
+                  <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center text-coral">
                     <Layers size={16} />
                   </div>
-                  <h3 className="text-sm font-semibold text-white">Live Floor View</h3>
+                  <h3 className="text-sm font-semibold text-ink">Live Floor View</h3>
                 </div>
-                <div className="h-4 w-[1px] bg-white/10" />
-                <div className="flex gap-1 bg-black/40 p-1 rounded-xl border border-white/5">
+                <div className="h-4 w-[1px] bg-surface-cream-strong" />
+                <div className="flex gap-1 bg-surface-soft p-1 rounded-xl border border-hairline">
                   {floors.map(f => (
                     <button
                       key={f.id}
                       onClick={() => setActiveFloor(f.id)}
                       className={clsx(
                         "px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all",
-                        activeFloorId === f.id ? "bg-accent text-white" : "text-white/40 hover:text-white/60 hover:bg-white/5"
+                        activeFloorId === f.id ? "bg-accent text-ink" : "text-muted hover:text-body hover:bg-surface-soft"
                       )}
                     >
                       {f.name}
@@ -237,7 +237,7 @@ export default function StaffPage() {
               </div>
               <div className="flex items-center gap-3">
                 <Badge variant="success" pulse>{activeFloor?.name || 'Loading'}</Badge>
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[10px] font-medium text-white/60">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-soft border border-hairline text-[10px] font-medium text-body">
                   <Filter size={12} />
                   Visualization Only
                 </div>
@@ -245,18 +245,18 @@ export default function StaffPage() {
             </div>
             <div className="flex-1 relative bg-[#0a1520]">
               <FloorPlanCanvas />
-              <div className="absolute top-4 left-4 p-3 rounded-xl glass-strong border border-white/10 pointer-events-none z-20">
-                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">Legend</p>
+              <div className="absolute top-4 left-4 p-3 rounded-xl glass-strong border border-hairline pointer-events-none z-20">
+                <p className="text-[10px] font-bold text-muted uppercase tracking-widest mb-2">Legend</p>
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                    <span className="text-[10px] text-white/70">Staff on Duty</span>
+                    <span className="text-[10px] text-body">Staff on Duty</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-amber-500" />
-                    <span className="text-[10px] text-white/70">On Break</span>
+                    <span className="text-[10px] text-body">On Break</span>
                   </div>
-                  <div className="flex items-center gap-2 text-white/30">
+                  <div className="flex items-center gap-2 text-muted-soft">
                     <div className="w-2 h-2 rounded-full bg-purple-500 opacity-50" />
                     <span className="text-[10px]">Zone Density</span>
                   </div>
@@ -270,12 +270,12 @@ export default function StaffPage() {
         <motion.div variants={item} className="xl:col-span-1">
           <GlassCard hover={false} className="h-[600px] flex flex-col">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-white">Task Queue</h3>
+              <h3 className="text-sm font-semibold text-ink">Task Queue</h3>
               <div className="flex items-center gap-2">
                 <Badge variant="default">{tasks.length}</Badge>
                 <button
                   onClick={() => setShowTaskModal(true)}
-                  className="p-1 px-2 rounded-lg bg-accent/20 text-accent hover:bg-accent/30 transition-colors flex items-center gap-1.5"
+                  className="p-1 px-2 rounded-lg bg-accent/20 text-coral hover:bg-accent/30 transition-colors flex items-center gap-1.5"
                 >
                   <ClipboardPlus size={14} />
                   <span className="text-[10px] font-bold uppercase">Assign</span>
@@ -284,22 +284,22 @@ export default function StaffPage() {
             </div>
             <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
               {tasks.map(t => (
-                <div key={t.id} className="p-3 rounded-xl bg-white/2 border border-white/4">
+                <div key={t.id} className="p-3 rounded-xl bg-white/2 border border-hairline">
                   <div className="flex items-start justify-between mb-2">
                     <Badge variant={t.priority as any}>{t.priority}</Badge>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-white/20">{t.time}</span>
+                      <span className="text-[10px] text-muted-soft">{t.time}</span>
                       <button 
                         onClick={() => handleTaskDelete(t.id)}
                         disabled={isDeletingTask === t.id}
                         className="p-1 rounded hover:bg-red-500/10 transition-colors group/task"
                       >
-                        <Trash2 size={10} className={clsx("text-white/10 group-hover/task:text-red-400", isDeletingTask === t.id && "animate-pulse")} />
+                        <Trash2 size={10} className={clsx("text-white/10 group-hover/task:text-red-600", isDeletingTask === t.id && "animate-pulse")} />
                       </button>
                     </div>
                   </div>
-                  <p className="text-xs text-white/70 mb-1.5">{t.text}</p>
-                  <span className="text-[10px] text-accent font-medium">{t.assignee}</span>
+                  <p className="text-xs text-body mb-1.5">{t.text}</p>
+                  <span className="text-[10px] text-coral font-medium">{t.assignee}</span>
                 </div>
               ))}
             </div>
@@ -311,22 +311,22 @@ export default function StaffPage() {
       <motion.div variants={item}>
         <GlassCard hover={false}>
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-sm font-semibold text-white">Staff Directory</h3>
+            <h3 className="text-sm font-semibold text-ink">Staff Directory</h3>
             <div className="relative">
               <input
                 type="text"
                 placeholder="Search staff..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 pr-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-white placeholder-white/20 focus:outline-none focus:border-accent w-64"
+                className="pl-9 pr-4 py-1.5 rounded-lg bg-surface-soft border border-hairline text-xs text-ink placeholder-white/20 focus:outline-none focus:border-accent w-64"
               />
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20" />
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-soft" />
             </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-[10px] text-white/30 uppercase tracking-wider border-b border-white/4">
+                <tr className="text-left text-[10px] text-muted-soft uppercase tracking-wider border-b border-hairline">
                   <th className="pb-3 pr-4">Staff</th>
                   <th className="pb-3 pr-4">Personnel Role</th>
                   <th className="pb-3 pr-4">Assigned Zone</th>
@@ -338,23 +338,23 @@ export default function StaffPage() {
               </thead>
               <tbody>
                 {filteredStaff.map(s => (
-                  <tr key={s.id} className="border-b border-white/2 hover:bg-white/2 transition-colors">
+                  <tr key={s.id} className="border-b border-hairline hover:bg-white/2 transition-colors">
                     <td className="py-3 pr-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-linear-to-br from-primary-light to-accent flex items-center justify-center text-[10px] font-bold text-white">
+                        <div className="w-8 h-8 rounded-full bg-linear-to-br from-primary-light to-coral flex items-center justify-center text-[10px] font-bold text-ink">
                           {s.avatar}
                         </div>
-                        <span className="text-sm font-medium text-white/80">{s.name}</span>
+                        <span className="text-sm font-medium text-body-strong">{s.name}</span>
                       </div>
                     </td>
-                    <td className="py-3 pr-4 text-xs text-white/50">
+                    <td className="py-3 pr-4 text-xs text-muted">
                       <div className="flex flex-col gap-0.5">
                         <span className="font-medium">{s.role}</span>
-                        <span className="text-[10px] text-white/20">{s.staffRole}</span>
+                        <span className="text-[10px] text-muted-soft">{s.staffRole}</span>
                       </div>
                     </td>
                     <td className="py-3 pr-4">
-                      <span className="inline-flex items-center gap-1 text-xs text-white/50">
+                      <span className="inline-flex items-center gap-1 text-xs text-muted">
                         <MapPin size={10} /> {typeof s.zone === 'object' ? s.zone?.name : (s.zone || 'Unassigned')}
                       </span>
                     </td>
@@ -363,21 +363,21 @@ export default function StaffPage() {
                         {s.status}
                       </Badge>
                     </td>
-                    <td className="py-3 pr-4 text-xs font-medium text-white/60">{s.tasks}</td>
-                    <td className="py-3 text-xs text-white/30">{s.lastSeen}</td>
+                    <td className="py-3 pr-4 text-xs font-medium text-body">{s.tasks}</td>
+                    <td className="py-3 text-xs text-muted-soft">{s.lastSeen}</td>
                     <td className="py-3">
                       <div className="flex items-center gap-1">
                         <button 
                           onClick={() => setEditingStaff(s)}
-                          className="p-1.5 rounded-lg hover:bg-white/5 transition-colors group"
+                          className="p-1.5 rounded-lg hover:bg-surface-soft transition-colors group"
                         >
-                          <Edit2 size={13} className="text-white/30 group-hover:text-accent" />
+                          <Edit2 size={13} className="text-muted-soft group-hover:text-coral" />
                         </button>
                         <button 
                           onClick={() => handleDelete(s.id)}
                           className="p-1.5 rounded-lg hover:bg-red-500/10 transition-colors group"
                         >
-                          <Trash2 size={13} className="text-white/30 group-hover:text-red-400" />
+                          <Trash2 size={13} className="text-muted-soft group-hover:text-red-600" />
                         </button>
                       </div>
                     </td>
@@ -404,27 +404,27 @@ export default function StaffPage() {
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               className="relative w-full max-w-md glass-strong rounded-3xl p-8 overflow-hidden z-110"
             >
-              <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-accent to-accent-light" />
-              <h2 className="text-xl font-bold text-white mb-6">Assign New Task</h2>
+              <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-coral to-accent-light" />
+              <h2 className="text-xl font-bold text-ink mb-6">Assign New Task</h2>
               <form onSubmit={handleAssignTask} className="space-y-5">
                 <div>
-                  <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">Description</label>
+                  <label className="block text-[10px] font-bold text-muted uppercase tracking-widest mb-2">Description</label>
                   <textarea
                     required
                     value={taskForm.text}
                     onChange={e => setTaskForm({ ...taskForm, text: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 focus:outline-none focus:border-accent resize-none h-24 text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-surface-soft border border-hairline text-ink placeholder-muted-soft focus:outline-none focus:border-coral resize-none h-24 text-sm"
                     placeholder="Describe the task..."
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">Assignee</label>
+                    <label className="block text-[10px] font-bold text-muted uppercase tracking-widest mb-2">Assignee</label>
                     <select
                       required
                       value={taskForm.staffId}
                       onChange={e => setTaskForm({ ...taskForm, staffId: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-[#0a1520] border border-white/10 text-white text-sm focus:outline-none focus:border-accent"
+                      className="w-full px-4 py-2.5 rounded-xl bg-surface-soft border border-hairline text-ink text-sm focus:outline-none focus:border-coral"
                     >
                       <option value="">Select Staff</option>
                       {staff.map(s => (
@@ -433,17 +433,17 @@ export default function StaffPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">Time Estimate</label>
+                    <label className="block text-[10px] font-bold text-muted uppercase tracking-widest mb-2">Time Estimate</label>
                     <input
                       type="text"
                       value={taskForm.time}
                       onChange={e => setTaskForm({ ...taskForm, time: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-[#0a1520] border border-white/10 text-white text-sm focus:outline-none focus:border-accent"
+                      className="w-full px-4 py-2.5 rounded-xl bg-surface-soft border border-hairline text-ink text-sm focus:outline-none focus:border-coral"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">Priority</label>
+                  <label className="block text-[10px] font-bold text-muted uppercase tracking-widest mb-2">Priority</label>
                   <div className="grid grid-cols-3 gap-2">
                     {(['low', 'medium', 'high'] as const).map(p => (
                       <button
@@ -453,8 +453,8 @@ export default function StaffPage() {
                         className={clsx(
                           "py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all border",
                           taskForm.priority === p 
-                            ? "bg-accent/20 border-accent text-accent" 
-                            : "bg-white/5 border-white/5 text-white/40 hover:bg-white/10"
+                            ? "bg-accent/20 border-accent text-coral" 
+                            : "bg-surface-soft border-hairline text-muted hover:bg-surface-cream-strong"
                         )}
                       >
                         {p}
@@ -466,14 +466,14 @@ export default function StaffPage() {
                   <button
                     type="button"
                     onClick={() => setShowTaskModal(false)}
-                    className="flex-1 px-4 py-3 rounded-xl bg-white/5 text-white/60 font-bold text-sm hover:bg-white/10 transition-all"
+                    className="flex-1 px-4 py-3 rounded-xl bg-surface-soft text-body font-bold text-sm hover:bg-surface-cream-strong transition-all"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isAssigning}
-                    className="flex-1 px-4 py-3 rounded-xl bg-linear-to-r from-accent to-accent-light text-white font-bold text-sm hover:shadow-lg disabled:opacity-50 disabled:shadow-none transition-all"
+                    className="flex-1 px-4 py-3 rounded-xl bg-linear-to-r from-coral to-accent-light text-ink font-bold text-sm hover:shadow-lg disabled:opacity-50 disabled:shadow-none transition-all"
                   >
                     {isAssigning ? 'Assigning...' : 'Assign'}
                   </button>

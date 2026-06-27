@@ -10,6 +10,7 @@ const isPublicRoute = createRouteMatcher([
   '/api/cameras(.*)',
   '/api/alerts(.*)',
   '/api/reports(.*)',
+  '/nashik(.*)',
 ])
 
 export default clerkMiddleware(async (auth, request) => {

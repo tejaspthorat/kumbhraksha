@@ -43,11 +43,11 @@ export default function CoordinatorTasksPage() {
         className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
       >
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <ListTodo size={24} className="text-accent" />
+          <h1 className="text-2xl font-bold text-ink flex items-center gap-2">
+            <ListTodo size={24} className="text-coral" />
             Task Board
           </h1>
-          <p className="text-sm text-white/40 mt-1">
+          <p className="text-sm text-muted mt-1">
             Real-time coordinator task management — live updates from mobile
           </p>
         </div>
@@ -56,19 +56,19 @@ export default function CoordinatorTasksPage() {
           {/* Refresh */}
           <button
             onClick={() => setRefreshKey((k) => k + 1)}
-            className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.07] transition-colors"
+            className="p-2.5 rounded-xl bg-surface-card border border-hairline hover:bg-surface-cream-strong transition-colors"
             title="Refresh tasks"
           >
-            <RefreshCw size={16} className="text-white/40" />
+            <RefreshCw size={16} className="text-muted" />
           </button>
 
           {/* Notifications */}
           <a
             href="/dashboard/coordinator-tasks/notifications"
-            className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.07] transition-colors relative"
+            className="p-2.5 rounded-xl bg-surface-card border border-hairline hover:bg-surface-cream-strong transition-colors relative"
             title="Notifications"
           >
-            <Bell size={16} className="text-white/40" />
+            <Bell size={16} className="text-muted" />
           </a>
 
           {/* Create task toggle */}
@@ -76,8 +76,8 @@ export default function CoordinatorTasksPage() {
             onClick={() => setShowCreate(!showCreate)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
               showCreate
-                ? "bg-white/10 text-white border border-white/20"
-                : "bg-gradient-to-r from-accent/80 to-accent text-white hover:from-accent hover:to-accent/90"
+                ? "bg-surface-cream-strong text-ink border border-hairline"
+                : "bg-gradient-to-r from-coral/80 to-coral text-ink hover:from-coral hover:to-coral/90"
             }`}
           >
             {showCreate ? (
@@ -122,7 +122,7 @@ export default function CoordinatorTasksPage() {
 
       {/* Footer */}
       <motion.div variants={item} className="text-center">
-        <p className="text-[10px] text-white/20 flex items-center justify-center gap-2">
+        <p className="text-[10px] text-muted-soft flex items-center justify-center gap-2">
           <RefreshCw size={10} />
           Live updates from coordinator mobile app · Auto-refresh every 15s
         </p>
