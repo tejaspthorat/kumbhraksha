@@ -1,721 +1,903 @@
-# DenseNet UI Redesign Prompt
+# Objective
 
-# Project
+Completely redesign the existing React Native application into an ultra-premium mobile experience that feels comparable to Apple's first-party applications.
 
-You are a Senior Product Designer, Senior Frontend Engineer, and UX Architect.
+DO NOT change any application functionality, business logic, APIs, backend integration, navigation structure, BLE functionality, reporting flow or features.
 
-Your task is NOT to build a new application.
+Only redesign the UI, UX, interactions, layout hierarchy, typography, spacing, animations and visual system.
 
-Your task is to completely redesign the EXISTING DenseNet application UI while preserving every feature, API, functionality, routing, and business logic.
+The final application should look like something designed by Apple's Human Interface Design team while maintaining the mission-critical emergency nature of the application.
 
-Do not remove functionality.
+The implementation plan defines every screen and feature.
 
-Only improve:
+The DESIGN.md defines the design tokens.
 
-- Layout
-- Information hierarchy
-- Component placement
-- Visual hierarchy
-- Typography
-- Spacing
-- User experience
-- Animations
-- Responsiveness
-- Accessibility
-- Dark mode
+Use BOTH files as the source of truth.
 
-Think like you are redesigning products from:
+---
 
-- Palantir Gotham
-- Palantir Foundry
-- Anduril Lattice
-- Verkada Command
-- Linear
-- Vercel Dashboard
-- Arc Browser
-- Apple Human Interface
-- Notion
-- Raycast
-- Figma
-- Datadog
-- Grafana
-- Framer
-- Stripe Dashboard
+# Overall Design Philosophy
 
-The application must feel like an enterprise AI command center used by governments and emergency response teams.
+The UI should combine
 
-------------------------------------------------------------
+• Apple iOS 26
+• Apple Wallet
+• Apple Find My
+• Apple Health
+• Apple Journal
+• Apple Maps
+• VisionOS Design Language
+• Liquid Glass
+• Dynamic Island interaction philosophy
+• SF Symbols style iconography
+• Premium minimalism
 
-# IMPORTANT
+NOT
 
-DO NOT rewrite backend.
+• Material Design
+• Bootstrap
+• Generic Android UI
+• Dashboard style
+• Card overload
+• Bright gradients everywhere
+• Cheap glassmorphism
 
-DO NOT change APIs.
+Everything should feel calm, elegant, premium, spacious and highly polished.
 
-DO NOT modify business logic.
+Every screen should have a purpose.
 
-DO NOT remove components.
+Every animation should feel physically believable.
 
-DO NOT delete functionality.
+Every interaction should feel effortless.
 
-Instead,
+---
 
-Rearrange components.
+# Use Existing Design Tokens
 
-Improve hierarchy.
+Use the typography, spacing, animations and colors from DESIGN.md.
 
-Improve UX.
+Keep
 
-Improve spacing.
+Typography hierarchy
 
-Improve accessibility.
+Spacing system
 
-Improve responsiveness.
+Radius system
 
-------------------------------------------------------------
+Glow utilities
 
-# Technology
+Animation timing
 
-Project already uses
+Container spacing
 
-Next.js
+Color palette
 
-React
+Do NOT invent a new design system.
 
-TypeScript
+Instead modernize the implementation using those design tokens.
 
-Tailwind CSS
+---
 
-Shadcn UI
+# Support Both Themes
 
-Framer Motion
+Build complete Light Mode.
 
-Lucide Icons
+Build complete Dark Mode.
 
-Keep using them.
+Both should look equally premium.
 
-Do NOT introduce another UI framework.
+Dark mode should be true black (#000000) rather than dark gray.
 
-------------------------------------------------------------
+Light mode should feel like Apple's native apps.
 
-# Design Language
+Both themes should transition smoothly.
 
-Mission Command
+Never invert colors incorrectly.
 
-Minimal
+Every component must have dedicated light and dark styling.
 
-Technical
+---
 
-High Stakes
+# Apple-Level Visual Language
 
-AI Native
+The application should feel alive.
 
-Tactical
+Large typography
 
-Modern
+Generous spacing
 
-Elegant
+Rounded corners
 
-Premium
+Depth
 
-Dark Mode Only
+Floating cards
 
-Enterprise
+Soft shadows
 
-------------------------------------------------------------
+Beautiful blur
 
-# Color Palette
+Large hero headers
 
-Canvas
+Large navigation titles
 
-#000000
+Adaptive layouts
 
-Cards
-
-#0A0A0C
-
-Elevated
-
-#101012
-
-Hairline
-
-rgba(255,255,255,0.06)
-
-Strong Border
-
-rgba(255,255,255,0.14)
-
-Primary Text
-
-#FCFDFF
-
-Secondary Text
-
-rgba(252,253,255,0.86)
-
-Muted
-
-#a1a4a5
-
-Accent Orange
-
-#ff801f
-
-Accent Blue
-
-#3b9eff
-
-Accent Green
-
-#11ff99
-
-Accent Yellow
-
-#ffc53d
-
-Accent Red
-
-#ff2047
-
-Only use accent colors where necessary.
-
-Avoid colorful dashboards.
-
-95% should be monochrome.
-
-------------------------------------------------------------
-
-# Typography
-
-Inter
-
-Inter Tight
-
-Instrument Serif
-
-Geist Mono
-
-Use
-
-Instrument Serif
-
-ONLY
-
-For
-
-Large titles
-
-Section headers
-
-Hero headings
-
-Everything else
-
-Inter
-
-Numbers
-
-Geist Mono
-
-------------------------------------------------------------
-
-# Dashboard Layout
-
-Completely redesign the dashboard.
-
-Current dashboard should become
-
-────────────────────────────
-
-Top Navigation
-
-DenseNet
-
-Current Event
-
-Search
-
-Global Notifications
-
-Weather
-
-Time
-
-AI Status
-
-User
-
-────────────────────────────
-
-Left Sidebar
-
-Overview
-
-Command Center
-
-Live Monitoring
-
-Heatmap
-
-Cameras
-
-Alerts
-
-Incidents
-
-Analytics
-
-Zones
-
-Responders
-
-Communications
-
-Reports
-
-Predictions
-
-Simulation
-
-Settings
-
-Collapse button
-
-────────────────────────────
-
-Main Content
-
-Hero Section
-
-Large greeting
-
-Current event
-
-Mission status
-
-Current AI Summary
-
-────────────────────────────
-
-Top KPI Row
-
-Total Crowd
-
-Active Cameras
-
-Incidents
-
-High Risk Zones
-
-Average Density
-
-Response Teams
-
-Each KPI should include
-
-Icon
-
-Trend
-
-Mini sparkline
-
-Hover animation
-
-Glow
-
-------------------------------------------------------------
-
-Below KPI
-
-Large Interactive Map
-
-60% width
-
-Features
-
-Heatmap
-
-Camera locations
-
-Responders
-
-Medical
-
-Police
-
-Barricades
-
-Live crowd
-
-Selected zone
-
-Hover states
-
-Animated pulses
-
-Zoom controls
-
-Layer controls
-
-------------------------------------------------------------
-
-Right Panel
-
-Scrollable
-
-Contains
-
-Live AI Insights
-
-Risk Analysis
-
-Current Alerts
-
-Emergency Broadcast
-
-Recent Events
-
-Response Suggestions
-
-------------------------------------------------------------
-
-Bottom
-
-Charts
-
-Crowd Trend
-
-Entry Exit Ratio
-
-Density
-
-Forecast
-
-AI Predictions
-
-------------------------------------------------------------
-
-Live Camera Feed
-
-NOT huge.
-
-Modern Grid
-
-Rounded
-
-Glass
-
-Hover Preview
-
-Fullscreen
-
-Camera Status
-
-FPS
-
-Latency
-
-AI Detection Badge
-
-------------------------------------------------------------
-
-Alerts
-
-Modern cards
-
-Priority strip
-
-Timestamp
-
-Assigned Team
-
-Status
-
-Resolve Button
-
-Expand Animation
-
-------------------------------------------------------------
-
-AI Assistant
-
-Floating Panel
-
-Looks similar to Claude Desktop
-
-Supports
-
-Chat
-
-Incident Analysis
-
-Upload Image
-
-Ask AI
-
-Summaries
-
-Recommendations
-
-------------------------------------------------------------
-
-Analytics
-
-Beautiful Charts
-
-Area
-
-Bar
-
-Line
-
-Radial
-
-Heatmap
-
-Timeline
-
-Do NOT overuse colors.
-
-------------------------------------------------------------
-
-Map
-
-Should feel similar to
-
-Mapbox
-
-Uber
-
-Palantir
-
-Dark GIS
-
-Blue roads
-
-Orange incidents
-
-Green safe zones
-
-------------------------------------------------------------
-
-Animations
-
-Framer Motion
-
-Fade
-
-Scale
-
-Slide
-
-Opacity
-
-Hover
+Fluid scrolling
 
 Micro interactions
 
-Card tilt
+Large tap targets
 
-Button feedback
+Floating action buttons
 
-Loading skeletons
+Glass overlays
 
-Page transitions
+Animated sheets
 
-Everything subtle.
+Native transitions
 
-------------------------------------------------------------
+Native gestures
 
-Cards
+Haptic feedback
 
-Rounded XL
+Context menus
 
-Glass
+Swipe actions
 
-Hairline border
+Pull interactions
 
-Orange glow
+Search everywhere
 
-Blue glow
+Scrollable cards
 
-No heavy shadows.
+Smooth spring animations
 
-------------------------------------------------------------
+Interactive blur
 
-Buttons
+Dynamic color changes
 
-Minimal
+Status indicators
 
-Rectangular
+Animated icons
 
-Rounded md
+Live badges
 
-Scale on click
+Native segmented controls
 
-Hover glow
+Large image headers
 
-------------------------------------------------------------
+Beautiful onboarding
 
-Spacing
+Premium empty states
 
-Much larger spacing.
+Elegant loading skeletons
 
-Never clutter.
+No visual clutter.
 
-Use
+---
 
-8px grid
+# Navigation
 
-16
+Use native iOS navigation.
 
-24
+Large collapsing navigation bars.
 
-32
+Interactive back gesture.
 
-48
+Floating tab bar.
 
-64
+Blurred translucent navigation.
 
-------------------------------------------------------------
+Rounded tab bar.
 
-Redesign Every Page
+Animated active indicator.
 
-Overview
+Tab icons should animate.
 
-Command Center
+Navigation hierarchy should feel identical to Find My.
 
-Heatmap
+---
 
-Alerts
+# Screen Layout
 
-Incident Details
+Every screen should have
 
-Analytics
+Hero Header
 
-Reports
+Large title
 
-Responders
+Subtitle
 
-Camera Details
+Context information
 
-Communications
+Primary action
 
-Predictions
+Secondary actions
 
-Simulation
+Scrollable content
 
-Emergency Mode
+Sticky CTA when necessary
 
-Settings
+Safe area support
 
-Profile
+Proper spacing
+
+Dynamic padding
+
+Comfortable reading width
+
+No cramped UI.
+
+---
+
+# Cards
+
+Replace every current card.
+
+Cards should look similar to Apple Wallet.
+
+Large radius
+
+Soft shadow
+
+Hairline borders
+
+Layered surfaces
+
+Floating appearance
+
+Proper depth hierarchy
+
+Interactive scaling
+
+Spring animation
+
+Press feedback
+
+Hover states (tablet)
+
+Blurred backgrounds where appropriate.
+
+---
+
+# Buttons
+
+Primary
+
+Large pill
+
+Bold
+
+Easy to tap
+
+Filled
+
+Animated
+
+Secondary
+
+Subtle
+
+Bordered
+
+Glass style
+
+Icon buttons
+
+Circular
+
+Blurred
+
+Animated
+
+Destructive
+
+Red
+
+Elegant
+
+Never use flat buttons.
+
+---
+
+# Typography
+
+Follow DESIGN.md typography.
+
+Increase hierarchy dramatically.
+
+Hero Title
+
+Extra Large
+
+Section Title
+
+Large
+
+Card Title
+
+Medium
+
+Body
+
+Readable
+
+Metadata
+
+Small
+
+Status
+
+Monospaced
+
+Never use random font weights.
+
+Everything should feel editorial.
+
+---
+
+# Colors
+
+Use monochrome base.
+
+Accent colors only for
+
+Emergency
+
+Success
+
+Location
 
 Notifications
 
-------------------------------------------------------------
+BLE
 
-Component Rearrangement
+Status
 
-Feel free to completely rearrange
+Avoid colorful interfaces.
 
-Cards
+Less is more.
 
-Charts
+---
+
+# Motion Design
+
+Every interaction should animate.
+
+Card appears
+
+Spring
+
+Navigation push
+
+Native
+
+Modal
+
+Bottom sheet
+
+Tab switch
+
+Fluid
+
+Button tap
+
+Scale 0.97
+
+Lists
+
+Staggered
+
+Alerts
+
+Pulse
 
 Maps
 
-Buttons
+Smooth
 
-Panels
+Sheets
 
-Statistics
+Interactive drag
 
-Filters
+Page transition
 
-Tables
+Parallax
 
-Camera feeds
+No abrupt animations.
 
-WITHOUT changing functionality.
+Duration
 
-------------------------------------------------------------
+150-250ms
 
-Code Quality
+Spring physics
 
-Split into reusable components.
+Native easing.
 
-No duplicate code.
+---
 
-Use modern React patterns.
+# Apple Glass Components
 
-Reusable hooks.
+Use Liquid Glass carefully.
 
-Proper TypeScript.
+Navigation
+
+Bottom sheets
+
+Floating buttons
+
+Action menus
+
+Context menus
+
+Search
+
+Segmented controls
+
+Map overlays
+
+Do NOT overuse blur.
+
+Everything should remain readable.
+
+---
+
+# Home Screen
+
+Completely redesign.
+
+Hero greeting
+
+Current location
+
+Live protection status
+
+BLE status
+
+Emergency state
+
+Nearby alerts
+
+Witness alerts
+
+Area alerts
+
+Priority cards
+
+Recent activity
+
+Live statistics
+
+Map preview
+
+Quick report button
+
+Floating action menu
+
+Everything should scroll naturally.
+
+---
+
+# Alert Cards
+
+Premium redesign.
+
+Large photo
+
+Rounded corners
+
+Person name
+
+Age
+
+Time
+
+Distance
+
+Priority indicator
+
+Status chip
+
+Action buttons
+
+Interactive expansion
+
+Swipe actions
+
+Expandable details
+
+Animated urgency indicator
+
+No harsh borders.
+
+---
+
+# Report Missing Person
+
+Multi-step premium wizard.
+
+Progress indicator
+
+Large image picker
+
+Beautiful inputs
+
+Apple style pickers
+
+Segment controls
+
+Date wheels
+
+Dropdown sheets
+
+Location picker
+
+Review screen
+
+Submission animation
+
+Success state
+
+---
+
+# Report Sighting
+
+Camera-first experience.
+
+Live camera
+
+Detection overlay
+
+Minimal UI
+
+Large shutter button
+
+Bottom information sheet
+
+Easy reporting
+
+Native confirmation.
+
+---
+
+# Map Screen
+
+Inspired by Apple Maps.
+
+Floating cards
+
+Bottom sheet
+
+Live location
+
+Animated markers
+
+Cluster animations
+
+Layer selector
+
+Floating controls
+
+Search
+
+Navigation
+
+Live status
+
+Beautiful map blur.
+
+---
+
+# Profile
+
+Apple Settings style.
+
+Grouped sections
+
+Rounded cards
+
+Account
+
+Family
+
+BLE
+
+Permissions
+
+Privacy
+
+Notifications
+
+Appearance
+
+Language
+
+Support
+
+About
+
+Everything in grouped lists.
+
+---
+
+# Family Screen
+
+Large family cards.
+
+Profile photos
+
+Live location
+
+Status indicators
+
+Invite button
+
+Expandable members
+
+Emergency shortcuts
+
+Timeline
+
+Shared protection status.
+
+---
+
+# Notifications
+
+Apple notification cards.
+
+Grouped
+
+Beautiful
+
+Interactive
+
+Swipe
+
+Context menu
+
+Priority coloring
+
+Read animations.
+
+---
+
+# Empty States
+
+Illustrations
+
+Minimal
+
+Premium
+
+Helpful
+
+Encouraging
+
+Never blank screens.
+
+---
+
+# Loading
+
+Skeleton loading
+
+Shimmer
+
+Progressive loading
+
+Animated placeholders
+
+Blur transitions.
+
+---
+
+# Icons
+
+Use SF Symbols style.
+
+Rounded
+
+Consistent
+
+Minimal
+
+Thin weight
+
+Adaptive.
+
+---
+
+# Gestures
+
+Swipe
+
+Pull
+
+Drag
+
+Long press
+
+Context menu
+
+Interactive dismiss
+
+Interactive sheet
+
+Edge swipe
+
+Everything should feel native.
+
+---
+
+# Haptics
+
+Soft
+
+Medium
+
+Heavy
+
+Notification
+
+Selection
+
+Success
+
+Failure
+
+Navigation
+
+Use everywhere meaningful.
+
+---
+
+# Accessibility
+
+Dynamic Type
+
+Large touch targets
+
+VoiceOver labels
+
+Contrast
+
+Reduced motion
+
+Screen reader support
+
+High contrast mode
+
+Keyboard support
+
+Tablet support.
+
+---
+
+# Responsiveness
+
+Support
+
+iPhone SE
+
+iPhone 16
+
+iPhone Pro Max
+
+Android phones
+
+Foldables
+
+Tablets
+
+Landscape
+
+Portrait.
+
+---
+
+# Deliverables
+
+Redesign every screen from the implementation plan.
+
+Do NOT skip any screen.
+
+Redesign
+
+Onboarding
+
+Home
+
+Alert Feed
+
+Report Missing
+
+Report Sighting
+
+Map
+
+Confirmation
+
+Family
+
+Profile
+
+Settings
+
+Notifications
+
+Loading
+
+Empty States
+
+Error States
+
+Success Screens
+
+Permission Screens
+
+Authentication
+
+OTP
+
+Splash
+
+Every modal
+
+Every sheet
+
+Every popup
+
+Every dialog
+
+Every component
+
+Every card
+
+Every button
+
+Every input
+
+Every list item
+
+Every navigation element
+
+Every animation.
+
+---
+
+# Code Quality
+
+Use React Native best practices.
+
+Component-driven architecture.
+
+Reusable design system.
+
+Theme provider.
+
+Light/Dark mode.
+
+Responsive layouts.
 
 Accessibility.
 
-Keyboard navigation.
+TypeScript.
 
-Lazy loading.
+React Native Reanimated.
 
-Memoization where required.
+React Native Gesture Handler.
 
-------------------------------------------------------------
+FlashList.
 
-Responsive
+React Native Skia where useful.
 
-Desktop
+Lottie only where appropriate.
 
-Laptop
+No inline styling.
 
-Tablet
+No duplicated code.
 
-Mobile
+Production-ready implementation.
 
-Ultra-wide
-
-Everything should adapt perfectly.
-
-------------------------------------------------------------
-
-Performance
-
-Avoid unnecessary renders.
-
-Optimize animations.
-
-Optimize images.
-
-Lazy load camera feeds.
-
-Virtualize long lists.
-
-------------------------------------------------------------
-
-What I Expect
-
-Do NOT simply restyle components.
-
-Think like a Senior Product Designer.
-
-Redesign the entire experience.
-
-Rearrange every component.
-
-Improve every screen.
-
-Create a next-generation AI command center suitable for government agencies managing millions of people during events like the Kumbh Mela.
-
-Maintain all functionality while delivering a premium, polished, enterprise-grade interface.
-
-After completing each page, explain:
-1. What you changed.
-2. Why you changed it.
-3. UX improvements.
-4. Performance considerations.
-5. Accessibility improvements.
-6. Responsive behavior.
-
-Continue iterating until every screen reaches production quality.
+The result should look like an application that Apple itself could showcase during WWDC while maintaining the emergency response workflow defined in the implementation plan.
