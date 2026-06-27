@@ -353,7 +353,7 @@ def process_camera_stream(camera_id, video_source):
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
                     cv2.putText(display_frame, f"Density: {density_text}", (5, 40), 
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, density_color, 1)
-                    cv2.putText(display_frame, f"Zones: {za}|{zb}", (5, 60), 
+                    cv2.putText(display_frame, f"Ramkund/Godavari: {za}|{zb}", (5, 60), 
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
                     
                     # Add video file info
@@ -404,7 +404,7 @@ def process_camera_stream(camera_id, video_source):
                             'level': 'danger',
                             'title': 'Critical Overcrowding Detected',
                             'description': f'Density level: HIGH with {person_count} people detected',
-                            'zone': 'Zone A' if za > zb else 'Zone B',
+                            'zone': 'Ramkund Bank' if za > zb else 'Godavari Bank',
                             'time': datetime.now().isoformat(),
                             'resolved': False,
                             'camera_id': camera_id
@@ -1131,16 +1131,16 @@ def get_daily_report():
                     zone_stats = {
                         'zone_rankings': [
                             {
-                                'zone': 'Zone A',
+                                'zone': 'Ramkund Bank',
                                 'avg_density': zone_a_avg,
                                 'peak_count': zone_a_peak,
-                                'alerts': len([a for a in daily_alerts if a['zone'] == 'Zone A' and a['date'] >= (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')])
+                                'alerts': len([a for a in daily_alerts if a['zone'] in ('Zone A', 'Ramkund Bank') and a['date'] >= (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')])
                             },
                             {
-                                'zone': 'Zone B',
+                                'zone': 'Godavari Bank',
                                 'avg_density': zone_b_avg,
                                 'peak_count': zone_b_peak,
-                                'alerts': len([a for a in daily_alerts if a['zone'] == 'Zone B' and a['date'] >= (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')])
+                                'alerts': len([a for a in daily_alerts if a['zone'] in ('Zone B', 'Godavari Bank') and a['date'] >= (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')])
                             }
                         ]
                     }

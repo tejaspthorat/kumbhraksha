@@ -232,7 +232,7 @@ def main(video_source=None, camera_id=None):
         cv2.putText(frame, f"Density: {density_text}", (20, 80), 
                     cv2.FONT_HERSHEY_SIMPLEX, 1, density_color, 2)
         
-        zone_info = f"Zone A (Left): {za}  |  Zone B (Right): {zb}"
+        zone_info = f"Ramkund Bank: {za}  |  Godavari Bank: {zb}"
         cv2.putText(frame, zone_info, (20, 120), 
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
         
