@@ -1,33 +1,40 @@
-"use server";
+'use server';
 
-import { sendStaffWelcomeEmail } from "@/lib/sendStaffEmail";
-import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
-import bcrypt from "bcryptjs";
+import { revalidatePath } from 'next/cache';
 
-const STAFF_PASSWORD_SALT_ROUNDS = 12;
+/**
+ * Staff actions now delegate to the centralized Express backend (single source of
+ * truth). These thin wrappers preserve the original signatures/return shapes so
+ * call sites stay unchanged; all business logic (password generation, profile
+ * provisioning, welcome email) lives in the backend.
+ */
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5001';
 
-// Auth removed — actions run as the shared Control Room identity.
-const CONTROL_ROOM_ID = "control-room";
+// Auth removed — backend runs as the shared "Control Room" identity.
+const CONTROL_ROOM_ID = 'control-room';
 
-function generatePassword(length = 8) {
-  const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  const charsetLength = charset.length;
-  
-  // Create an array to hold our secure random numbers. 
-  // Uint32Array is used to practically eliminate "modulo bias".
-  const randomValues = new Uint32Array(length);
-  
-  // Populate the array with cryptographically secure values
-  crypto.getRandomValues(randomValues);
-  
-  let password = "";
-  for (let i = 0; i < length; i++) {
-    // Map the random number to an index in our charset
-    password += charset[randomValues[i] % charsetLength];
+async function backend(path: string, init: RequestInit & { method: string }) {
+  const res = await fetch(`${BACKEND_URL}/api${path}`, {
+    ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      'x-user-id': CONTROL_ROOM_ID,
+      ...(init.headers || {}),
+    },
+    cache: 'no-store',
+  });
+
+  let body: any = null;
+  try {
+    body = await res.json();
+  } catch {
+    // non-JSON / empty response
   }
-  
-  return password;
+
+  if (!res.ok) {
+    throw new Error(body?.error || `Request failed (${res.status})`);
+  }
+  return body;
 }
 
 export async function createStaff(data: {
@@ -38,131 +45,19 @@ export async function createStaff(data: {
   zoneId: number;
   avatar: string;
 }) {
-  const adminId = CONTROL_ROOM_ID;
-  const password = generatePassword(8);
-
-  // 1. Check if user already exists in the Profile table
-  const existingProfile = await prisma.profile.findUnique({
-    where: { email: data.email },
-  });
-
-  if (existingProfile) {
-    throw new Error(`Email ${data.email} is already registered in the system.`);
-  }
-
-  // 2. Local user id (no external auth provider)
-  const userId = crypto.randomUUID();
-
-  // 3. Create Profile and Staff in a transaction
-  try {
-    await prisma.$transaction([
-      prisma.profile.upsert({
-        where: { email: data.email },
-        update: {
-          name: data.name,
-          role: "STAFF",
-        },
-        create: {
-          id: userId,
-          email: data.email,
-          name: data.name,
-          role: "STAFF",
-        },
-      }),
-      prisma.staff.create({
-        data: {
-          userId,
-          email: data.email,
-          name: data.name,
-          role: data.role,
-          staffRole: (data.staffRole as any) || "COORDINATOR",
-          zoneId: data.zoneId,
-          profileId: adminId,
-          avatar: data.avatar,
-          password: await bcrypt.hash(password, STAFF_PASSWORD_SALT_ROUNDS),
-          lastSeen: "Just now",
-          status: "active",
-          tasks: 0,
-        },
-      }),
-    ]);
-    
-    // 3. Send welcome email via Resend
-    try {
-      const zone = await prisma.zone.findUnique({ where: { id: data.zoneId } });
-      await sendStaffWelcomeEmail({
-        email: data.email,
-        password: password,
-        role: data.role,
-        zone: zone?.name || 'Unassigned',
-      });
-    } catch (emailError) {
-      console.error("Staff created but email failed to send:", emailError);
-    }
-
-    revalidatePath("/dashboard/staff");
-    return { success: true };
-  } catch (err: any) {
-    console.error("DB error:", err);
-    throw new Error("Failed to create staff record in database.");
-  }
+  await backend('/staff', { method: 'POST', body: JSON.stringify(data) });
+  revalidatePath('/dashboard/staff');
+  return { success: true };
 }
 
 export async function updateStaff(id: number, data: any) {
-  try {
-    const updated = await prisma.staff.update({
-      where: { id },
-      data,
-    });
-    
-    if (updated.userId && (data.name || data.email)) {
-      await prisma.profile.update({
-        where: { id: updated.userId },
-        data: {
-          ...(data.name && { name: data.name }),
-          ...(data.email && { email: data.email }),
-        }
-      });
-    }
-
-    revalidatePath("/dashboard/staff");
-    return { success: true };
-  } catch (err: any) {
-    throw new Error("Failed to update staff.");
-  }
+  await backend(`/staff/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  revalidatePath('/dashboard/staff');
+  return { success: true };
 }
 
 export async function deleteStaff(id: number) {
-  try {
-    const staff = await prisma.staff.findUnique({
-      where: { id },
-      select: { userId: true, email: true, name: true },
-    });
-
-    if (staff) {
-      // 1. Delete Profile
-      if (staff.email) {
-        await prisma.profile.deleteMany({
-          where: { email: staff.email }
-        });
-      }
-
-      // 3. Delete associated Tasks (Cascade manually)
-      if (staff.name) {
-        await prisma.staffTask.deleteMany({
-          where: { assignee: staff.name }
-        });
-      }
-    }
-
-    await prisma.staff.delete({
-      where: { id },
-    });
-
-    revalidatePath("/dashboard/staff");
-    return { success: true };
-  } catch (err: any) {
-    console.error("Delete error:", err);
-    throw new Error("Failed to delete staff.");
-  }
+  await backend(`/staff/${id}`, { method: 'DELETE' });
+  revalidatePath('/dashboard/staff');
+  return { success: true };
 }
